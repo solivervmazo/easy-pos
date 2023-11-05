@@ -15,6 +15,9 @@ export default appSizes = {
     regular: 16,
     medium: 18,
     large: 24,
+    xLarge: 34,
+    xxLarge: 44,
+    xxxLarge: 64,
   },
   IconButton: {
     small: 14, //

@@ -15,7 +15,7 @@ export default appStyles = StyleSheet.create({
   textDarkShadow: {
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 5,
+    textShadowRadius: 2,
   },
   contentMainContainer: {
     paddingHorizontal: appSpacing.screenPaddingLeft,

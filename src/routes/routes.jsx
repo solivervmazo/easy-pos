@@ -36,20 +36,6 @@ export default routes = [
     },
   },
   {
-    name: "pos",
-    root: "(home)",
-    path: "/pos",
-    types: ["drawer"],
-    options: {
-      itemOptions: {
-        key: "pos",
-        icon: "Qr",
-      },
-      drawerLabel: "Point of Sales",
-      title: "Pos",
-    },
-  },
-  {
     name: "items",
     root: "(items)",
     path: "/index",

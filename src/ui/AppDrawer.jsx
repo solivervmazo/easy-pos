@@ -39,7 +39,7 @@ const ItemListItem = ({ options, isFocused, onPress }) => {
           styles.itemWrapper,
           {
             backgroundColor: isFocused
-              ? appColors.lightBgTertiary
+              ? appColors.themeColorSecondary
               : appColors.lightBackgroud,
           },
         ]}
@@ -48,11 +48,22 @@ const ItemListItem = ({ options, isFocused, onPress }) => {
           <>
             {Icon.Icons(icon, {
               size: appSizes.Icon.medium,
+              color: isFocused ? appColors.lightText : appColors.themeColor,
             })}
             <Spacer size={10} />
           </>
         ) : null}
-        <Text style={styles.itemListItem}>{drawerLabel}</Text>
+        <Text
+          style={[
+            styles.itemListItem,
+            {
+              color: isFocused ? appColors.lightText : appColors.darkText,
+              fontFamily: isFocused ? appFonts.medium : appFonts.regular,
+            },
+          ]}
+        >
+          {drawerLabel}
+        </Text>
       </View>
     </TouchableOpacity>
   );

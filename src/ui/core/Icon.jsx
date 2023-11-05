@@ -140,6 +140,11 @@ const MenuDot = (props) => {
   return icon.materialicons2("dots-vertical", "dots-vertical");
 };
 
+const OpenLink = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("open-outline", "open");
+};
+
 const Pet = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("pets", "pets");
@@ -153,6 +158,21 @@ const Place = (props) => {
 const Pool = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("pool", "pool");
+};
+
+const PosManualMode = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("magnify-scan", "magnify-scan");
+};
+
+const PosScanMode = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("line-scan", "line-scan");
+};
+
+const PosShortkeysMode = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("scan1", "scan1");
 };
 
 const Qr = (props) => {
@@ -199,6 +219,11 @@ const Tags = (props) => {
   return icon.antdesign("tagso", "tags");
 };
 
+const Tap = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("gesture-tap", "gesture-tap");
+};
+
 const Tv = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("tv-outline", "tv-sharp");
@@ -231,9 +256,13 @@ const Icon = {
   Gps, //
   Location, //
   MenuDot, //
+  OpenLink,
   Pet, //
   Place, //
   Pool, //
+  PosManualMode,
+  PosScanMode,
+  PosShortkeysMode,
   Qr,
   Receipt,
   ReceiptReturns,
@@ -243,6 +272,7 @@ const Icon = {
   Share, //
   Star, //
   Tags,
+  Tap,
   Tv, //
   Unit,
   Warehouse, //
