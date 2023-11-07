@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import { Octicons } from "@expo/vector-icons";
 import { appSizes } from "../../themes";
 
 const Icons = (icon, props = {}) => Icon[icon](props);
@@ -88,6 +89,17 @@ class _Icon {
       />
     );
   }
+
+  octicons(defaultIcon, filledIcon) {
+    return (
+      <Octicons
+        name={!this.fill ? defaultIcon : filledIcon || defaultIcon}
+        size={this.size}
+        color={this.color}
+        style={this.style}
+      />
+    );
+  }
 }
 
 const Back = (props) => {
@@ -103,6 +115,16 @@ const Bed = (props) => {
 const Car = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("car-outline", "car-sharp");
+};
+
+const ChevLeft = (props) => {
+  const icon = new _Icon(props);
+  return icon.octicons("chevron-left", "chevron-left");
+};
+
+const ChevRight = (props) => {
+  const icon = new _Icon(props);
+  return icon.octicons("chevron-right", "chevron-right");
 };
 
 const Dial = (props) => {
@@ -130,6 +152,11 @@ const Items = (props) => {
   return icon.antdesign("inbox", "inbox");
 };
 
+const Info = (props) => {
+  const icon = new _Icon(props);
+  return icon.fontawesome5("info", "info");
+};
+
 const Location = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("location-outline", "location-sharp");
@@ -143,6 +170,11 @@ const MenuDot = (props) => {
 const OpenLink = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("open-outline", "open");
+};
+
+const Pencil = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("pencil", "pencil");
 };
 
 const Pet = (props) => {
@@ -250,13 +282,17 @@ const Icon = {
   Bed, //
   Dial, //
   Car, //
+  ChevLeft,
+  ChevRight,
   Heart, //
   Home,
+  Info,
   Items,
   Gps, //
   Location, //
   MenuDot, //
   OpenLink,
+  Pencil,
   Pet, //
   Place, //
   Pool, //
