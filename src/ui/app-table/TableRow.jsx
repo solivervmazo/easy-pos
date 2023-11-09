@@ -1,16 +1,15 @@
-import React, { useCallback, useRef, useState } from "react";
-import { FlatList } from "react-native-gesture-handler";
-import { StyleSheet, View, Animated, Text } from "react-native";
-import { appColors, appSizes } from "../themes";
+import React, { useCallback, useRef } from "react";
+import { View, Animated, StyleSheet } from "react-native";
+import { appColors, appSizes } from "../../themes";
 import { Octicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
+import { TouchableOpacity } from "react-native-gesture-handler";
 const AnimatedIcon = Animated.createAnimatedComponent(Octicons);
 const ACTION_TOGGLER_WIDTH = 42;
 const ACTION_BUTTON_WIDTH = 42;
 const ACTION_ICON_SIZE = appSizes.Icon.medium;
 
-const RowCard = ({
+const TableRow = ({
   content = () => {},
   actions = ({ actionSize }) => {},
   actionsCount = 0,
@@ -81,44 +80,6 @@ const RowCard = ({
   );
 };
 
-const AppTable = ({
-  data,
-  renderItem = (item) => {},
-  renderActions = ({ actionSize }) => {},
-  itemSeparatorComponent = () => {},
-  actionsCount = 0,
-  keyExtractor = (item) => {},
-  tableContainerStyle = {},
-}) => {
-  const [rowToggled, setRowToggled] = useState(false);
-  const onRowToggle = useCallback(() => {
-    setRowToggled(!rowToggled);
-  }, [rowToggled]);
-
-  return (
-    <View style={{ flex: 1 }}>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ ...tableContainerStyle }}
-        data={data}
-        renderItem={({ item }) => (
-          <RowCard
-            toggled={rowToggled}
-            onToggle={onRowToggle}
-            actionsCount={actionsCount}
-            contentStyle={{ flexDirection: "row" }}
-            actions={({ actionSize }) => renderActions({ actionSize })}
-            content={() => renderItem(item)}
-          />
-        )}
-        keyExtractor={(item) => keyExtractor(item)}
-        ItemSeparatorComponent={() => itemSeparatorComponent()}
-      />
-    </View>
-  );
-};
-//renderItem(item)
-
 const styles = StyleSheet.create({
   itemContainer: {
     flexGrow: 1,
@@ -150,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppTable;
+export default TableRow;

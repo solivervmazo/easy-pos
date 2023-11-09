@@ -34,12 +34,6 @@ const ITEMS = new Array(10).fill({}).map((item, index) => {
 
 const ItemRow = ({ item }) => {
   const { itemName, itemNumber, price, categories } = item;
-  const [rowToggled, setRowToggled] = useState(false);
-
-  const onToggle = useCallback(() => {
-    setRowToggled(!rowToggled);
-  }, [rowToggled]);
-
   return (
     <>
       <View style={{ flex: 1, padding: 10 }}>
@@ -124,8 +118,9 @@ const ItemRow = ({ item }) => {
 const items = () => {
   return (
     <AppTable
+      itemsLength={200}
       data={ITEMS}
-      renderItem={(item) => <ItemRow item={item} />}
+      renderItem={({ item, toggled }) => <ItemRow item={item} />}
       actionsCount={2}
       renderActions={({ actionSize }) => (
         <>
@@ -164,7 +159,7 @@ const items = () => {
       itemSeparatorComponent={() => <Spacer size={1} horizontal={false} />}
       keyExtractor={(item) => item.id}
       tableContainerStyle={{
-        paddingVertical: 15,
+        paddingVertical: 5,
       }}
     />
   );

@@ -102,6 +102,11 @@ class _Icon {
   }
 }
 
+const Add = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("md-add", "md-add");
+};
+
 const Back = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("arrow-back-outline", "arrow-back-sharp");
@@ -130,6 +135,11 @@ const ChevRight = (props) => {
 const Dial = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("phone-dial", "phone-dial-outline");
+};
+
+const Filters = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("filter", "filter");
 };
 
 const Gps = (props) => {
@@ -187,6 +197,26 @@ const Place = (props) => {
   return icon.ionicons("map-outline", "map-sharp");
 };
 
+const PlayNext = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("caretright", "caretright");
+};
+
+const PlayPrev = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("caretleft", "caretleft");
+};
+
+const PlayEnd = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("stepforward", "stepforward");
+};
+
+const PlayStart = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("stepbackward", "stepbackward");
+};
+
 const Pool = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("pool", "pool");
@@ -220,6 +250,11 @@ const Receipt = (props) => {
 const ReceiptReturns = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("book-cancel-outline", "book-cancel");
+};
+
+const Refresh = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons("refresh", "refresh");
 };
 
 const Restaurant = (props) => {
@@ -277,7 +312,8 @@ const Wifi = (props) => {
 };
 
 const Icon = {
-  Icons, //
+  Icons, // dynamic icon
+  Add,
   Back, //
   Bed, //
   Dial, //
@@ -288,6 +324,7 @@ const Icon = {
   Home,
   Info,
   Items,
+  Filters,
   Gps, //
   Location, //
   MenuDot, //
@@ -295,6 +332,10 @@ const Icon = {
   Pencil,
   Pet, //
   Place, //
+  PlayNext,
+  PlayPrev,
+  PlayStart,
+  PlayEnd,
   Pool, //
   PosManualMode,
   PosScanMode,
@@ -302,6 +343,7 @@ const Icon = {
   Qr,
   Receipt,
   ReceiptReturns,
+  Refresh,
   Restaurant, //
   Shortkeys,
   Search, //

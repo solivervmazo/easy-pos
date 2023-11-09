@@ -2,69 +2,36 @@ import React from "react";
 import { Stack } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { Drawer } from "expo-router/drawer";
-import { AppDrawer, Icon } from "../ui/";
+import { AppDrawer, Icon, AppSearchBar, IconButton } from "../ui/";
 import { useDrawerRoutes } from "../routes/";
 import { appColors, appConstants, appSizes } from "../themes";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const ItemScreenHeader = () => {
+const SearchBar = ({ page = "", icon = "Search" }) => {
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-      }}
-    >
-      <TouchableOpacity
-        containerStyle={{
-          flex: 1,
-          flexGrow: 1,
-          borderRadius: 22,
-          backgroundColor: appColors.lightBackgroud,
-          overflow: "hidden",
-          justifyContent: "center",
-        }}
-        onPress={() => {
-          console.log("Pressed 1");
-        }}
-        activeOpacity={appConstants.ACTIVE_OPACITY}
-      >
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 15,
-            flexDirection: "row",
+    <AppSearchBar
+      placeholder={`Search in ${page}`}
+      itemRight={() => (
+        <IconButton
+          icon={icon}
+          size={appSizes.Icon.medium}
+          color={appColors.themeColorSecondary}
+          containerStyle={{
+            backgroundColor: appColors.lightBgTertiary,
+            padding: 6,
           }}
-        >
-          <Text
-            style={{
-              color: appColors.themeColorSecondary,
-              fontSize: appSizes.Text.regular,
-            }}
-          >
-            Search in items
-          </Text>
-          <TouchableOpacity
-            style={{
-              borderRadius: appSizes.Icon.medium,
-              backgroundColor: appColors.lightBgTertiary,
-              padding: 6,
-            }}
-            onPress={() => {
-              console.log("Pressed 2");
-            }}
-            activeOpacity={appConstants.ACTIVE_OPACITY}
-          >
-            <Icon.PosScanMode
-              size={appSizes.Icon.medium}
-              color={appColors.themeColorSecondary}
-            />
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    </View>
+        />
+      )}
+    />
   );
+};
+
+const ItemItemsScreenHeader = () => {
+  return <SearchBar page={"Items"} icon="PosScanMode" />;
+};
+
+const ItemCategoriesScreenHeader = () => {
+  return <SearchBar page={"Categories"} />;
 };
 
 const AppScreen = ({ onLayout }) => {
@@ -95,7 +62,9 @@ const AppScreen = ({ onLayout }) => {
           options={{
             ...route.options,
             ...(route.name === "itemsItems"
-              ? { headerTitle: () => <ItemScreenHeader /> }
+              ? { headerTitle: () => <ItemItemsScreenHeader /> }
+              : route.name === "itemsCategories"
+              ? { headerTitle: () => <ItemCategoriesScreenHeader /> }
               : {}),
           }}
           key={route.name}
