@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Icon, Spacer } from "../../../src/ui";
+import { Icon, Spacer } from "../../../../src/ui";
 import {
   appColors,
   appConstants,
   appFonts,
   appSizes,
   appStyles,
-} from "../../../src/themes";
+} from "../../../../src/themes";
 import { FlatList } from "react-native-gesture-handler";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AppTable } from "../../../src/ui";
+import { AppTable } from "../../../../src/ui";
 
 const ITEMS = new Array(10).fill({}).map((item, index) => {
   return {

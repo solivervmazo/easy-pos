@@ -1,6 +1,6 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import React from "react";
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import {
   appColors,
   appConstants,
@@ -206,10 +206,10 @@ const DrawerHeader = () => {
 
 const AppDrawer = (props) => {
   const { state, descriptors, navigation } = props;
-  const insets = useSafeAreaInsets();
-  const onPress = (path) => {
-    navigation.navigate(path);
+  const onPress = (path, options) => {
+    navigation.navigate(path, options);
   };
+
   return (
     <View style={{ flex: 1, backgroundColor: appColors.lightBackgroud }}>
       <DrawerHeader />
@@ -229,7 +229,6 @@ const AppDrawer = (props) => {
           {state.routes.map((route, index) => {
             const isFocused = state.index === index;
             const { options } = descriptors[route.key];
-
             return options.itemOptions?.type === "none" ? null : options
                 .itemOptions?.type === "head" ? (
               <ItemListHeader options={options} key={options.itemOptions.key} />
@@ -238,7 +237,13 @@ const AppDrawer = (props) => {
                 key={route.key}
                 isFocused={isFocused}
                 options={options}
-                onPress={() => onPress(route.name)}
+                onPress={() => {
+                  options?.navigatorTypes?.includes("stack")
+                    ? onPress(route.name, {
+                        screen: options.itemOptions.screen || false,
+                      })
+                    : onPress(route.name);
+                }}
               />
             );
           })}

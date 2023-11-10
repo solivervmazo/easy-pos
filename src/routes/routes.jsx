@@ -52,12 +52,13 @@ export default routes = [
       {
         name: "itemsItems",
         path: "/items",
-        types: ["drawer"],
+        types: ["drawer", "stack"],
         options: {
           itemOptions: {
             type: "sub",
             key: "items-items",
             icon: "Items",
+            screen: "index",
           },
           drawerLabel: "Items",
           title: "Items",

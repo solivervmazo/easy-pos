@@ -1,6 +1,7 @@
 // Cores
 import Icon from "./core/Icon";
 import Spacer from "./core/Spacer";
+import Divider from "./core/Divider";
 
 // Ui
 import AppDrawer from "./AppDrawer";
@@ -11,7 +12,7 @@ import IconButton from "./IconButton";
 import ChipButton from "./ChipButton";
 import AppSearchBar from "./AppSearchBar";
 
-export { Icon, Spacer };
+export { Icon, Spacer, Divider };
 export {
   AppDrawer,
   UserAvatar,

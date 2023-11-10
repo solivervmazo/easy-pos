@@ -117,6 +117,11 @@ const Bed = (props) => {
   return icon.ionicons("bed-outline", "bed-sharp");
 };
 
+const Calendar = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("calendar", "calendar");
+};
+
 const Car = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("car-outline", "car-sharp");
@@ -318,6 +323,7 @@ const Icon = {
   Bed, //
   Dial, //
   Car, //
+  Calendar,
   ChevLeft,
   ChevRight,
   Heart, //
