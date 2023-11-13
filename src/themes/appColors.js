@@ -16,7 +16,7 @@ export default appColors = {
   darkTextTertiary: "#606470",
   darkBackground: "#292929",
   darkBgSecondary: "#383838",
-  lightBackgroud: "#ffffff",
+  lightBackground: "#ffffff",
   lightBgSecondary: "#f6f6f6",
   lightBgTertiary: "#dbd8e3",
   themeColor: "#085f63",

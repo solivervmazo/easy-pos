@@ -20,7 +20,7 @@ const AppSearchBar = ({
           flex: 1,
           flexGrow: 1,
           borderRadius: 22,
-          backgroundColor: appColors.lightBackgroud,
+          backgroundColor: appColors.lightBackground,
           overflow: "hidden",
           justifyContent: "center",
         }}

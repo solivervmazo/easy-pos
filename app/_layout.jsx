@@ -4,6 +4,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, View } from "react-native";
 import { Slot, Stack } from "expo-router";
 import { AppScreen } from "../src/screens";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { appStyles } from "../src/themes";
 
 SplashScreen.preventAutoHideAsync();
 

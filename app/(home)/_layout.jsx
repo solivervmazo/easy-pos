@@ -6,7 +6,6 @@ import { Stack } from "expo-router";
 const _layout = () => {
   return (
     <HomeContextProvider.Provider value={{}}>
-      <Stack.Screen />
       <HomeScreen />
     </HomeContextProvider.Provider>
   );

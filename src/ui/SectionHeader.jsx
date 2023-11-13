@@ -2,8 +2,25 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { appColors, appSizes, appFonts, appConstants } from "../themes";
 
+const TitleText = ({ title, fontSize, color }) => {
+  return (
+    <Text
+      style={[
+        styles.title,
+        {
+          fontSize,
+          color,
+        },
+      ]}
+    >
+      {title}
+    </Text>
+  );
+};
+
 const SectionHeader = ({
   title,
+  renderTitle = ({ TitleTextComponent, fontSize, color }) => null,
   color = appColors.darkText,
   titleColor,
   size = appSizes.Text.regular,
@@ -22,17 +39,19 @@ const SectionHeader = ({
         },
       ]}
     >
-      <Text
-        style={[
-          styles.title,
-          {
-            fontSize: titleSize || size,
-            color: titleColor || color,
-          },
-        ]}
-      >
-        {title}
-      </Text>
+      {renderTitle({ TitleTextComponent: TitleText }) ? (
+        renderTitle({
+          TitleTextComponent: TitleText,
+          fontSize: titleSize || size,
+          color: titleColor || color,
+        })
+      ) : (
+        <TitleText
+          title={title}
+          fontSize={titleSize || size}
+          color={titleColor || color}
+        />
+      )}
       <TouchableOpacity
         onPress={onLink}
         activeOpacity={appConstants.ACTIVE_OPACITY}

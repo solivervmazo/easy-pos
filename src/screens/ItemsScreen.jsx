@@ -1,26 +1,28 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Slot, Stack } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-const ScreenHeader = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerTitle: "Items",
-      }}
-    />
-  );
-};
-
+import { Stack } from "expo-router";
+import { ItemDrawerHeader } from "../components/items";
 const ItemsScreen = () => {
   return (
-    <SafeAreaView>
-      <ScreenHeader />
-      <Slot />
-    </SafeAreaView>
+    <>
+      <ItemDrawerHeader />
+      <Stack initialRouteName="index">
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="filterDate"
+          options={{
+            headerShown: false,
+            presentation: "modal",
+            animation: "slide_from_bottom",
+          }}
+        />
+      </Stack>
+    </>
   );
 };
 
-const styles = StyleSheet.create({});
 export default ItemsScreen;

@@ -11,9 +11,11 @@ const ChipButton = ({
   containerStyle = {},
   labelStyle = {},
   flat = false,
+  plain = false,
 }) => {
   return (
     <TouchableOpacity
+      disabled={plain}
       onPress={onPress}
       activeOpacity={appConstants.ACTIVE_OPACITY}
       style={[

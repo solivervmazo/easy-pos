@@ -7,7 +7,7 @@ import {
   appSpacing,
   appStyles,
 } from "../../../src/themes";
-import { Icon, Spacer, SectionHeader } from "../../../src/ui";
+import { Icon, Spacer, SectionHeader, ChipButton } from "../../../src/ui";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 
 const TR = [
@@ -323,6 +323,20 @@ const pos = () => {
     <View style={{ flex: 1, padding: appSpacing.screenPaddingLeft }}>
       <SectionHeader
         title={"Start Transaction"}
+        renderTitle={({ TitleTextComponent, fontSize, color }) => (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TitleTextComponent
+              title={"Start Transaction"}
+              fontSize={fontSize}
+              color={color}
+            />
+            <ChipButton
+              label={"Started"}
+              labelStyle={{ fontSize: appSizes.Text.xSmall }}
+              plain={true}
+            />
+          </View>
+        )}
         containerStyle={{ paddingBottom: 12 }}
       />
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>

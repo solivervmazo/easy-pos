@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { AppIndex } from "../src/components/app";
 import { Redirect, Stack } from "expo-router";
 const index = () => {
-  return <Redirect href={"/(drawer)/(items)/items"} />;
+  return <Redirect href={"/(drawer)/home"} />;
   // return <Stack.Screen></Stack.Screen>;
 };
 

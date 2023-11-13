@@ -104,7 +104,7 @@ class _Icon {
 
 const Add = (props) => {
   const icon = new _Icon(props);
-  return icon.ionicons("md-add", "md-add");
+  return icon.antdesign("plus", "plus");
 };
 
 const Back = (props) => {
@@ -115,6 +115,11 @@ const Back = (props) => {
 const Bed = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("bed-outline", "bed-sharp");
+};
+
+const Calculator = (props) => {
+  const icon = new _Icon(props);
+  return icon.fontawesome5("calculator", "calculator");
 };
 
 const Calendar = (props) => {
@@ -135,6 +140,11 @@ const ChevLeft = (props) => {
 const ChevRight = (props) => {
   const icon = new _Icon(props);
   return icon.octicons("chevron-right", "chevron-right");
+};
+
+const Close = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons("close", "close");
 };
 
 const Dial = (props) => {
@@ -172,6 +182,16 @@ const Info = (props) => {
   return icon.fontawesome5("info", "info");
 };
 
+const Keyboard = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons("keyboard", "keyboard");
+};
+
+const KeyboardOff = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("keyboard-off", "keyboard-off");
+};
+
 const Location = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("location-outline", "location-sharp");
@@ -180,6 +200,11 @@ const Location = (props) => {
 const MenuDot = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("dots-vertical", "dots-vertical");
+};
+
+const Minus = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("minus", "minus");
 };
 
 const OpenLink = (props) => {
@@ -227,6 +252,11 @@ const Pool = (props) => {
   return icon.materialicons("pool", "pool");
 };
 
+const Pos = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons("point-of-sale", "point-of-sale");
+};
+
 const PosManualMode = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("magnify-scan", "magnify-scan");
@@ -234,7 +264,7 @@ const PosManualMode = (props) => {
 
 const PosScanMode = (props) => {
   const icon = new _Icon(props);
-  return icon.materialicons2("line-scan", "line-scan");
+  return icon.feather("camera", "camera");
 };
 
 const PosShortkeysMode = (props) => {
@@ -265,6 +295,11 @@ const Refresh = (props) => {
 const Restaurant = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("restaurant-outline", "restaurant-sharp");
+};
+
+const Save = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons("save", "save");
 };
 
 const Search = (props) => {
@@ -323,17 +358,22 @@ const Icon = {
   Bed, //
   Dial, //
   Car, //
+  Calculator,
   Calendar,
   ChevLeft,
   ChevRight,
+  Close,
   Heart, //
   Home,
   Info,
   Items,
+  Keyboard,
+  KeyboardOff,
   Filters,
   Gps, //
   Location, //
   MenuDot, //
+  Minus,
   OpenLink,
   Pencil,
   Pet, //
@@ -343,6 +383,7 @@ const Icon = {
   PlayStart,
   PlayEnd,
   Pool, //
+  Pos,
   PosManualMode,
   PosScanMode,
   PosShortkeysMode,
@@ -351,6 +392,7 @@ const Icon = {
   ReceiptReturns,
   Refresh,
   Restaurant, //
+  Save,
   Shortkeys,
   Search, //
   Share, //

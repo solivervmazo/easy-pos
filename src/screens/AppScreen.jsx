@@ -56,8 +56,25 @@ const AppScreen = ({ onLayout }) => {
         },
       }}
     >
-      {routes.map((route) => (
-        <Drawer.Screen
+      {Object.keys(routes).map((key) => {
+        const route = routes[key];
+        return (
+          <Drawer.Screen
+            name={route.path}
+            options={{
+              ...route.options,
+              ...(route.key === "store-items"
+                ? { headerTitle: () => <ItemItemsScreenHeader /> }
+                : {}),
+            }}
+            key={key}
+          />
+        );
+      })}
+    </Drawer>
+  );
+};
+/* <Drawer.Screen
           name={route.path}
           options={{
             navigatorTypes: route.types,
@@ -70,11 +87,6 @@ const AppScreen = ({ onLayout }) => {
               : {}),
           }}
           key={route.name}
-        />
-      ))}
-    </Drawer>
-  );
-};
-
+        /> */
 const styles = StyleSheet.create({});
 export default AppScreen;

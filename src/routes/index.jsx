@@ -113,6 +113,7 @@ export const useRoutes = () => {
 };
 
 export const useDrawerRoutes = () => {
+  return routes.drawer;
   let _routes = [];
   const pushRoute = (root = false, route) => {
     if (route?.types?.includes("drawer")) {

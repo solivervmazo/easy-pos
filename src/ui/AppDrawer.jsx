@@ -25,7 +25,7 @@ const ItemListHeader = ({ options }) => {
 };
 
 const ItemListItem = ({ options, isFocused, onPress }) => {
-  const { drawerLabel, itemOptions: { icon } = {} } = options;
+  const { drawerLabel, routeOptions: { icon } = {} } = options;
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -37,7 +37,7 @@ const ItemListItem = ({ options, isFocused, onPress }) => {
           {
             backgroundColor: isFocused
               ? appColors.themeColorSecondary
-              : appColors.lightBackgroud,
+              : appColors.lightBackground,
           },
         ]}
       >
@@ -211,7 +211,7 @@ const AppDrawer = (props) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: appColors.lightBackgroud }}>
+    <View style={{ flex: 1, backgroundColor: appColors.lightBackground }}>
       <DrawerHeader />
       <View
         style={{
@@ -221,6 +221,7 @@ const AppDrawer = (props) => {
         }}
       >
         <DrawerContentScrollView
+          showsVerticalScrollIndicator={true}
           contentContainerStyle={{
             paddingTop: 5,
           }}
@@ -229,9 +230,11 @@ const AppDrawer = (props) => {
           {state.routes.map((route, index) => {
             const isFocused = state.index === index;
             const { options } = descriptors[route.key];
-            return options.itemOptions?.type === "none" ? null : options
-                .itemOptions?.type === "head" ? (
-              <ItemListHeader options={options} key={options.itemOptions.key} />
+            return options.routeOptions?.head ? (
+              <ItemListHeader
+                options={options}
+                key={options.routeOptions.key}
+              />
             ) : (
               <ItemListItem
                 key={route.key}
@@ -240,7 +243,7 @@ const AppDrawer = (props) => {
                 onPress={() => {
                   options?.navigatorTypes?.includes("stack")
                     ? onPress(route.name, {
-                        screen: options.itemOptions.screen || false,
+                        screen: options.routeOptions.screen || false,
                       })
                     : onPress(route.name);
                 }}

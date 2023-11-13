@@ -50,7 +50,7 @@ const TableHeader = () => {
               disabled
               icon={"Add"}
               size={appSizes.Icon.medium}
-              containerStyle={{ backgroundColor: appColors.lightBackgroud }}
+              containerStyle={{ backgroundColor: appColors.lightBackground }}
             />
           )}
           label={"Add"}
@@ -75,7 +75,7 @@ const TableHeader = () => {
               disabled
               icon={"Calendar"}
               size={appSizes.Icon.medium}
-              containerStyle={{ backgroundColor: appColors.lightBackgroud }}
+              containerStyle={{ backgroundColor: appColors.lightBackground }}
             />
           )}
           label={

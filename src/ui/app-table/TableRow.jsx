@@ -50,32 +50,34 @@ const TableRow = ({
   return (
     <View style={[styles.itemContainer, containerStyle]}>
       <View style={[styles.itemContent, contentStyle]}>{content()}</View>
-      <Animated.View
-        style={[
-          styles.itemActionContainer,
-          {
-            width: rowActionContainerWidth,
-          },
-          actionContainerStyle,
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.itemActionToggleButton}
-          onPress={toggleRowAction}
+      {actionsCount > 0 && (
+        <Animated.View
+          style={[
+            styles.itemActionContainer,
+            {
+              width: rowActionContainerWidth,
+            },
+            actionContainerStyle,
+          ]}
         >
-          <AnimatedIcon
-            name={"chevron-right"}
-            size={appSizes.Icon.medium}
-            color={appColors.lightText}
-            style={{
-              transform: [{ rotate: animateRowActionIconDeg }],
-            }}
-          />
-        </TouchableOpacity>
-        <View style={[styles.itemActionContent, actionContentStyle]}>
-          {actions({ actionSize: ACTION_ICON_SIZE })}
-        </View>
-      </Animated.View>
+          <TouchableOpacity
+            style={styles.itemActionToggleButton}
+            onPress={toggleRowAction}
+          >
+            <AnimatedIcon
+              name={"chevron-right"}
+              size={appSizes.Icon.medium}
+              color={appColors.lightText}
+              style={{
+                transform: [{ rotate: animateRowActionIconDeg }],
+              }}
+            />
+          </TouchableOpacity>
+          <View style={[styles.itemActionContent, actionContentStyle]}>
+            {actions({ actionSize: ACTION_ICON_SIZE })}
+          </View>
+        </Animated.View>
+      )}
     </View>
   );
 };

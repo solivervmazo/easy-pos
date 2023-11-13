@@ -1,16 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Icon, Spacer } from "../../../../src/ui";
+import { Icon, Spacer, AppTable } from "../../ui";
 import {
   appColors,
   appConstants,
   appFonts,
   appSizes,
   appStyles,
-} from "../../../../src/themes";
+} from "../../themes";
 import { FlatList } from "react-native-gesture-handler";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AppTable } from "../../../../src/ui";
 
 const ITEMS = new Array(10).fill({}).map((item, index) => {
   return {
@@ -115,7 +114,7 @@ const ItemRow = ({ item }) => {
   );
 };
 
-const items = () => {
+const Items = () => {
   return (
     <AppTable
       itemsLength={200}
@@ -167,4 +166,4 @@ const items = () => {
 
 const styles = StyleSheet.create({});
 
-export default items;
+export default Items;

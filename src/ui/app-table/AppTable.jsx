@@ -18,6 +18,7 @@ const AppTable = ({
   onRowToggle = ({ toggled, setToggled }) => {},
   itemsLength = 0,
   itemsPerPage = 10,
+  hasHeader = true,
 }) => {
   const [rowToggled, setRowToggled] = useState(false);
   const _onRowToggle = useCallback(
@@ -29,7 +30,7 @@ const AppTable = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      <TableHeader />
+      {hasHeader && <TableHeader />}
       <FlatList
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ ...tableContainerStyle }}
