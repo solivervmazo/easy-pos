@@ -11,6 +11,7 @@ import AppTable from "./app-table/AppTable";
 import IconButton from "./IconButton";
 import ChipButton from "./ChipButton";
 import AppSearchBar from "./AppSearchBar";
+import AppModal from "./AppModal";
 
 export { Icon, Spacer, Divider };
 export {
@@ -21,4 +22,5 @@ export {
   IconButton,
   ChipButton,
   AppSearchBar,
+  AppModal,
 };

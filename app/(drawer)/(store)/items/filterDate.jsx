@@ -6,6 +6,8 @@ import { appColors, appSizes, appSpacing } from "../../../../src/themes";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
 
+import { AppModal } from "../../../../src/ui";
+
 const DatePicker = ({ value, onDateChange = ({ dateValue }) => {} }) => {
   const [date, setDate] = useState(value || new Date());
 
@@ -84,78 +86,41 @@ const FilterDate = () => {
     setShow(false);
   };
   return (
-    <View style={{ flex: 1, justifyContent: "space-between" }}>
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <DateInput
-            value={dateFrom?.toDateString() || undefined}
-            placeholder={"Select From Date"}
-            iconPosition={"buttonLeft"}
-            onPress={() => {
-              onDatePress("from");
-            }}
-          />
-
-          <DateInput
-            value={dateTo?.toDateString() || undefined}
-            placeholder={"Select To Date"}
-            iconPosition={"buttonLeft"}
-            onPress={() => {
-              onDatePress("to");
-            }}
-          />
-          {show && (
-            <DatePicker
-              value={dateHandler == "from" ? dateFrom : dateTo}
-              onDateChange={({ dateValue }) => {
-                onChange({ dateValue });
+    <AppModal
+      renderContent={() => (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <DateInput
+              value={dateFrom?.toDateString() || undefined}
+              placeholder={"Select From Date"}
+              iconPosition={"buttonLeft"}
+              onPress={() => {
+                onDatePress("from");
               }}
             />
-          )}
-        </View>
-      </View>
 
-      <View>
-        <Divider
-          horizontal={true}
-          style={{
-            backgroundColor: appColors.lightBgTertiary,
-          }}
-        />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: appSpacing.screenPaddingLeft,
-          }}
-        >
-          <ChipButton
-            label={"Dismiss"}
-            flat={true}
-            labelStyle={{
-              color: appColors.themeColor,
-              fontSize: appSizes.Text.regular,
-            }}
-            containerStyle={{
-              borderRadius: 5,
-            }}
-          />
-          <ChipButton
-            label={"Confirm"}
-            flat={true}
-            labelStyle={{
-              color: appColors.themeColor,
-              fontSize: appSizes.Text.regular,
-            }}
-            containerStyle={{
-              borderRadius: 5,
-            }}
-          />
+            <DateInput
+              value={dateTo?.toDateString() || undefined}
+              placeholder={"Select To Date"}
+              iconPosition={"buttonLeft"}
+              onPress={() => {
+                onDatePress("to");
+              }}
+            />
+            {show && (
+              <DatePicker
+                value={dateHandler == "from" ? dateFrom : dateTo}
+                onDateChange={({ dateValue }) => {
+                  onChange({ dateValue });
+                }}
+              />
+            )}
+          </View>
         </View>
-      </View>
-      <StatusBar style="light" />
-    </View>
+      )}
+    />
   );
 };
 
