@@ -12,6 +12,7 @@ import IconButton from "./IconButton";
 import ChipButton from "./ChipButton";
 import AppSearchBar from "./AppSearchBar";
 import AppModal from "./AppModal";
+import AppDaterangePicker from "./app-daterange-picker/AppDaterangePicker";
 
 export { Icon, Spacer, Divider };
 export {
@@ -23,4 +24,5 @@ export {
   ChipButton,
   AppSearchBar,
   AppModal,
+  AppDaterangePicker,
 };
