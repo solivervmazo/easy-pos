@@ -1,12 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { PosDashboard } from "../../../../src/components/pos/";
 
 const Pos = () => {
-  return (
-    <View>
-      <Text>index</Text>
-    </View>
-  );
+  return <PosDashboard />;
 };
 
 const styles = StyleSheet.create({});

@@ -27,6 +27,7 @@
 │   ├───components
 │   │   ├───*modules
 │   │   │   ├───ui
+│   │   │   ├───*shared
 │   │   │   ├───*sub screens modules
 │   │   │   ├───index.jsx
 │   ├───routes
@@ -74,8 +75,9 @@
     Modular components.
 
 - /src/components/*modules
-    ***/ui/\**** *- 1st layer components inside for module-specific, import in index.jsx*
-    ***Note:*** *folder name should be the same with intended main screen for module. e.g: scr/components/module-name/ModuleName.jsx .*
+    ***/ui/\**** *- 1st layer components inside for module-specific. non shareable*
+    ***/shared/\**** *- 2nd layer components inside for module-specific, import in index.jsx*
+    ***Note:*** *folder name should be the same with intended main screen for module. e.g: scr/components/module-name/ModuleName.jsx . Specifiy otherwhise*
 
 - /src/routes
     Define your routes drawer and stack routes
@@ -90,7 +92,7 @@
     Non modular components
 
 - /src/ui/core
-    *Should avoid using directly outside src/ui components* , use 2nd-3rd layer instead
+    *Should avoid using directly outside src/ui components* , use 2nd-3rd layer instead. Otherwise explain
 
 - /src/ui/*shared components
     Second layer shareable components.

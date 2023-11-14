@@ -1,5 +1,5 @@
 // Cores
-// import Icon from "./core/Icon";
+import Icon from "./core/Icon";
 import Spacer from "./core/Spacer";
 import Divider from "./core/Divider";
 
@@ -14,7 +14,7 @@ import AppSearchBar from "./AppSearchBar";
 import AppModal from "./AppModal";
 import AppDaterangePicker from "./app-daterange-picker/AppDaterangePicker";
 
-export { Spacer, Divider };
+export { Icon, Spacer, Divider };
 export {
   AppDrawer,
   UserAvatar,

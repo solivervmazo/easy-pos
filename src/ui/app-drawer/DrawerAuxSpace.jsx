@@ -13,7 +13,7 @@ const DrawerAuxSpace = () => {
       }}
     >
       <Image
-        source={require("../../assets/imgs/cloud-sync.png")}
+        source={require("../../../assets/imgs/cloud-sync.png")}
         resizeMode={"center"}
         style={{
           alignItems: "center",

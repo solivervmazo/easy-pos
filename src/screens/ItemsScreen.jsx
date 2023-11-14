@@ -1,10 +1,10 @@
 import React from "react";
 import { Stack } from "expo-router";
-import { ItemDrawerHeader } from "../components/items";
+import DrawerHeader from "../components/items/ui/DrawerHeader";
 const ItemsScreen = () => {
   return (
     <>
-      <ItemDrawerHeader />
+      <DrawerHeader />
       <Stack initialRouteName="index">
         <Stack.Screen
           name="index"

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Icon, Spacer, AppTable } from "../../ui";
+import { IconButton, Spacer, AppTable } from "../../ui";
 import {
   appColors,
   appConstants,
@@ -56,7 +56,7 @@ const ItemRow = ({ item }) => {
             alignItems: "center",
           }}
         >
-          <Icon.Tags />
+          <IconButton icon={"Tags"} disabled={true} />
           <FlatList
             showsHorizontalScrollIndicator={false}
             data={categories}
@@ -123,36 +123,26 @@ const Items = () => {
       actionsCount={2}
       renderActions={({ actionSize }) => (
         <>
-          <TouchableOpacity
-            style={{
+          <IconButton
+            icon={"Pencil"}
+            containerStyle={{
               aspectRatio: "1/1",
               borderRadius: actionSize,
               backgroundColor: appColors.lightBgTertiary,
               padding: 6,
               alignItems: "center",
             }}
-            onPress={() => {
-              console.log("Pressed 2");
-            }}
-            activeOpacity={appConstants.ACTIVE_OPACITY}
-          >
-            <Icon.Pencil size={actionSize} color={appColors.lightSuccess} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
+          />
+          <IconButton
+            icon={"Info"}
+            containerStyle={{
               aspectRatio: "1/1",
               borderRadius: actionSize,
               backgroundColor: appColors.lightBgTertiary,
               padding: 6,
               alignItems: "center",
             }}
-            onPress={() => {
-              console.log("Pressed 3");
-            }}
-            activeOpacity={appConstants.ACTIVE_OPACITY}
-          >
-            <Icon.Info size={actionSize} color={appColors.lightPrimary} />
-          </TouchableOpacity>
+          />
         </>
       )}
       itemSeparatorComponent={() => <Spacer size={1} horizontal={false} />}

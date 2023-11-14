@@ -1,12 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { PosHomeScreen } from "../../../../src/screens";
 
 const _layout = () => {
-  return (
-    <View>
-      <Text>_layout</Text>
-    </View>
-  );
+  return <PosHomeScreen />;
 };
 
 const styles = StyleSheet.create({});

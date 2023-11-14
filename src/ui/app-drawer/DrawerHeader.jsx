@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { appColors, appFonts, appSizes, appSpacing } from "../../themes/";
-
+import Constants from "expo-constants";
 const DrawerHeader = ({ title, logo }) => {
   const statusBarHeight = Constants.statusBarHeight;
   return (

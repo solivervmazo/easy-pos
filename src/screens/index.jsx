@@ -3,6 +3,7 @@ import HomeScreen from "./HomeScreen";
 import AuthScreen from "./AuthScreen";
 import ItemsScreen from "./ItemsScreen";
 import PosScreen from "./PosScreen";
+import PosHomeScreen from "./PosHomeScreen";
 import TransactionsScreen from "./TransactionsScreen";
 
 export {
@@ -10,6 +11,7 @@ export {
   HomeScreen,
   AuthScreen,
   ItemsScreen,
+  PosHomeScreen,
   PosScreen,
   TransactionsScreen,
 };

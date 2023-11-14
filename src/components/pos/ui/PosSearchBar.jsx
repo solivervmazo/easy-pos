@@ -1,7 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, TextInput, View, Keyboard } from "react-native";
-import { IconButton } from "../../ui";
-import { appColors, appSizes, appSpacing } from "../../themes";
+import { IconButton } from "../../../ui";
+import { appColors, appSizes, appSpacing } from "../../../themes";
 
 const PosSearchBar = ({ onChange = ({ inputValue }) => {} }) => {
   const [value, setValue] = useState("");

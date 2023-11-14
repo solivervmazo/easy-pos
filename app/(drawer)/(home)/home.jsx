@@ -7,9 +7,10 @@ import {
   appSpacing,
   appStyles,
 } from "../../../src/themes";
-import { Icon, Spacer, SectionHeader, ChipButton } from "../../../src/ui";
+import { Spacer, SectionHeader, ChipButton } from "../../../src/ui";
+import Icon from "../../../src/ui/core/Icon";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-
+import PosQuickMode from "../../../src/components/pos/shared/PosQuickMode";
 const TR = [
   {
     id: 1,
@@ -48,47 +49,6 @@ const TR = [
     trDate: "November 5, 2023",
   },
 ];
-
-const PosModeLink = ({ icon, label }) => {
-  return (
-    <View
-      style={{
-        backgroundColor: appColors.themeColorTertiary,
-        borderRadius: 20,
-        padding: 20,
-        // flexDirection: "row",
-        alignItems: "center",
-        width: "30%",
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: appColors.lightBackgroud,
-          padding: 8,
-          borderRadius: appSizes.Icon.medium,
-        }}
-      >
-        {Icon.Icons(icon, {
-          size: appSizes.Icon.medium,
-          color: appColors.themeColor,
-          style: {
-            fontWeight: "bold",
-          },
-        })}
-      </View>
-      <Text
-        style={{
-          color: appColors.themeColor,
-          fontFamily: appFonts.bold,
-          fontSize: appSizes.Text.regular,
-          ...appStyles.textLightShadow,
-        }}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-};
 
 const TransactionRowCard = ({ item }) => {
   const { trType, trDate, trNumber, amount } = item;
@@ -340,9 +300,9 @@ const pos = () => {
         containerStyle={{ paddingBottom: 12 }}
       />
       <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <PosModeLink icon={"PosScanMode"} label={"Scan"} />
-        <PosModeLink icon={"PosManualMode"} label={"Search"} />
-        <PosModeLink icon={"PosShortkeysMode"} label={"Shortkey"} />
+        <PosQuickMode icon={"PosScanMode"} label={"Scan"} />
+        <PosQuickMode icon={"PosManualMode"} label={"Search"} />
+        <PosQuickMode icon={"PosShortkeysMode"} label={"Shortkey"} />
       </View>
       <SectionHeader
         title={"Recent Transaction"}

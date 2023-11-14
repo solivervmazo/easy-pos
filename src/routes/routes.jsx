@@ -42,6 +42,7 @@ const drawer = {
       routeOptions: {
         key: "store-pos",
         icon: "Pos",
+        initialScreen: "index",
       },
       drawerLabel: "Point of sale",
       title: "Point of sale",
