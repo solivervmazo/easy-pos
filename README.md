@@ -90,7 +90,7 @@
     Non modular components
 
 - /src/ui/core
-    *Should avoid using directly outside src/ui components*
+    *Should avoid using directly outside src/ui components* , use 2nd-3rd layer instead
 
 - /src/ui/*shared components
     Second layer shareable components.

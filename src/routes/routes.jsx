@@ -30,6 +30,7 @@ const drawer = {
       routeOptions: {
         key: "store-items",
         icon: "Items",
+        initialScreen: "index",
       },
       drawerLabel: "Items",
       title: "Items",

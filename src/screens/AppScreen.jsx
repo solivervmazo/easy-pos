@@ -74,19 +74,5 @@ const AppScreen = ({ onLayout }) => {
     </Drawer>
   );
 };
-/* <Drawer.Screen
-          name={route.path}
-          options={{
-            navigatorTypes: route.types,
-            navigatorPath: route.path,
-            ...route.options,
-            ...(route.name === "itemsItems"
-              ? { headerTitle: () => <ItemItemsScreenHeader /> }
-              : route.name === "itemsCategories"
-              ? { headerTitle: () => <ItemCategoriesScreenHeader /> }
-              : {}),
-          }}
-          key={route.name}
-        /> */
 const styles = StyleSheet.create({});
 export default AppScreen;
