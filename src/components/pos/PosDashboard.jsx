@@ -2,11 +2,23 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import PosQuickMode from "./shared/PosQuickMode";
 import PosEarnings from "./shared/PosEarnings";
+import PosSessions from "./shared/PosSessions";
+import { ScrollView } from "react-native-gesture-handler";
 const PosDashboard = () => {
   return (
     <View style={styles.container}>
       <PosQuickMode />
-      <PosEarnings />
+      <ScrollView
+        contentContainerStyle={{}}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{}}>
+          <PosSessions />
+        </View>
+        <View style={{}}>
+          <PosEarnings />
+        </View>
+      </ScrollView>
     </View>
   );
 };

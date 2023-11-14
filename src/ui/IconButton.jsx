@@ -11,11 +11,12 @@ const IconButton = ({
   iconStyle = {},
   containerStyle = {},
   onPress,
+  plain = false,
   disabled = false,
 }) => {
   return (
     <TouchableOpacity
-      activeOpacity={appConstants.ACTIVE_OPACITY}
+      activeOpacity={plain ? 1 : appConstants.ACTIVE_OPACITY}
       disabled={disabled}
       style={[
         {

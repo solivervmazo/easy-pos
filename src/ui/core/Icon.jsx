@@ -112,6 +112,11 @@ const Back = (props) => {
   return icon.ionicons("arrow-back-outline", "arrow-back-sharp");
 };
 
+const Bank = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("bank", "bank");
+};
+
 const Bed = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("bed-outline", "bed-sharp");
@@ -355,6 +360,7 @@ const Icon = {
   Icons, // dynamic icon
   Add,
   Back, //
+  Bank,
   Bed, //
   Dial, //
   Car, //

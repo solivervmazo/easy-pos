@@ -7,7 +7,7 @@ const PosQuickMode = ({ containerStyle = {} }) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <SectionHeader
-        title={"Earnings"}
+        title={"New Transaction"}
         renderTitle={({ TitleTextComponent, fontSize, color, title }) => (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <TitleTextComponent

@@ -8,6 +8,8 @@ export default appColors = {
   lightTextTertiary: "#3e4a61",
   lightPrimary: "#1e549f",
   lightPrimarySecondary: "#5fc9f3",
+  lightDanger: "#ac395e",
+  lightDangerSecondary: "#d279ac",
   lightSuccess: "#2eb872",
   lightSuccessSecondary: "#bfe9db",
   lightDanger: "#ff5d6e",

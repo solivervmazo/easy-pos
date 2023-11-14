@@ -1,16 +1,22 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { appColors, appSpacing } from "../themes";
+import { appColors, appSpacing, appStyles } from "../themes";
 
 const AppCard = ({
   title = undefined,
+  subtitle = undefined,
   renderAvatar = () => undefined,
-  renderTitle = ({ title }) => undefined,
+  renderTitle = ({ title, titleStyle }) => undefined,
+  renderSubtitle = ({ subtitle }) => undefined,
   renderAction = () => undefined,
   renderContent = () => undefined,
   containerStyle = {},
+  titleStyle = {},
+  titleSubtitleContainerStyle = {},
+  subtitleStyle = {},
   headerContainerStyle = {},
   titleContainerStyle = {},
+  subtitleContainerStyle = {},
   avatarContainerStyle = {},
   actionContainerStyle = {},
   bodyContainerStyle = {},
@@ -28,13 +34,42 @@ const AppCard = ({
   };
 
   const _renderTitle = () => {
-    const _children = renderTitle({ title });
+    const _children = renderTitle({
+      title,
+      titleStyle: { ...styles.titleContainer, ...titleContainerStyle },
+    });
     const _title = (
       <View style={[styles.titleContainer, titleContainerStyle]}>
-        {_children || title === undefined ? null : <Text>{title}</Text>}
+        {_children || title === undefined ? null : (
+          <Text style={[styles.title, titleStyle]}>{title}</Text>
+        )}
       </View>
     );
     return _title;
+  };
+
+  const _renderSubtitle = () => {
+    const _children = renderSubtitle({ subtitle });
+    const _subtitle = (
+      <View style={[styles.subtitleContainer, subtitleContainerStyle]}>
+        {_children || subtitle === undefined ? null : (
+          <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
+        )}
+      </View>
+    );
+    return _subtitle;
+  };
+
+  const _renderTitleSubtitle = () => {
+    const _titleSubtitle = (
+      <View
+        style={[styles.titleSubtitleContainer, titleSubtitleContainerStyle]}
+      >
+        {_renderTitle()}
+        {_renderSubtitle()}
+      </View>
+    );
+    return _titleSubtitle;
   };
 
   const _renderAction = () => {
@@ -64,7 +99,7 @@ const AppCard = ({
       {_renderAvatar()}
       <View style={[styles.bodyContainer, bodyContainerStyle]}>
         <View style={[styles.headerContainer, headerContainerStyle]}>
-          {_renderTitle()}
+          {_renderTitleSubtitle()}
           {_renderAction()}
         </View>
         {_renderContent()}
@@ -80,8 +115,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: appColors.lightBgTertiary,
     padding: appSpacing.screenPaddingLeft,
+    flex: 1,
   },
-  bodyContainer: {},
+  bodyContainer: {
+    flex: 1,
+  },
   contentContainer: {},
   headerContainer: {
     flexDirection: "row",
@@ -90,9 +128,26 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   titleContainer: {},
+  titleSubtitleContainer: {
+    justifyContent: "center",
+  },
+  title: {
+    color: appColors.themeColor,
+    fontSize: appSizes.Text.regular,
+    fontFamily: appFonts.medium,
+    textTransform: "capitalize",
+    ...appStyles.textLightShadow,
+  },
+  subtitle: {
+    color: appColors.lightTextTertiary,
+    fontSize: appSizes.Text.small,
+    fontFamily: appFonts.regular,
+    textTransform: "capitalize",
+    ...appStyles.textLightShadow,
+  },
+  subtitleContainer: {},
   avatarContainer: {
     alignItems: "center",
-    justifyContent: "flex-start",
   },
   actionContainer: {},
 });
