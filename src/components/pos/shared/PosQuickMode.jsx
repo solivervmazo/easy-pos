@@ -1,46 +1,43 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { appStyles } from "../../../themes";
-import { ChipButton } from "../../../ui";
+import { StyleSheet, View } from "react-native";
+import ModeButton from "../ui/ModeButton";
+import { ChipButton, SectionHeader } from "../../../ui";
 
-const PosQuickMode = ({ icon, label, onPress }) => {
+const PosQuickMode = ({ containerStyle = {} }) => {
   return (
-    <ChipButton
-      onPress={onPress}
-      containerStyle={styles.container}
-      innerContainerStyle={styles.innerContainer}
-      buttonLeft={({ Icon }) =>
-        Icon(icon, {
-          size: appSizes.Icon.large,
-          color: appColors.themeColor,
-          style: styles.icon,
-        })
-      }
-      label={label}
-      labelStyle={styles.label}
-    />
+    <View style={[styles.container, containerStyle]}>
+      <SectionHeader
+        title={"Earnings"}
+        renderTitle={({ TitleTextComponent, fontSize, color, title }) => (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TitleTextComponent
+              title={title}
+              fontSize={fontSize}
+              color={color}
+            />
+            <ChipButton
+              label={"Started"}
+              labelStyle={{ fontSize: appSizes.Text.xSmall }}
+              plain={true}
+            />
+          </View>
+        )}
+        containerStyle={{ paddingBottom: 12 }}
+      />
+      <View style={styles.contentContainer}>
+        <ModeButton icon={"PosScanMode"} label={"Camera"} />
+        <ModeButton icon={"PosManualMode"} label={"Search"} />
+        <ModeButton icon={"PosShortkeysMode"} label={"Shortkey"} />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: appColors.themeColorTertiary,
-    flexDirection: "column",
-    paddingVertical: 20,
-    borderRadius: 20,
+    paddingBottom: 20,
   },
-  innerContainer: {
-    width: "30%",
-  },
-  icon: {
-    fontWeight: "bold",
-  },
-  label: {
-    color: appColors.themeColor,
-    fontFamily: appFonts.bold,
-    fontSize: appSizes.Text.regular,
-    ...appStyles.textLightShadow,
-  },
+  contentContainer: { flexDirection: "row", justifyContent: "space-around" },
 });
 
 export default PosQuickMode;

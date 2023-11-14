@@ -10,7 +10,7 @@ import {
 import { Spacer, SectionHeader, ChipButton } from "../../../src/ui";
 import Icon from "../../../src/ui/core/Icon";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import PosQuickMode from "../../../src/components/pos/shared/PosQuickMode";
+import { PosQuickMode } from "../../../src/components/pos";
 const TR = [
   {
     id: 1,
@@ -281,29 +281,7 @@ const AnyQuickOpenCard = () => {
 const pos = () => {
   return (
     <View style={{ flex: 1, padding: appSpacing.screenPaddingLeft }}>
-      <SectionHeader
-        title={"Start Transaction"}
-        renderTitle={({ TitleTextComponent, fontSize, color }) => (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <TitleTextComponent
-              title={"Start Transaction"}
-              fontSize={fontSize}
-              color={color}
-            />
-            <ChipButton
-              label={"Started"}
-              labelStyle={{ fontSize: appSizes.Text.xSmall }}
-              plain={true}
-            />
-          </View>
-        )}
-        containerStyle={{ paddingBottom: 12 }}
-      />
-      <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-        <PosQuickMode icon={"PosScanMode"} label={"Scan"} />
-        <PosQuickMode icon={"PosManualMode"} label={"Search"} />
-        <PosQuickMode icon={"PosShortkeysMode"} label={"Shortkey"} />
-      </View>
+      <PosQuickMode />
       <SectionHeader
         title={"Recent Transaction"}
         btnText={"See all"}

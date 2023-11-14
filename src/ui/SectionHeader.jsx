@@ -20,7 +20,7 @@ const TitleText = ({ title, fontSize, color }) => {
 
 const SectionHeader = ({
   title,
-  renderTitle = ({ TitleTextComponent, fontSize, color }) => null,
+  renderTitle = ({ TitleTextComponent, fontSize, color, title }) => null,
   color = appColors.darkText,
   titleColor,
   size = appSizes.Text.regular,
@@ -44,6 +44,7 @@ const SectionHeader = ({
           TitleTextComponent: TitleText,
           fontSize: titleSize || size,
           color: titleColor || color,
+          title,
         })
       ) : (
         <TitleText
