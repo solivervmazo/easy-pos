@@ -1,8 +1,7 @@
 import React from "react";
-import { ItemsScreen } from "../../../../src/screens";
-
+import ItemsDrawerLayout from "../../../../src/components/items/layouts/ItemsDrawerLayout";
 const _layout = () => {
-  return <ItemsScreen />;
+  return <ItemsDrawerLayout />;
 };
 
 export default _layout;

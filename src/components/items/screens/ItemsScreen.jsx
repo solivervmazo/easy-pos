@@ -1,8 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { IconButton, Spacer, AppTable, ChipButton } from "../../ui";
-import { appColors, appFonts, appSizes, appStyles } from "../../themes";
-import ItemRow from "./ui/ItemRow";
+import { IconButton, Spacer, AppTable, ChipButton } from "../../../ui";
+import { appColors, appFonts, appSizes, appStyles } from "../../../themes";
+import ItemRow from "../ui/ItemRow";
+import { useStackRoutes, replaceSlugs } from "../../../routes";
+import { useRouter } from "expo-router";
 const ITEMS = new Array(10).fill({}).map((item, index) => {
   return {
     id: index + 1,
@@ -23,7 +25,13 @@ const ITEMS = new Array(10).fill({}).map((item, index) => {
   };
 });
 
-const Items = () => {
+const ItemsScreen = () => {
+  const router = useRouter();
+  const routes = useStackRoutes();
+  const navigateDetailHandle = (id, params = {}) => {
+    const _routePath = replaceSlugs(routes["items-detail"], [id]);
+    router.push(_routePath);
+  };
   return (
     <AppTable
       itemsLength={200}
@@ -63,6 +71,7 @@ const Items = () => {
         calendarIcon: "",
         renderHeaderActions: () => (
           <ChipButton
+            onPress={navigateDetailHandle}
             buttonLeft={() => (
               <IconButton
                 disabled
@@ -84,4 +93,4 @@ const Items = () => {
 
 const styles = StyleSheet.create({});
 
-export default Items;
+export default ItemsScreen;

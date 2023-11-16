@@ -114,24 +114,21 @@ export const useRoutes = () => {
 
 export const useDrawerRoutes = () => {
   return routes.drawer;
-  let _routes = [];
-  const pushRoute = (root = false, route) => {
-    if (route?.types?.includes("drawer")) {
-      _routes.push({
-        ...route,
-        path: (root || "") + route.path,
-      });
-    }
-  };
-  routes.forEach((route) => {
-    pushRoute(route.root, route);
-    if (route.children) {
-      route.children.forEach((child) => {
-        pushRoute(route.root, child);
-      });
-    }
+};
+
+export const useStackRoutes = () => {
+  return routes.stack;
+};
+
+export const replaceSlugs = (route, slugs = []) => {
+  if (!route) return "/";
+  const { path, slugs: routeSlugs = [] } = route;
+  if (!routeSlugs) return path;
+  let _path = path;
+  routeSlugs.forEach((_slug, _index) => {
+    _path.replace(`[${_slug}]`, slugs[_index]);
   });
-  return _routes;
+  return _path;
 };
 
 export { routes };

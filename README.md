@@ -32,13 +32,12 @@
 │   ├───components
 │   │   ├───*modules
 │   │   │   ├───ui
-│   │   │   ├───*shared
-│   │   │   ├───*sub screens modules
+│   │   │   ├───shared
 │   │   │   ├───index.jsx
 │   ├───routes
 │   │   ├───index.jsx
 │   │   ├───routes.jsx
-│   ├───screens
+│   ├───screens  - TBR!!
 │   │   ├───index.jsx
 │   │   ├───*ScreenComponents
 │   ├───themes
@@ -59,7 +58,7 @@
 
 - /app/*modules
     Uses Stack Navigation otherwise (drawer)
-    ***Note:*** *Use ScreensComponents from **src/screens/** in each _layout.jsx .*
+    ***Note:*** *Use ScreensComponents from **src/components/\*modules/** in each _layout.jsx .*
 
 - /app/(drawer)/(*drawer route)
     Completely unrelated to modules, you can set drawer routes in *src/routes/routes.jsx*.
@@ -80,14 +79,16 @@
     Modular components.
 
 - /src/components/*modules
-    ***/ui/\**** *- 1st layer components inside for module-specific. non shareable*
-    ***/shared/\**** *- 2nd layer components inside for module-specific, import in index.jsx*
-    ***Note:*** *folder name should be the same with intended main screen for module. e.g: scr/components/module-name/ModuleName.jsx . Specifiy otherwhise*
+    ***/index.js*** - Use imports for shareable components
+    ***/screens/\*.jsx*** - Use direct import when used
+    ***/layouts/\*.jsx*** - To be strictly used in _layout.jsx, use direct import when used
+    ***/ui/\*.jsx*** *- 1st layer components inside for module-specific. non shareable*
+    ***/shared/\*.jsx*** *- 2nd layer components inside for module-specific, import in index.jsx*
 
 - /src/routes
     Define your routes drawer and stack routes
 
-- /src/screens
+- /src/screens - TBR!!
     ***Screens should only be used in _layouts.jsx***
 
 - /src/themes

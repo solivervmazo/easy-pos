@@ -18,7 +18,6 @@ const drawer = {
       routeOptions: {
         head: true,
         key: "store",
-        initialScreen: "(store)/items",
       },
       drawerLabel: "Store",
       title: "Store",
@@ -51,6 +50,18 @@ const drawer = {
 };
 
 const stack = {
+  "items-detail": {
+    path: "items/[$id]",
+    slugs: ["$id"],
+    options: {
+      routeOptions: {
+        key: "store-pos-manual",
+        icon: "Pos",
+      },
+      drawerLabel: "Point of sale",
+      title: "Point of sale",
+    },
+  },
   "store-pos-manual": {
     path: "pos/manual-mode",
     options: {

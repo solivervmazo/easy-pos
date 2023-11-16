@@ -1,8 +1,7 @@
 import React from "react";
-import { Items } from "../../../../src/components/items/";
-
+import ItemsScreen from "../../../../src/components/items/screens/ItemsScreen";
 const items = () => {
-  return <Items />;
+  return <ItemsScreen />;
 };
 
 export default items;
