@@ -25,8 +25,8 @@ const PosQuickMode = ({ containerStyle = {} }) => {
         containerStyle={{ paddingBottom: 12 }}
       />
       <View style={styles.contentContainer}>
-        <ModeButton icon={"PosScanMode"} label={"Camera"} />
         <ModeButton icon={"PosManualMode"} label={"Search"} />
+        <ModeButton icon={"PosScanMode"} label={"Camera"} />
         <ModeButton icon={"PosShortkeysMode"} label={"Shortkey"} />
       </View>
     </View>

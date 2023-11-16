@@ -346,6 +346,11 @@ const Unit = (props) => {
   return icon.feather("sliders", "sliders");
 };
 
+const Wallet = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("wallet-outline", "wallet");
+};
+
 const Warehouse = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("storefront-outline", "storefront");
@@ -407,6 +412,7 @@ const Icon = {
   Tap,
   Tv, //
   Unit,
+  Wallet,
   Warehouse, //
   Wifi, //
 };

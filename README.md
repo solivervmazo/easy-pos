@@ -6,6 +6,11 @@
 
     On-Going
 
+# Tech
+
+    React-Expo
+
+
 # File structure
 
 ```
