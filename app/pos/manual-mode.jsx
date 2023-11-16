@@ -4,11 +4,10 @@ import { IconButton, SectionHeader } from "../../src/ui";
 import { appColors, appSizes, appSpacing } from "../../src/themes";
 import { PosSearchBar, PosSearchResult } from "../../src/components/pos";
 
-const SearchMode = () => {
+const ManualMode = () => {
   const itemInputRef = useRef();
   const [keyboardOff, setKeyboardOff] = useState(false);
   const toggleKeyboardHandle = useCallback(() => {
-    console.log(keyboardOff);
     if (!keyboardOff) {
       Keyboard.dismiss();
     }
@@ -29,6 +28,6 @@ const SearchMode = () => {
   );
 };
 
-export default SearchMode;
+export default ManualMode;
 
 const styles = StyleSheet.create({});

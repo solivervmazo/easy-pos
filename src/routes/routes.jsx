@@ -50,7 +50,19 @@ const drawer = {
   },
 };
 
-const stack = {};
+const stack = {
+  "store-pos-manual": {
+    path: "pos/manual-mode",
+    options: {
+      routeOptions: {
+        key: "store-pos-manual",
+        icon: "Pos",
+      },
+      drawerLabel: "Point of sale",
+      title: "Point of sale",
+    },
+  },
+};
 
 export default routes = {
   drawer,

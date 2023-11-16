@@ -4,12 +4,14 @@ import { Slot, Stack, useRouter } from "expo-router";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { appColors, appSizes, appSpacing } from "../themes";
 import { ChipButton, IconButton, SectionHeader } from "../ui";
+import routes from "../routes/routes";
 
 const ScreenHeader = () => {
+  const { drawer: drawerRoutes } = routes;
   const router = useRouter();
   const handleBack = () => {
     (router.canGoBack() && router.back()) ||
-      router.replace("/(drawer)/(home)/home");
+      router.replace(drawerRoutes["store-pos"]);
   };
   return (
     <Stack.Screen
