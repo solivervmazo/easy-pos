@@ -1,10 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
-import { StyleSheet, View, Animated } from "react-native";
-import { appColors, appSizes, appSpacing } from "../../themes";
+import { StyleSheet, View } from "react-native";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
-import SectionHeader from "../SectionHeader";
 import TablePagination from "./TablePagination";
 
 const AppTable = ({
@@ -19,6 +17,17 @@ const AppTable = ({
   itemsLength = 0,
   itemsPerPage = 10,
   hasHeader = true,
+  headerOptions = {
+    calendarIcon: "Calendar", // set null to disable
+    filterIcon: "Filters", // set null to disable
+    refreshIcon: "Refresh", // set null to disable
+    onDateFilterPress: () => undefined,
+    onFilterPress: () => {},
+    onRefreshPress: () => {},
+    renderHeaderActions: () => undefined,
+    dateFilterLabel: "All",
+    actionsContainerStyle: {},
+  },
 }) => {
   const [rowToggled, setRowToggled] = useState(false);
   const _onRowToggle = useCallback(
@@ -30,7 +39,7 @@ const AppTable = ({
   );
   return (
     <View style={{ flex: 1 }}>
-      {hasHeader && <TableHeader />}
+      {hasHeader && <TableHeader {...headerOptions} />}
       <FlatList
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ ...tableContainerStyle }}

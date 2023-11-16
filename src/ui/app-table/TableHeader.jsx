@@ -1,111 +1,107 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { appColors, appSpacing, appSizes, appFonts } from "../../themes";
+import { StyleSheet, View } from "react-native";
+import { appColors, appSizes } from "../../themes";
 import IconButton from "../IconButton";
 import ChipButton from "../ChipButton";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { Link, router } from "expo-router";
-const TableHeader = () => {
-  const dateToday = new Date();
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
+const TableHeader = ({
+  calendarIcon = "Calendar", // set null to disable
+  filterIcon = "Filters", // set null to disable
+  refreshIcon = "Refresh", // set null to disable
+  onDateFilterPress = () => undefined,
+  onFilterPress = () => {},
+  onRefreshPress = () => {},
+  renderHeaderActions = () => undefined,
+  dateFilterLabel = "All",
+  actionsContainerStyle = {},
+}) => {
+  const onShowDateFilterHandle = () => {
+    // router.push({ pathname: "items/filterDate" });
+    onDateFilterPress();
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
+  const onRefreshHandle = () => {
+    onRefreshPress();
   };
 
-  const showDatepicker = () => {
-    // showMode("date");
-    router.push({ pathname: "items/filterDate" });
+  const onFilterHandle = () => {
+    onFilterPress();
+  };
+
+  const _renderHeaderActions = () => {
+    const _rendered = renderHeaderActions();
+    return _rendered || null;
   };
 
   return (
-    <View
-      style={{
-        paddingHorizontal: 7,
-        flexDirection: "row",
-        paddingVertical: 8,
-      }}
-    >
-      <View
-        style={{
-          flexGrow: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <IconButton icon={"Refresh"} size={appSizes.Icon.large} />
-        <ChipButton
-          buttonLeft={() => (
-            <IconButton
-              disabled
-              icon={"Add"}
-              size={appSizes.Icon.medium}
-              containerStyle={{ backgroundColor: appColors.lightBackground }}
-            />
-          )}
-          label={"Add"}
-          containerStyle={{
-            borderRadius: appSizes.Icon.large,
-          }}
-        />
+    <View style={[styles.headerContainer]}>
+      <View style={[styles.mainActionsContainer]}>
+        {refreshIcon && (
+          <IconButton
+            icon={refreshIcon}
+            size={appSizes.Icon.large}
+            onPress={onRefreshHandle}
+          />
+        )}
+        <View style={[styles.mainActionsContainer, actionsContainerStyle]}>
+          {_renderHeaderActions()}
+        </View>
       </View>
-      <View
-        style={{
-          flexShrink: 0,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10,
-        }}
-      >
-        <ChipButton
-          onPress={showDatepicker}
-          buttonRight={() => (
-            <IconButton
-              disabled
-              icon={"Calendar"}
-              size={appSizes.Icon.medium}
-              containerStyle={{ backgroundColor: appColors.lightBackground }}
-            />
-          )}
-          label={
-            dateToday.toDateString() == date.toDateString()
-              ? "Today"
-              : date.toLocaleDateString()
-          }
-          containerStyle={{
-            borderRadius: appSizes.Icon.large,
-            backgroundColor: appColors.lightBgTertiary,
-          }}
-          labelStyle={{
-            color: appColors.darkText,
-          }}
-        />
-        <IconButton icon={"Filters"} size={appSizes.Icon.large} />
+      <View style={styles.subActionsContainer}>
+        {calendarIcon && (
+          <ChipButton
+            onPress={onShowDateFilterHandle}
+            buttonRight={() => (
+              <IconButton
+                disabled
+                icon={"Calendar"}
+                size={appSizes.Icon.medium}
+                containerStyle={[styles.dateRangeFilterIconContainer]}
+              />
+            )}
+            label={dateFilterLabel}
+            containerStyle={[styles.dateRangeFilterChipContainer]}
+            labelStyle={[styles.dateRangeFilterLabel]}
+          />
+        )}
+        {filterIcon && (
+          <IconButton
+            icon={filterIcon}
+            size={appSizes.Icon.large}
+            onPress={onFilterHandle}
+          />
+        )}
       </View>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          onChange={onChange}
-        />
-      )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  headerContainer: {
+    paddingHorizontal: 7,
+    flexDirection: "row",
+    paddingVertical: 8,
+  },
+  mainActionsContainer: {
+    flexGrow: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  subActionsContainer: {
+    flexShrink: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  dateRangeFilterIconContainer: { backgroundColor: appColors.lightBackground },
+  dateRangeFilterChipContainer: {
+    borderRadius: appSizes.Icon.large,
+    backgroundColor: appColors.lightBgTertiary,
+  },
+  dateRangeFilterLabel: {
+    color: appColors.darkText,
+  },
+});
 
 export default TableHeader;

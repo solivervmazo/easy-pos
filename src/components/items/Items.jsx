@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { IconButton, Spacer, AppTable } from "../../ui";
+import { IconButton, Spacer, AppTable, ChipButton } from "../../ui";
 import { appColors, appFonts, appSizes, appStyles } from "../../themes";
 import ItemRow from "./ui/ItemRow";
 const ITEMS = new Array(10).fill({}).map((item, index) => {
@@ -58,6 +58,25 @@ const Items = () => {
       keyExtractor={(item) => item.id}
       tableContainerStyle={{
         paddingVertical: 5,
+      }}
+      headerOptions={{
+        calendarIcon: "",
+        renderHeaderActions: () => (
+          <ChipButton
+            buttonLeft={() => (
+              <IconButton
+                disabled
+                icon={"Add"}
+                size={appSizes.Icon.medium}
+                containerStyle={{ backgroundColor: appColors.lightBackground }}
+              />
+            )}
+            label={"Add"}
+            containerStyle={{
+              borderRadius: appSizes.Icon.large,
+            }}
+          />
+        ),
       }}
     />
   );
