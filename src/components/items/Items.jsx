@@ -1,16 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { IconButton, Spacer, AppTable } from "../../ui";
-import {
-  appColors,
-  appConstants,
-  appFonts,
-  appSizes,
-  appStyles,
-} from "../../themes";
-import { FlatList } from "react-native-gesture-handler";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
+import { appColors, appFonts, appSizes, appStyles } from "../../themes";
+import ItemRow from "./ui/ItemRow";
 const ITEMS = new Array(10).fill({}).map((item, index) => {
   return {
     id: index + 1,
@@ -30,89 +22,6 @@ const ITEMS = new Array(10).fill({}).map((item, index) => {
     ].splice(Math.floor(Math.random() * 6), Math.random() * 6 + 5),
   };
 });
-
-const ItemRow = ({ item }) => {
-  const { itemName, itemNumber, price, categories } = item;
-  return (
-    <>
-      <View style={{ flex: 1, padding: 10 }}>
-        <Text
-          numberOfLines={1}
-          ellipsizeMode={"tail"}
-          style={{
-            color: appColors.themeColor,
-            fontSize: appSizes.Text.regular,
-            fontFamily: appFonts.medium,
-            textTransform: "capitalize",
-            ...appStyles.textLightShadow,
-          }}
-        >
-          {itemName}
-        </Text>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <IconButton icon={"Tags"} disabled={true} />
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            data={categories}
-            horizontal
-            renderItem={({ item: category }) => (
-              <Text
-                style={{
-                  color: appColors.lightTextTertiary,
-                  fontSize: appSizes.Text.small,
-                  fontFamily: appFonts.regular,
-                  textTransform: "capitalize",
-                  ...appStyles.textLightShadow,
-                }}
-              >
-                {category}
-              </Text>
-            )}
-            keyExtractor={(item) => item}
-            ItemSeparatorComponent={() => <Text>{` | `}</Text>}
-            ListFooterComponentStyle
-          />
-        </View>
-      </View>
-      <View
-        style={{
-          justifyContent: "flex-end",
-          alignItems: "flex-end",
-          padding: 10,
-        }}
-      >
-        <Text
-          style={{
-            color: appColors.lightSuccess,
-            fontSize: appSizes.Text.regular,
-            fontFamily: appFonts.bold,
-            textTransform: "capitalize",
-            ...appStyles.textLightShadow,
-          }}
-        >
-          $ {price}
-        </Text>
-        <Text
-          style={{
-            color: appColors.lightTextTertiary,
-            fontSize: appSizes.Text.small,
-            fontFamily: appFonts.regular,
-            textTransform: "capitalize",
-            ...appStyles.textLightShadow,
-          }}
-        >
-          #{itemNumber}
-        </Text>
-      </View>
-    </>
-  );
-};
 
 const Items = () => {
   return (
