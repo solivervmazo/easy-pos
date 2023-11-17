@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Slot, Stack, useRouter } from "expo-router";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { appColors, appSizes, appSpacing } from "../themes";
-import { ChipButton, IconButton, SectionHeader } from "../ui";
-import routes from "../routes/routes";
+import { appColors, appSizes, appSpacing } from "../../../themes";
+import { ChipButton, IconButton, SectionHeader } from "../../../ui";
+import { routes } from "../../../routes";
 
 const ScreenHeader = () => {
   const { drawer: drawerRoutes } = routes;
@@ -56,7 +56,7 @@ const ScreenHeader = () => {
   );
 };
 
-const PosScreen = () => {
+const PosStackLayout = () => {
   const bsHeaderHeight = 80;
   const bsFooterHeight = 30;
   const bottomSheetRef = useRef();
@@ -206,4 +206,4 @@ const PosScreen = () => {
 };
 
 const styles = StyleSheet.create({});
-export default PosScreen;
+export default PosStackLayout;

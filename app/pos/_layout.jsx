@@ -1,13 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { PosScreen } from "../../src/screens";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { appStyles } from "../../src/themes";
+import PosStackLayout from "../../src/components/pos/layouts/PosStackLayout";
 
 const _layout = () => {
-  return <PosScreen />;
+  return <PosStackLayout />;
 };
-
-const styles = StyleSheet.create({});
 
 export default _layout;

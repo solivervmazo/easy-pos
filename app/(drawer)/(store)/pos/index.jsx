@@ -1,11 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { PosDashboard } from "../../../../src/components/pos/";
-
+import PosDashboardScreen from "../../../../src/components/pos/screens/PosDashboardScreen";
 const Pos = () => {
-  return <PosDashboard />;
+  return <PosDashboardScreen />;
 };
-
-const styles = StyleSheet.create({});
 
 export default Pos;

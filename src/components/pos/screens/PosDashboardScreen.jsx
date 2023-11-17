@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import PosQuickMode from "./shared/PosQuickMode";
-import PosEarnings from "./shared/PosEarnings";
-import PosSessions from "./shared/PosSessions";
+import { StyleSheet, View } from "react-native";
+import PosQuickMode from "../shared/PosQuickMode";
+import PosEarnings from "../shared/PosEarnings";
+import PosSessions from "../shared/PosSessions";
 import { ScrollView } from "react-native-gesture-handler";
-const PosDashboard = () => {
+const PosDashboardScreen = () => {
   return (
     <View style={styles.container}>
       <PosQuickMode />
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: appSpacing.screenPaddingLeft },
 });
 
-export default PosDashboard;
+export default PosDashboardScreen;

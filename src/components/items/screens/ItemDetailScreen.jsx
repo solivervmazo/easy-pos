@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 const ItemDetailScreen = () => {
   return (
@@ -9,6 +9,6 @@ const ItemDetailScreen = () => {
   );
 };
 
-export default ItemDetailScreen;
-
 const styles = StyleSheet.create({});
+
+export default ItemDetailScreen;

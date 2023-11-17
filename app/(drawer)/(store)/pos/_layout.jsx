@@ -1,11 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { PosHomeScreen } from "../../../../src/screens";
+import PosDrawerLayout from "../../../../src/components/pos/layouts/PosDrawerLayout";
 
 const _layout = () => {
-  return <PosHomeScreen />;
+  return <PosDrawerLayout />;
 };
-
-const styles = StyleSheet.create({});
 
 export default _layout;

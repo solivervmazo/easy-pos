@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { appColors } from "../themes";
+import { StyleSheet, View } from "react-native";
+import { appColors } from "../../../themes";
 import { Slot } from "expo-router";
 
-const PosHomeScreen = () => {
+const PosDrawerLayout = () => {
   return (
     <View
       style={{
@@ -18,4 +18,4 @@ const PosHomeScreen = () => {
 
 const styles = StyleSheet.create({});
 
-export default PosHomeScreen;
+export default PosDrawerLayout;
