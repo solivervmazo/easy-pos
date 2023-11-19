@@ -1,27 +1,25 @@
-import { Slot, Stack } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { appColors } from "../../../themes";
 
-const ScreenHeader = () => {
-  return (
-    <Stack.Screen
-      options={{
-        headerTitle: "",
-        headerShown: true,
-      }}
-    />
-  );
-};
+const ScreenHeader = () => <Stack.Screen options={{}} />;
 
 const ItemsStackLayout = () => {
   return (
-    <View style={{ flex: 1 }}>
-      <ScreenHeader />
-      <Slot />
-    </View>
+    <>
+      <Stack
+        screenOptions={{
+          title: "Items",
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: appColors.themeColor,
+          },
+          headerTintColor: appColors.lightText,
+        }}
+      />
+    </>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default ItemsStackLayout;

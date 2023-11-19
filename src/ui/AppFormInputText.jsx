@@ -12,6 +12,7 @@ const AppFormInputText = ({
   required = false,
   enabled = true,
   inputMode = "text",
+  multiline = false,
   placeholder = "",
   renderAction = ({ inputRef }) => undefined,
   onValidate = ({ inputValue, errorMessages = [] }) => {},
@@ -19,8 +20,9 @@ const AppFormInputText = ({
   innerContainerStyle = {},
   labelStyle = {},
   inputContainerStyle = {},
-  inputStylye = {},
+  inputStyle = {},
   errorTextStyle = {},
+  labelContainerStyle = {},
   onFocus = ({ defaultLineColor, focusedLineColor }) => undefined,
   onBlur = ({ defaultLineColor, focusedLineColor }) => undefined,
   focusedLineColor = appColors.themeColor,
@@ -83,8 +85,19 @@ const AppFormInputText = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.innerContainer, innerContainerStyle]}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 2,
+          }}
+        >
+          <View
+            style={[
+              { flex: 1, flexDirection: "row", alignItems: "center" },
+              labelContainerStyle,
+            ]}
+          >
             {_icon()}
             <Text style={[styles.label, labelStyle]}>
               {label}
@@ -99,11 +112,17 @@ const AppFormInputText = ({
             editable={enabled}
             onFocus={_onFocus}
             onBlur={_onBlur}
+            multiline={multiline}
             cursorColor={appColors.black}
             style={[
               styles.input,
-              inputStylye,
-              { borderColor: _inputBorderColor },
+              inputStyle,
+              {
+                borderColor: _inputBorderColor,
+                backgroundColor: enabled
+                  ? undefined
+                  : appColors.lightBgTertiary,
+              },
             ]}
             inputMode={inputMode}
             placeholder={placeholder}
@@ -116,7 +135,6 @@ const AppFormInputText = ({
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
   innerContainerStyle: {
     paddingVertical: 10,
     borderRadius: appSizes.Text.regular,

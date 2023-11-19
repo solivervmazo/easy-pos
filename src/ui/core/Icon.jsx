@@ -117,6 +117,11 @@ const Bank = (props) => {
   return icon.materialicons2("bank", "bank");
 };
 
+const Barcode = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("barcode", "barcode");
+};
+
 const Bed = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("bed-outline", "bed-sharp");
@@ -160,6 +165,11 @@ const CursorText = (props) => {
 const Dial = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("phone-dial", "phone-dial-outline");
+};
+
+const Down = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("down", "down");
 };
 
 const Filters = (props) => {
@@ -371,8 +381,10 @@ const Icon = {
   Add,
   Back, //
   Bank,
+  Barcode,
   Bed, //
   Dial, //
+  Down,
   Car, //
   Calculator,
   Calendar,

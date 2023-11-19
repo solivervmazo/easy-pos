@@ -16,6 +16,7 @@ import AppDaterangePicker from "./app-daterange-picker/AppDaterangePicker";
 import AppCard from "./AppCard";
 import AppSearchInput from "./AppSearchInput";
 import AppFormInputText from "./AppFormInputText";
+import AppSelectPicker from "./app-select-picker/AppSelectPicker";
 
 export { Icon, Spacer, Divider };
 export {
@@ -31,4 +32,5 @@ export {
   AppCard,
   AppSearchInput,
   AppFormInputText,
+  AppSelectPicker,
 };

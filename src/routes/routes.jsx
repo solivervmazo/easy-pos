@@ -61,7 +61,17 @@ const stack = {
       drawerLabel: "Point of sale",
       title: "Point of sale",
     },
+    modals: {
+      "detail-select-category": {
+        path: "items/select-category",
+        options: {
+          drawerLabel: "Point of sale",
+          title: "Point of sale",
+        },
+      },
+    },
   },
+
   "store-pos-manual": {
     path: "pos/manual-mode",
     options: {
