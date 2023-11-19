@@ -152,6 +152,11 @@ const Close = (props) => {
   return icon.materialicons("close", "close");
 };
 
+const CursorText = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("cursor-text", "cursor-text");
+};
+
 const Dial = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("phone-dial", "phone-dial-outline");
@@ -374,6 +379,7 @@ const Icon = {
   ChevLeft,
   ChevRight,
   Close,
+  CursorText,
   Heart, //
   Home,
   Info,
