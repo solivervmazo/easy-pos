@@ -42,9 +42,12 @@ const ItemSelectCategory = () => {
         <AppSelectPicker
           items={CATS}
           value={[2]}
-          multiple={false}
+          multiple={true}
           itemKey={"id"}
           itemLabel={"label"}
+          canSearch={true}
+          showRecents={true}
+          appendType="chip"
         />
       </View>
     </>

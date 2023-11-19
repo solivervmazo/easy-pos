@@ -9,16 +9,16 @@ const RenderAsText = ({ items }) => {
   );
 };
 
-const RenderAsChip = ({ items, onPress = ({ index }) => {} }) => {
+const RenderAsChip = ({ items, onPress = ({ itemKeyIndex }) => {} }) => {
   return (
     <>
-      {items.map((item, index) => (
+      {items.map((item) => (
         <ChipButton
-          label={item}
-          key={`selected-category-chip-${item}`}
+          label={item._$label}
+          key={`selected-category-chip-${item._$key}`}
           buttonRight={() => (
             <IconButton
-              onPress={() => onPress({ index })}
+              onPress={() => onPress({ itemKeyIndex: item._$key })}
               containerStyle={{
                 backgroundColor: appColors.lightBgSecondary,
               }}
@@ -34,12 +34,15 @@ const RenderAsChip = ({ items, onPress = ({ index }) => {} }) => {
 const SelectedItem = ({
   items,
   renderType = "text",
-  chipClose = ({ index }) => {},
+  chipClose = ({ itemKeyIndex }) => {},
 }) => {
   return renderType === "text" ? (
-    <RenderAsText items={items} />
+    <RenderAsText items={Object.assign([], items).map((obj) => obj._$label)} />
   ) : (
-    <RenderAsChip items={items} onPress={({ index }) => chipClose({ index })} />
+    <RenderAsChip
+      items={items}
+      onPress={({ itemKeyIndex }) => chipClose({ itemKeyIndex })}
+    />
   );
 };
 

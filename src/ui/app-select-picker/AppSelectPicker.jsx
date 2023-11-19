@@ -5,6 +5,9 @@ import { appColors, appConstants, appSizes, appSpacing } from "../../themes";
 import IconButton from "../IconButton";
 import RecentSearchItem from "./RecentSearchItem";
 import SelectedItem from "./SelectedItem";
+import SearchResultItem from "./SearchResultItem";
+import SectionHeader from "../SectionHeader";
+import * as _$picker from "./utils/utils";
 const SEARCH_HIST = [
   "salt",
   "pepper",
@@ -15,12 +18,6 @@ const SEARCH_HIST = [
   "mint",
 ];
 
-const _recentSearchStrategy = (searchValue = "", limit = 0) => {
-  return SEARCH_HIST.filter((item) => item.includes(searchValue)).filter(
-    (_, index) => index < limit
-  );
-};
-
 const AppSelectPicker = ({
   searchValue = "",
   value = null,
@@ -28,19 +25,21 @@ const AppSelectPicker = ({
   returnValue,
   itemLabel,
   itemKey = false,
-  searchKey = false,
   loading = false,
   multiple = false,
   placeholder = "Start typing",
   containerStyle = {},
-  inputContainerStyle = {},
+  searchInputContainerStyle = {},
   inputStyle = {},
   appendType = "text", //chip, text
+  showRecents = true,
+  canSearch = true,
   onClear = ({ searchValue }) => {},
   recentSearchCount = 3, // set 0 to disable
   renderClearButton = ({ onClear = ({ searchValue }) => {} }) => {
     /** set null to disable */
   },
+  renderSearchItem = ({ item }) => undefined,
   renderRecentItem = ({ item }) => undefined,
   searchStrategy = null,
 }) => {
@@ -54,8 +53,14 @@ const AppSelectPicker = ({
     setFocused(true);
     setSearchValue(value);
     setRecentSearchValue(
-      _recentSearchStrategy(_searchValue, recentSearchCount)
+      _$picker._$recentFilterStrategy(
+        SEARCH_HIST,
+        _searchValue,
+        recentSearchCount
+      )
     );
+    const filtered = _$picker._$searchStrategy(searchResults, value);
+    setSearchResults(filtered);
   };
 
   const _onClearHandle = () => {
@@ -76,59 +81,37 @@ const AppSelectPicker = ({
     setFocused(false);
   };
 
-  const _onClearSelection = () => {
-    setSelection(null);
+  const _onItemToggleHandle = ({ itemKeyIndex }) => {
+    _$select({ itemKeyIndex });
   };
 
-  const _onRemoveSelectedHandle = ({ index }) => {
-    if (!_selection) return;
-    const _alteredSelection = _selection;
-    delete _alteredSelection[index];
-    setSelection(_alteredSelection.filter((_selected) => _selected));
+  const _onClearSelectionHandle = () => {
+    _$reset([]);
   };
 
-  const _searchStrategy = ({ haystack = [] }) => {
-    let _results = null;
-    if (searchStrategy === null) {
-      _results = haystack.filter((needle) =>
-        (searchKey ? needle[searchKey] : needle).includes(searchValue)
-      );
-    }
-    _results = returnValue
-      ? _results.map((_result) => _result[returnValue])
-      : _results;
+  const _onRemoveSelectionHandle = ({ itemKeyIndex }) => {
+    _$select({ itemKeyIndex });
+  };
 
-    // setSelection(_results)
+  const _$select = ({ itemKeyIndex }) => {
+    const selected = _$picker._$selection(
+      searchResults,
+      itemKeyIndex,
+      multiple
+    );
+    setSearchResults(selected);
+    setSelection(_$picker._$filter(selected));
+  };
+
+  const _$reset = (selectedValue = []) => {
+    const preselected = _$picker._$init(selectedValue, items, itemKey);
+    setSearchResults(preselected);
+    setSelection(_$picker._$filter(preselected));
   };
 
   useEffect(() => {
-    const compareByKey = (val, key, items) => {
-      const _found = items.find((obj) => (obj?.[key] || obj) == val[key]);
-
-      return _found === undefined || _found === null || _found < 0
-        ? false
-        : true;
-    };
-    const compareByValue = (val, items) => {
-      return items.find((obj) => obj == val) || false;
-    };
-    // TODO: Clean logic for multiple and single selection
-    const _values = (Array.isArray(value) ? value : [value]) || [];
-    const _selected = multiple
-      ? items.map((item) => ({
-          ...item,
-          _$selected: itemKey
-            ? compareByKey(item, itemKey, _values)
-            : compareByValue(item, _values),
-        }))
-      : items.map((item) => ({
-          ...item,
-          _$selected: itemKey
-            ? compareByKey(item, itemKey, _values)
-            : compareByValue(item, _values),
-        })) || [];
-    setSelection(_selected.filter((_selected) => _selected._$selected));
-  }, [value]);
+    _$reset(value);
+  }, []);
 
   const _renderClearButton = () => {
     const _rendered = renderClearButton({ onClear: _onClearHandle });
@@ -157,18 +140,58 @@ const AppSelectPicker = ({
       return _renderedRecentItem;
     };
     return (
+      <>
+        <SectionHeader
+          title={"Recent search"}
+          containerStyle={{
+            paddingHorizontal: appSpacing.screenPaddingLeft - 5,
+            paddingVertical: 10,
+          }}
+          titleColor={appColors.darkTextTertiary}
+          size={appSizes.Text.semiRegular}
+        />
+        <View style={{}}>
+          {_recentSearchValue.map((item, index) => (
+            <_renderedItem key={`search-reacent-words-${index}`} item={item} />
+          ))}
+          {loading && (
+            <Text style={{ textAlign: "center", padding: 5 }}>Loading</Text>
+          )}
+        </View>
+      </>
+    );
+  };
+
+  const _renderSearhResults = () => {
+    const _renderedItem = ({ item, selected }) => {
+      const _renderedSearchItem = renderSearchItem({ item });
+      if (_renderedSearchItem === undefined)
+        return (
+          <SearchResultItem
+            itemKeyIndex={item._$key}
+            item={item}
+            itemKey={itemKey}
+            itemLabel={itemLabel}
+            selected={item?._$selected}
+            onTogglePress={_onItemToggleHandle}
+            multiple={multiple}
+          />
+        );
+      return _renderedSearchItem;
+    };
+    return (
       <View style={{}}>
-        {_recentSearchValue.map((item, index) => (
-          <_renderedItem key={`search-reacent-words-${index}`} item={item} />
-        ))}
+        {searchResults
+          .filter((item) => item._$visible)
+          .map((item, index) => (
+            <_renderedItem key={`search-results-item-${index}`} item={item} />
+          ))}
         {loading && (
           <Text style={{ textAlign: "center", padding: 5 }}>Loading</Text>
         )}
       </View>
     );
   };
-
-  const _renderSearhItem = ({ item }) => {};
 
   const _renderSelectedItem = () => {
     return (
@@ -180,21 +203,26 @@ const AppSelectPicker = ({
           gap: 10,
           alignItems: "center",
           flexWrap: "wrap",
+          borderBottomWidth: 1,
+          borderColor: appColors.themeColor,
         }}
       >
         <IconButton
-          onPress={_onClearSelection}
+          onPress={_onClearSelectionHandle}
           containerStyle={{
             backgroundColor: appColors.lightBgSecondary,
           }}
           icon={"Close"}
         />
         <SelectedItem
-          items={_selection.map((_item) =>
-            itemLabel ? _item[itemLabel] : _item
-          )}
-          renderType="chip"
-          chipClose={({ index }) => _onRemoveSelectedHandle({ index })}
+          items={_selection.map((_item) => ({
+            _$key: _item._$key,
+            _$label: itemLabel ? _item[itemLabel] : _item,
+          }))}
+          renderType={appendType}
+          chipClose={({ itemKeyIndex }) =>
+            _onRemoveSelectionHandle({ itemKeyIndex })
+          }
         />
       </View>
     );
@@ -202,18 +230,20 @@ const AppSelectPicker = ({
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <View style={[styles.inputContainer, inputContainerStyle]}>
-        <TextInput
-          value={_searchValue}
-          placeholder={placeholder}
-          cursorColor={appColors.themeColor}
-          style={[styles.input, inputStyle]}
-          onChange={(e) => _onChangeHandle({ value: e.nativeEvent.text })}
-          onFocus={_onFocusHandle}
-          onBlur={_onBlurHandle}
-        />
-        {_searchValue && _renderClearButton()}
-      </View>
+      {canSearch && (
+        <View style={[styles.searchInputContainer, searchInputContainerStyle]}>
+          <TextInput
+            value={_searchValue}
+            placeholder={placeholder}
+            cursorColor={appColors.themeColor}
+            style={[styles.input, inputStyle]}
+            onChange={(e) => _onChangeHandle({ value: e.nativeEvent.text })}
+            onFocus={_onFocusHandle}
+            onBlur={_onBlurHandle}
+          />
+          {_searchValue && _renderClearButton()}
+        </View>
+      )}
       <View
         style={{
           position: "relative",
@@ -221,7 +251,19 @@ const AppSelectPicker = ({
         }}
       >
         {_selection && _selection.length > 0 && _renderSelectedItem()}
-        {_searchValue && _focused && _renderRecentSearchValue()}
+        {showRecents && _searchValue && _focused && _renderRecentSearchValue()}
+        {_searchValue && _focused && (
+          <SectionHeader
+            title={"Search results"}
+            containerStyle={{
+              paddingHorizontal: appSpacing.screenPaddingLeft - 5,
+              paddingVertical: 10,
+            }}
+            titleColor={appColors.darkTextTertiary}
+            size={appSizes.Text.semiRegular}
+          />
+        )}
+        {_renderSearhResults()}
       </View>
     </View>
   );
@@ -229,7 +271,7 @@ const AppSelectPicker = ({
 
 const styles = StyleSheet.create({
   container: {},
-  inputContainer: {
+  searchInputContainer: {
     backgroundColor: appColors.lightBgTertiary,
     paddingHorizontal: appSpacing.screenPaddingLeft,
     paddingVertical: 5,
