@@ -23,6 +23,7 @@ const AppFormInputText = ({
   inputStyle = {},
   errorTextStyle = {},
   labelContainerStyle = {},
+  labelInnerContainerStyle = {},
   onFocus = ({ defaultLineColor, focusedLineColor }) => undefined,
   onBlur = ({ defaultLineColor, focusedLineColor }) => undefined,
   focusedLineColor = appColors.themeColor,
@@ -85,19 +86,8 @@ const AppFormInputText = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.innerContainer, innerContainerStyle]}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 2,
-          }}
-        >
-          <View
-            style={[
-              { flex: 1, flexDirection: "row", alignItems: "center" },
-              labelContainerStyle,
-            ]}
-          >
+        <View style={[styles.labelContainer]}>
+          <View style={[styles.labelInnerContainer, labelInnerContainerStyle]}>
             {_icon()}
             <Text style={[styles.label, labelStyle]}>
               {label}
@@ -108,6 +98,7 @@ const AppFormInputText = ({
         </View>
         <View style={[styles.inputContainer, inputContainerStyle]}>
           <TextInput
+            value={_inputValue}
             ref={_inputRef}
             editable={enabled}
             onFocus={_onFocus}
@@ -139,6 +130,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: appSizes.Text.regular,
   },
+  labelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  labelInnerContainer: { flex: 1, flexDirection: "row", alignItems: "center" },
   label: {
     fontFamily: appFonts.medium,
     fontSize: appSizes.Text.regular,

@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { SectionHeader, ChipButton, AppFormInputText } from "../../../ui/";
+import { SectionHeader, ChipButton, AppFormInputText } from "../../../ui";
 import { appColors, appSizes } from "../../../themes";
 import { commonStyles } from "../styles";
 
-const ItemDetailGeenralInfoSection = () => {
+const ItemDetailGeneralInfoSection = () => {
   return (
     <View style={[styles.container]}>
       <SectionHeader
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   ...commonStyles,
 });
 
-export default ItemDetailGeenralInfoSection;
+export default ItemDetailGeneralInfoSection;
