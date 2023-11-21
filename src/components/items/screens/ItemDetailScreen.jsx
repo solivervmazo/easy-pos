@@ -17,6 +17,8 @@ import {
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Stack, useRouter } from "expo-router";
 import { useStackRoutes } from "../../../routes";
+import ItemDetailScreenHeader from "../ui/ItemDetailScreenHeader";
+import ItemDetailCategoryAndVariationSection from "../ui/ItemDetailCategoryAndVariationSection";
 
 const GeneralInformation = () => {
   return (
@@ -92,75 +94,10 @@ const GeneralInformation = () => {
   );
 };
 
-const CategoryAndVariation = () => {
-  const router = useRouter();
-  const routes = useStackRoutes();
-  const _selectCategoryHandle = () => {
-    router.push(routes["items-detail"].modals["detail-select-category"].path);
-  };
-  return (
-    <View style={{ flex: 1 }}>
-      <SectionHeader
-        titleSize={appSizes.Text.medium}
-        containerStyle={{
-          marginBottom: 15,
-        }}
-        title={"Category and variations"}
-        titleColor={appColors.themeColor}
-      />
-      <View style={{ flex: 1, justifyContent: "flex-start", gap: 20 }}>
-        <AppFormInputText
-          icon="Items"
-          label="Category"
-          enabled={true}
-          inputMode="none"
-          placeholder="Search category"
-          onFocus={_selectCategoryHandle}
-        />
-        <AppFormInputText
-          label="New variations"
-          placeholder="Select variation to add one"
-          enabled={false}
-          labelContainerStyle={{
-            marginStart: 10,
-          }}
-          renderAction={() => (
-            <ChipButton
-              onPress={_selectCategoryHandle}
-              buttonRight={() => (
-                <IconButton
-                  icon={"Down"}
-                  color={appColors.lightText}
-                  plain={true}
-                  disabled={true}
-                  size={appSizes.Icon.small}
-                />
-              )}
-              containerStyle={{
-                backgroundColor: appColors.lightPrimary,
-              }}
-              label={`Select`}
-            />
-          )}
-        />
-      </View>
-    </View>
-  );
-};
-
-const ScreenHeader = () => (
-  <Stack.Screen
-    options={{
-      title: "New Product",
-      headerShown: true,
-    }}
-  />
-);
-
 const ItemDetailScreen = () => {
   return (
     <>
-      <ScreenHeader />
+      <ItemDetailScreenHeader />
       <View
         style={{
           flex: 1,
@@ -174,7 +111,7 @@ const ItemDetailScreen = () => {
           <GeneralInformation />
           <Spacer size={25} horizontal={false} />
           {/* Category and variations */}
-          <CategoryAndVariation />
+          <ItemDetailCategoryAndVariationSection />
           {/* Pricing and discounts */}
           {/* Shortkeys */}
         </ScrollView>
