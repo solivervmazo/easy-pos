@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-const Spacer = ({ size = 10, horizontal = true }) => {
+const Spacer = ({ size = 10, horizontal = true, onLayout }) => {
   const style = horizontal
     ? {
         width: size,
@@ -9,7 +9,7 @@ const Spacer = ({ size = 10, horizontal = true }) => {
     : {
         height: size,
       };
-  return <View style={{ ...style }} />;
+  return <View style={{ ...style }} onLayout={onLayout} />;
 };
 
 export default Spacer;

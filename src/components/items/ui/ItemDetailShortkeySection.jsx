@@ -9,6 +9,8 @@ import {
 import { commonStyles } from "../styles";
 import { useRouter } from "expo-router";
 import { useStackRoutes } from "../../../routes/index";
+import { appColors } from "../../../themes";
+
 const ItemDetailShortkeySection = () => {
   const router = useRouter();
   const routes = useStackRoutes();
@@ -23,7 +25,7 @@ const ItemDetailShortkeySection = () => {
       <SectionHeader
         titleSize={appSizes.Text.medium}
         containerStyle={styles.sectionHeaderContainer}
-        title={"Short key"}
+        title={"Shortkey"}
         titleColor={appColors.themeColor}
       />
       <View style={[styles.sectionContent]}>
@@ -34,24 +36,23 @@ const ItemDetailShortkeySection = () => {
           labelContainerStyle={styles.inputLabelContainer}
           renderAction={() => (
             <ChipButton
+              onPress={_selectShortkeyColorHandle}
               buttonRight={() => (
-                <IconButton
-                  icon={"Down"}
-                  color={appColors.lightText}
-                  plain={true}
-                  disabled={true}
-                  size={appSizes.Icon.small}
+                <View
+                  style={{
+                    height: appSizes.Icon.large,
+                    width: appSizes.Icon.large,
+                    borderWidth: 1,
+                    borderBlockColor: appColors.themeColor,
+                    overflow: "hidden",
+                    backgroundColor: appColors.darkBgSecondary,
+                  }}
                 />
               )}
               containerStyle={styles.inputActionButtonContainer}
-              label={`Select`}
+              label={`Select color`}
             />
           )}
-        />
-        <ChipButton
-          onPress={_selectShortkeyColorHandle}
-          label={"Add Rule"}
-          containerStyle={styles.addRuleButtonContainer}
         />
       </View>
     </View>

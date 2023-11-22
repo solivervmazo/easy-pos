@@ -14,6 +14,7 @@ const AppFormInputText = ({
   inputMode = "text",
   multiline = false,
   placeholder = "",
+  hideInput = false,
   renderAction = ({ inputRef }) => undefined,
   onValidate = ({ inputValue, errorMessages = [] }) => {},
   containerStyle = {},
@@ -96,30 +97,32 @@ const AppFormInputText = ({
           </View>
           {_renderAction()}
         </View>
-        <View style={[styles.inputContainer, inputContainerStyle]}>
-          <TextInput
-            value={_inputValue}
-            ref={_inputRef}
-            editable={enabled}
-            onFocus={_onFocus}
-            onBlur={_onBlur}
-            multiline={multiline}
-            cursorColor={appColors.black}
-            style={[
-              styles.input,
-              inputStyle,
-              {
-                borderColor: _inputBorderColor,
-                backgroundColor: enabled
-                  ? undefined
-                  : appColors.lightBgTertiary,
-              },
-            ]}
-            inputMode={inputMode}
-            placeholder={placeholder}
-          />
-          {_renderErrors()}
-        </View>
+        {!hideInput && (
+          <View style={[styles.inputContainer, inputContainerStyle]}>
+            <TextInput
+              value={_inputValue}
+              ref={_inputRef}
+              editable={enabled}
+              onFocus={_onFocus}
+              onBlur={_onBlur}
+              multiline={multiline}
+              cursorColor={appColors.black}
+              style={[
+                styles.input,
+                inputStyle,
+                {
+                  borderColor: _inputBorderColor,
+                  backgroundColor: enabled
+                    ? undefined
+                    : appColors.lightBgTertiary,
+                },
+              ]}
+              inputMode={inputMode}
+              placeholder={placeholder}
+            />
+            {_renderErrors()}
+          </View>
+        )}
       </View>
     </View>
   );

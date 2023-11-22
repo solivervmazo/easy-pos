@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Spacer } from "../../../ui/";
 import { appSpacing } from "../../../themes";
@@ -8,7 +8,15 @@ import ItemDetailGeneralInfoSection from "../ui/ItemDetailGeneralInfoSection";
 import ItemDetailCategoryAndVariationSection from "../ui/ItemDetailCategoryAndVariationSection";
 import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDiscountSection";
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
+
 const ItemDetailScreen = () => {
+  const [_sectionScrollYPositions, setSectionScrollYPositions] = useState({});
+  const _addScrollYSectionHandle = (event, key) => {
+    const layout = event.nativeEvent.layout;
+    _sectionScrollYPositions[key] = layout.y;
+    setSectionScrollYPositions(_sectionScrollYPositions);
+  };
+
   return (
     <>
       <ItemDetailScreenHeader />
@@ -22,15 +30,40 @@ const ItemDetailScreen = () => {
       >
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* General information */}
+          <Spacer
+            size={0}
+            horizontal={false}
+            onLayout={(event) =>
+              _addScrollYSectionHandle(event, "general-info-section")
+            }
+          />
           <ItemDetailGeneralInfoSection />
-          <Spacer size={25} horizontal={false} />
           {/* Category and variations */}
+          <Spacer
+            size={25}
+            horizontal={false}
+            onLayout={(event) =>
+              _addScrollYSectionHandle(event, "category-variation-section")
+            }
+          />
           <ItemDetailCategoryAndVariationSection />
-          <Spacer size={25} horizontal={false} />
           {/* Pricing and discounts */}
+          <Spacer
+            size={25}
+            horizontal={false}
+            onLayout={(event) =>
+              _addScrollYSectionHandle(event, "pricing-discounts-section")
+            }
+          />
           <ItemDetailPricingAndDiscountSection />
-          <Spacer size={25} horizontal={false} />
           {/* Shortkeys */}
+          <Spacer
+            size={25}
+            horizontal={false}
+            onLayout={(event) =>
+              _addScrollYSectionHandle(event, "shortkey-section")
+            }
+          />
           <ItemDetailShortkeySection />
         </ScrollView>
         <Text>Details</Text>
