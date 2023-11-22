@@ -6,10 +6,10 @@ import { commonStyles } from "../styles";
 
 const ItemDetailGeneralInfoSection = () => {
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
       <SectionHeader
         titleSize={appSizes.Text.medium}
-        containerStyle={[styles.sectionHeaderContainer]}
+        containerStyle={styles.sectionHeaderContainer}
         title={"General Information"}
         titleColor={appColors.themeColor}
       />
@@ -21,7 +21,7 @@ const ItemDetailGeneralInfoSection = () => {
           inputMode="numeric"
           renderAction={() => (
             <ChipButton
-              containerStyle={[styles.inputActionButtonContainer]}
+              containerStyle={styles.inputActionButtonContainer}
               label={`Custom`}
             />
           )}
@@ -30,14 +30,14 @@ const ItemDetailGeneralInfoSection = () => {
         <AppFormInputText
           label="Product Name"
           enabled={true}
-          labelContainerStyle={[styles.inputLabelContainer]}
+          labelContainerStyle={styles.inputLabelContainer}
           required={true}
         />
         <AppFormInputText
           label="Description"
           enabled={true}
           multiline={true}
-          labelContainerStyle={[styles.inputLabelContainer]}
+          labelContainerStyle={styles.inputLabelContainer}
         />
         <AppFormInputText
           icon="Barcode"
@@ -47,7 +47,7 @@ const ItemDetailGeneralInfoSection = () => {
           inputMode="numeric"
           renderAction={() => (
             <ChipButton
-              containerStyle={[styles.inputActionButtonContainer]}
+              containerStyle={styles.inputActionButtonContainer}
               label={`Camera`}
             />
           )}
@@ -57,10 +57,10 @@ const ItemDetailGeneralInfoSection = () => {
           enabled={true}
           multiline={true}
           inputMode="numeric"
-          labelContainerStyle={[styles.inputLabelContainer]}
+          labelContainerStyle={styles.inputLabelContainer}
           renderAction={() => (
             <ChipButton
-              containerStyle={[styles.inputActionButtonContainer]}
+              containerStyle={styles.inputActionButtonContainer}
               label={`Camera`}
             />
           )}

@@ -21,7 +21,7 @@ const ItemDetailCategoryAndVariationSection = () => {
     <View style={[styles.container]}>
       <SectionHeader
         titleSize={appSizes.Text.medium}
-        containerStyle={[styles.sectionHeaderContainer]}
+        containerStyle={styles.sectionHeaderContainer}
         title={"Category and variations"}
         titleColor={appColors.themeColor}
       />
@@ -38,7 +38,7 @@ const ItemDetailCategoryAndVariationSection = () => {
           label="New variations"
           placeholder="Select variation to add one"
           enabled={false}
-          labelContainerStyle={[styles.inputLabelContainer]}
+          labelContainerStyle={styles.inputLabelContainer}
           renderAction={() => (
             <ChipButton
               onPress={_selectCategoryHandle}
@@ -51,7 +51,7 @@ const ItemDetailCategoryAndVariationSection = () => {
                   size={appSizes.Icon.small}
                 />
               )}
-              containerStyle={[styles.inputActionButtonContainer]}
+              containerStyle={styles.inputActionButtonContainer}
               label={`Select`}
             />
           )}

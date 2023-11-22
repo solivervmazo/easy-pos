@@ -64,10 +64,9 @@ const stack = {
     modals: {
       "detail-select-category": {
         path: "items/select-category",
-        options: {
-          drawerLabel: "Point of sale",
-          title: "Point of sale",
-        },
+      },
+      "detail-select-shortkey-color": {
+        path: "items/select-shortkey-color",
       },
     },
   },

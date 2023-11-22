@@ -36,13 +36,15 @@ const AppCard = ({
   const _renderTitle = () => {
     const _children = renderTitle({
       title,
-      titleStyle: { ...styles.titleContainer, ...titleContainerStyle },
+      titleStyle: { ...styles.title, ...titleStyle },
     });
     const _title = (
       <View style={[styles.titleContainer, titleContainerStyle]}>
-        {_children || title === undefined ? null : (
-          <Text style={[styles.title, titleStyle]}>{title}</Text>
-        )}
+        {_children && title === undefined
+          ? null
+          : _children || (
+              <Text style={[styles.title, titleStyle]}>{title}</Text>
+            )}
       </View>
     );
     return _title;

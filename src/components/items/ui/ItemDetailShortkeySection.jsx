@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Modal, Button } from "react-native";
 import {
   AppFormInputText,
   ChipButton,
@@ -7,25 +7,31 @@ import {
   SectionHeader,
 } from "../../../ui";
 import { commonStyles } from "../styles";
+import { useRouter } from "expo-router";
+import { useStackRoutes } from "../../../routes/index";
+const ItemDetailShortkeySection = () => {
+  const router = useRouter();
+  const routes = useStackRoutes();
+  const _selectShortkeyColorHandle = () => {
+    router.push(
+      routes["items-detail"].modals["detail-select-shortkey-color"].path
+    );
+  };
 
-const ItemDetailPricingAndDiscountSection = () => {
   return (
     <View style={[styles.container]}>
       <SectionHeader
         titleSize={appSizes.Text.medium}
         containerStyle={styles.sectionHeaderContainer}
-        title={"Pricing and Discount"}
+        title={"Short key"}
         titleColor={appColors.themeColor}
       />
       <View style={[styles.sectionContent]}>
         <AppFormInputText
-          value={"0"}
-          icon="Tags"
-          label="Default Price"
+          icon="Shortkeys"
+          label="Item Code"
           enabled={true}
-          inputMode="numeric"
           labelContainerStyle={styles.inputLabelContainer}
-          required={true}
           renderAction={() => (
             <ChipButton
               buttonRight={() => (
@@ -43,6 +49,7 @@ const ItemDetailPricingAndDiscountSection = () => {
           )}
         />
         <ChipButton
+          onPress={_selectShortkeyColorHandle}
           label={"Add Rule"}
           containerStyle={styles.addRuleButtonContainer}
         />
@@ -56,4 +63,4 @@ const styles = StyleSheet.create({
   addRuleButtonContainer: { marginHorizontal: 10 },
 });
 
-export default ItemDetailPricingAndDiscountSection;
+export default ItemDetailShortkeySection;

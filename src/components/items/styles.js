@@ -4,7 +4,7 @@ import { appColors } from "../../themes";
 export const commonStyles = StyleSheet.create({
   container: { flex: 1 },
   sectionHeaderContainer: {
-    marginBottom: 15,
+    marginBottom: 25,
   },
   sectionContent: { flex: 1, justifyContent: "flex-start", gap: 20 },
   inputLabelContainer: {

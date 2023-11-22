@@ -17,6 +17,7 @@ import AppCard from "./AppCard";
 import AppSearchInput from "./AppSearchInput";
 import AppFormInputText from "./AppFormInputText";
 import AppSelectPicker from "./app-select-picker/AppSelectPicker";
+import AppColorPicker from "./AppColorPicker";
 
 export { Icon, Spacer, Divider };
 export {
@@ -33,4 +34,5 @@ export {
   AppSearchInput,
   AppFormInputText,
   AppSelectPicker,
+  AppColorPicker,
 };
