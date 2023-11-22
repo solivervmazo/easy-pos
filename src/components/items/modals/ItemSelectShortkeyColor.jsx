@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { appSpacing } from "../../../themes";
-import { AppColorPicker } from "../../../ui";
+import { AppColorPicker, AppModal } from "../../../ui";
 
 const ScreenHeader = () => (
   <Stack.Screen
@@ -21,7 +21,7 @@ const ItemSelectShortkeyColor = () => {
     <>
       <ScreenHeader />
       <View style={{ flex: 1 }}>
-        <AppColorPicker />
+        <AppModal renderContent={() => <AppColorPicker />} />
       </View>
     </>
   );
