@@ -10,14 +10,23 @@ const IconButton = ({
   color = appColors.themeColor,
   iconStyle = {},
   containerStyle = {},
+
+  innerContainerStyle = {},
   onPress,
   plain = false,
   disabled = false,
+  renderLabel = ({ size, color }) => undefined,
 }) => {
+  const _renderLabel = () => {
+    const _rendered = renderLabel({ size, color });
+    return _rendered || null;
+  };
+
   return (
     <TouchableOpacity
       activeOpacity={plain ? 1 : appConstants.ACTIVE_OPACITY}
       disabled={disabled}
+      containerStyle={[innerContainerStyle]}
       style={[
         {
           borderRadius: size,
@@ -32,6 +41,7 @@ const IconButton = ({
         color,
         iconStyle,
       })}
+      {_renderLabel()}
     </TouchableOpacity>
   );
 };

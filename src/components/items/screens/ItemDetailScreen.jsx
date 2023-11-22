@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Spacer } from "../../../ui/";
-import { appSpacing } from "../../../themes";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { ChipButton, Spacer } from "../../../ui/";
+import { appColors, appSizes, appSpacing } from "../../../themes";
 import { ScrollView } from "react-native-gesture-handler";
 import ItemDetailScreenHeader from "../ui/ItemDetailScreenHeader";
 import ItemDetailGeneralInfoSection from "../ui/ItemDetailGeneralInfoSection";
@@ -10,68 +10,52 @@ import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDisco
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
 
 const ItemDetailScreen = () => {
-  const [_sectionScrollYPositions, setSectionScrollYPositions] = useState({});
-  const _addScrollYSectionHandle = (event, key) => {
-    const layout = event.nativeEvent.layout;
-    _sectionScrollYPositions[key] = layout.y;
-    setSectionScrollYPositions(_sectionScrollYPositions);
-  };
-
   return (
     <>
       <ItemDetailScreenHeader />
-      <View
-        style={{
-          flex: 1,
-          gap: 10,
-          paddingHorizontal: appSpacing.screenPaddingLeft,
-          paddingVertical: 10,
-        }}
-      >
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={[styles.container]}>
+        <ScrollView
+          contentContainerStyle={{}}
+          showsVerticalScrollIndicator={false}
+        >
           {/* General information */}
-          <Spacer
-            size={0}
-            horizontal={false}
-            onLayout={(event) =>
-              _addScrollYSectionHandle(event, "general-info-section")
-            }
-          />
           <ItemDetailGeneralInfoSection />
           {/* Category and variations */}
-          <Spacer
-            size={25}
-            horizontal={false}
-            onLayout={(event) =>
-              _addScrollYSectionHandle(event, "category-variation-section")
-            }
-          />
+          <Spacer size={25} horizontal={false} />
           <ItemDetailCategoryAndVariationSection />
           {/* Pricing and discounts */}
-          <Spacer
-            size={25}
-            horizontal={false}
-            onLayout={(event) =>
-              _addScrollYSectionHandle(event, "pricing-discounts-section")
-            }
-          />
+          <Spacer size={25} horizontal={false} />
           <ItemDetailPricingAndDiscountSection />
           {/* Shortkeys */}
-          <Spacer
-            size={25}
-            horizontal={false}
-            onLayout={(event) =>
-              _addScrollYSectionHandle(event, "shortkey-section")
-            }
-          />
+          <Spacer size={25} horizontal={false} />
           <ItemDetailShortkeySection />
         </ScrollView>
-        <Text>Details</Text>
+        <View>
+          <ChipButton
+            containerStyle={styles.saveButtonContainer}
+            labelStyle={styles.saveButtonLabel}
+            label={"Save"}
+          />
+        </View>
       </View>
     </>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    gap: 10,
+    paddingHorizontal: appSpacing.screenPaddingLeft,
+    paddingVertical: 10,
+  },
+  saveButtonContainer: {
+    backgroundColor: appColors.lightSuccess,
+    paddingVertical: 15,
+  },
+  saveButtonLabel: {
+    fontSize: appSizes.Text.regular,
+  },
+});
 
 export default ItemDetailScreen;

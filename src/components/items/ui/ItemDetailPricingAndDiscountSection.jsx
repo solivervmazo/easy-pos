@@ -7,6 +7,7 @@ import {
   SectionHeader,
 } from "../../../ui";
 import { commonStyles } from "../styles";
+import { appColors } from "../../../themes";
 
 const ItemDetailPricingAndDiscountSection = () => {
   return (
@@ -53,7 +54,10 @@ const ItemDetailPricingAndDiscountSection = () => {
 
 const styles = StyleSheet.create({
   ...commonStyles,
-  addRuleButtonContainer: { marginHorizontal: 10 },
+  addRuleButtonContainer: {
+    marginHorizontal: 10,
+    backgroundColor: appColors.lightPrimarySecondary,
+  },
 });
 
 export default ItemDetailPricingAndDiscountSection;
