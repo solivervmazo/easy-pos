@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, Modal, Button } from "react-native";
-import {
-  AppFormInputText,
-  ChipButton,
-  IconButton,
-  SectionHeader,
-} from "../../../ui";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { AppFormInputText, ChipButton, SectionHeader } from "../../../ui";
 import { commonStyles } from "../styles";
 import { useRouter } from "expo-router";
 import { useStackRoutes } from "../../../routes/index";

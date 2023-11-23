@@ -126,7 +126,7 @@ export const replaceSlugs = (route, slugs = []) => {
   if (!routeSlugs) return path;
   let _path = path;
   routeSlugs.forEach((_slug, _index) => {
-    _path.replace(`[${_slug}]`, slugs[_index]);
+    _path = _path.replace(`[${_slug}]`, slugs[_index]);
   });
   return _path;
 };

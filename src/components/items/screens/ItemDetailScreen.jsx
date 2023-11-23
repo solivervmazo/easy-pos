@@ -8,8 +8,11 @@ import ItemDetailGeneralInfoSection from "../ui/ItemDetailGeneralInfoSection";
 import ItemDetailCategoryAndVariationSection from "../ui/ItemDetailCategoryAndVariationSection";
 import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDiscountSection";
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
+import { useLocalSearchParams } from "expo-router";
 
 const ItemDetailScreen = () => {
+  const local = useLocalSearchParams();
+  console.log(local.id);
   return (
     <>
       <ItemDetailScreenHeader />

@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
+import { Provider } from "react-redux";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, View } from "react-native";
-import { Slot, Stack } from "expo-router";
-import { AppScreen } from "../src/screens";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { appStyles } from "../src/themes";
+import { Stack } from "expo-router";
+import { store } from "../src/store/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,7 +27,12 @@ const _layout = () => {
   }
 
   return (
-    <Stack onLayout={onLayoutRootView} screenOptions={{ headerShown: false }} />
+    <Provider store={store}>
+      <Stack
+        onLayout={onLayoutRootView}
+        screenOptions={{ headerShown: false }}
+      />
+    </Provider>
   );
 };
 

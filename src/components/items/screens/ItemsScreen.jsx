@@ -1,41 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { IconButton, Spacer, AppTable, ChipButton } from "../../../ui";
 import { appColors, appFonts, appSizes, appStyles } from "../../../themes";
 import ItemRow from "../ui/ItemRow";
 import { useStackRoutes, replaceSlugs } from "../../../routes";
 import { useRouter } from "expo-router";
-const ITEMS = new Array(10).fill({}).map((item, index) => {
-  return {
-    id: index + 1,
-    itemName: `Item ${index} with ${["sugar", "salt", "onion"].splice(
-      Math.floor(Math.random() * 3),
-      1
-    )}`,
-    itemNumber: "1000" + (index + 1),
-    price: (Math.random() * 1000 + 200).toFixed(2),
-    categories: [
-      "food",
-      "add-ons",
-      "freebie",
-      "dessert",
-      "veberage",
-      "condiments",
-    ].splice(Math.floor(Math.random() * 6), Math.random() * 6 + 5),
-  };
-});
+
+import { useSelector, useDispatch } from "react-redux";
+import { itemActions, fetchItems } from "../../../store/slices/itemSlice";
 
 const ItemsScreen = () => {
+  const dispatch = useDispatch();
+  const { loading, itemList } = useSelector((state) => state.items);
+
   const router = useRouter();
   const routes = useStackRoutes();
+
   const navigateDetailHandle = (id, params = {}) => {
     const _routePath = replaceSlugs(routes["items-detail"], [id]);
     router.push(_routePath);
   };
+
+  useEffect(() => {
+    dispatch(fetchItems());
+  }, [dispatch]);
+
   return (
     <AppTable
-      itemsLength={200}
-      data={ITEMS}
+      itemsLength={itemList.length}
+      data={itemList}
       renderItem={({ item, toggled }) => <ItemRow item={item} />}
       actionsCount={2}
       renderActions={({ actionSize }) => (

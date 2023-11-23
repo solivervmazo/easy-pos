@@ -9,6 +9,7 @@
 # Tech
 
     React-Expo
+    @reduxjs/toolkit
 
 
 # File structure
