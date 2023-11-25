@@ -30,7 +30,7 @@ class FormSate {
 }
 
 const initialState = {
-  loading: false,
+  loading: true,
   formLoading: false,
   formState: FormSate.fresh,
   itemList: [],

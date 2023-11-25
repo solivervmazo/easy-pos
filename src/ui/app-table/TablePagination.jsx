@@ -19,6 +19,7 @@ const Btn = ({ renderItem = () => {}, containerStyle = {}, onPress }) => {
   const BTN_WIDTH = 40;
   return (
     <TouchableOpacity
+      disabled={!onPress}
       onPress={onPress}
       activeOpacity={appConstants.ACTIVE_OPACITY}
       style={{
@@ -56,13 +57,14 @@ const BtnPage = ({ value }) => {
   );
 };
 
-const BtnAction = ({ icon }) => {
+const BtnAction = ({ icon, disabled = true }) => {
   return (
     <Btn
+      onPress={disabled ? null : () => {}}
       renderItem={() =>
         Icon.Icons(icon, {
           size: appSizes.Icon.large,
-          color: appColors.themeColor,
+          color: disabled ? appColors.lightTextSecondary : appColors.themeColor,
         })
       }
       containerStyle={{

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   IconButton,
   Spacer,
@@ -27,12 +27,17 @@ const ItemsScreen = () => {
     router.push(_routePath);
   };
 
+  const refreshTableHandle = () => {
+    dispatch(fetchItems());
+  };
+
   useEffect(() => {
     dispatch(fetchItems());
   }, [dispatch]);
 
   return (
     <>
+      {loading && <AppSpinner />}
       <AppTable
         itemsLength={itemList.length}
         data={itemList}
@@ -88,9 +93,9 @@ const ItemsScreen = () => {
               }}
             />
           ),
+          onRefreshPress: refreshTableHandle,
         }}
       />
-      <AppSpinner show={true} />
     </>
   );
 };
