@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
+import { selectProducts } from "../../db/products";
+import * as SQLlite from "expo-sqlite";
+import { useState } from "react";
+const db_name = "easy-pos";
 const ITEMS = new Array(10).fill({}).map((item, index) => {
   return {
     id: index + 1,
@@ -36,7 +39,13 @@ const initialState = {
 };
 
 export const fetchItems = createAsyncThunk("item/fetchItems", async () => {
-  return ITEMS;
+  const db = SQLlite.openDatabase(db_name);
+  const { query, args } = selectProducts();
+  let rows = [];
+  await db.transactionAsync((tx) => {
+    rows = tx.executeSqlAsync(query, args);
+  });
+  return rows?.rows || [];
 });
 
 export const fetchItemDetail = createAsyncThunk(
@@ -52,16 +61,21 @@ export const itemSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchItems.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchItems.fulfilled, (state, action) => {
+        state.loading = false;
         state.itemList = action.payload;
       })
       .addCase(fetchItems.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error.message;
       });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const itemActions = ({} = itemSlice.actions);
+export const {} = itemSlice.actions;
 
 export default itemSlice.reducer;

@@ -1,6 +1,6 @@
 export default appColors = {
   transparent: "rgba(0,0,0,0)",
-  transparent2: "rgba(0,0,0,0.2)",
+  transparent2: "rgba(255,255,255,0.4)",
   transparent3: "rgba(0,0,0,0.3)",
   black: "#121212",
   lightText: "#ffffff",
