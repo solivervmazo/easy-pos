@@ -1,33 +1,49 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, StyleSheet, View } from "react-native";
 import { AppSpinner, ChipButton, Spacer } from "../../../ui/";
 import { appColors, appSizes, appSpacing } from "../../../themes";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import ItemDetailScreenHeader from "../ui/ItemDetailScreenHeader";
 import ItemDetailGeneralInfoSection from "../ui/ItemDetailGeneralInfoSection";
 import ItemDetailCategoryAndVariationSection from "../ui/ItemDetailCategoryAndVariationSection";
 import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDiscountSection";
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  insertProduct,
-  restartForm,
-  fetchProductDetail,
+  insertProductAction,
+  restartFormAction,
+  fetchProductDetailAction,
+  updateFormAction,
+  productFormSchema,
 } from "../../../store/slices/products/productSlice";
-import { replaceSlugs, useStackRoutes } from "../../../routes";
+import { useDrawerRoutes } from "../../../routes";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
 
 const ItemDetailScreen = () => {
   const { id } = useLocalSearchParams();
-  const router = useRouter();
-  const routes = useStackRoutes();
 
+  useFocusEffect(
+    useCallback(() => {
+      id && dispatch(fetchProductDetailAction({ args: { product_id: id } }));
+      return () => {
+        dispatch(restartFormAction());
+      };
+    }, [])
+  );
+  const [_confirm, setConfirm] = useState(false);
+
+  const router = useRouter();
+  const drawerRoutes = useDrawerRoutes();
   const dispatch = useDispatch();
+
   const {
     formLoading,
     formSubmitted,
-    formState,
-    form: {
+    // formState,
+    productDetail,
+    productDetail: {
       productId,
       productName,
       productDescription,
@@ -35,58 +51,52 @@ const ItemDetailScreen = () => {
       productSku,
     },
   } = useSelector((state) => state.items);
+  const [_productForm, setProductFrom] = useState(productDetail);
 
-  const [_productId, setProductId] = useState(productId);
-  const [_productName, setProductName] = useState(productName);
-  const [_productDescription, setProductDescription] =
-    useState(productDescription);
-  const [_productBarcode, setProductBarcode] = useState(productBarcode);
-  const [_productSku, setProductSku] = useState(productSku);
+  const {
+    control: formControl,
+    handleSubmit,
+    formState: { errors: formErrors },
+  } = useForm({
+    reValidateMode: "onChange",
+    resolver: yupResolver(productFormSchema),
+    defaultValues: _productForm,
+  });
 
   const _saveFormHandle = () => {
+    if (!_confirm) {
+      // setConfirm(true);
+      return;
+    }
     dispatch(
-      insertProduct({
-        // product_id: _productId,
-        product_name: _productName,
-        product_description: _productDescription,
-        product_barcode: _productBarcode,
-        product_sku: _productSku,
+      insertProductAction({
+        product_name: _productForm.productName,
+        product_description: _productForm.productDescription,
+        product_barcode: _productForm.productBarcode,
+        product_sku: _productForm.productSku,
       })
     );
-    // _navigateDetailHandle();
   };
 
-  const _navigateDetailHandle = (id, params = {}) => {
-    const _routePath = replaceSlugs(routes["items-detail"], [productId]);
-    console.log("PATH:", _routePath);
-    router.replace(_routePath);
+  console.log("ERRORS", formErrors);
+  const _navigateDoneEditingHandle = () => {
+    router.replace(drawerRoutes["store-items"].path);
+  };
+
+  const _onFormChangeHandle = ({ ...args }) => {
+    const updatedProductForm = {
+      ..._productForm,
+      ...args,
+    };
+    setProductFrom(updatedProductForm);
+    dispatch(updateFormAction(updatedProductForm));
   };
 
   useEffect(() => {
-    console.log(formSubmitted, id, id == "undefined");
-    if (id != "undefined") {
-      console.log("BLAHH:", productId);
-      dispatch(fetchProductDetail({ args: { product_id: id } }));
-      setProductName(productId);
-      setProductId(productName);
-      setProductDescription(productDescription);
-      setProductBarcode(productBarcode);
-      setProductSku(productSku);
-    }
     if (formSubmitted === 3) {
-      dispatch(restartForm());
-      _navigateDetailHandle();
+      _navigateDoneEditingHandle();
     }
-  }, [
-    dispatch,
-    formSubmitted,
-    productId,
-    productId,
-    productName,
-    productDescription,
-    productBarcode,
-    productSku,
-  ]);
+  }, [formSubmitted]);
 
   return (
     <>
@@ -99,33 +109,27 @@ const ItemDetailScreen = () => {
         >
           {/* General information */}
           <ItemDetailGeneralInfoSection
-            productId={_productId}
-            productName={_productName}
-            productDescription={_productDescription}
-            productBarcode={_productBarcode}
-            productSku={_productSku}
-            onProductIdChange={setProductId}
-            onProductNameChange={setProductName}
-            onProductDescriptionChange={setProductDescription}
-            onProductBarcodeChange={setProductBarcode}
-            onProductSkuChange={setProductSku}
+            {...productDetail}
+            formControl={formControl}
+            formErrors={formErrors}
+            onFormChange={_onFormChangeHandle}
           />
           {/* Category and variations */}
           <Spacer size={25} horizontal={false} />
-          <ItemDetailCategoryAndVariationSection />
+          {/* <ItemDetailCategoryAndVariationSection /> */}
           {/* Pricing and discounts */}
           <Spacer size={25} horizontal={false} />
-          <ItemDetailPricingAndDiscountSection />
+          {/* <ItemDetailPricingAndDiscountSection /> */}
           {/* Shortkeys */}
           <Spacer size={25} horizontal={false} />
-          <ItemDetailShortkeySection />
+          {/* <ItemDetailShortkeySection /> */}
         </ScrollView>
-        <View>
+        <View style={[styles.formFooterContainer]}>
           <ChipButton
-            onPress={_saveFormHandle}
+            onPress={handleSubmit(_saveFormHandle)}
             containerStyle={styles.saveButtonContainer}
             labelStyle={styles.saveButtonLabel}
-            label={"Save"}
+            label={_confirm ? "Tap again to confirm" : "Save"}
           />
         </View>
       </View>
@@ -140,7 +144,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: appSpacing.screenPaddingLeft,
     paddingVertical: 10,
   },
+  formFooterContainer: {},
   saveButtonContainer: {
+    flex: 0,
     backgroundColor: appColors.lightSuccess,
     paddingVertical: 15,
   },

@@ -5,16 +5,14 @@ import { appColors, appSizes } from "../../../themes";
 import { commonStyles } from "../styles";
 
 const ItemDetailGeneralInfoSection = ({
+  formControl,
+  formErrors,
   productId,
   productName,
   productDescription,
   productBarcode,
   productSku,
-  onProductIdChange,
-  onProductNameChange,
-  onProductDescriptionChange,
-  onProductBarcodeChange,
-  onProductSkuChange,
+  onFormChange,
 }) => {
   return (
     <View style={styles.container}>
@@ -26,8 +24,11 @@ const ItemDetailGeneralInfoSection = ({
       />
       <View style={[styles.sectionContent]}>
         <AppFormInputText
+          control={formControl}
+          name={"productId"}
+          errors={formErrors?.productId}
           value={productId}
-          onChange={onProductIdChange}
+          onChange={(value) => onFormChange({ productId: value })}
           icon="Items"
           label="Product ID"
           enabled={true}
@@ -41,24 +42,31 @@ const ItemDetailGeneralInfoSection = ({
           required={true}
         />
         <AppFormInputText
+          control={formControl}
+          name={"productName"}
+          errors={formErrors.productName}
           value={productName}
-          onChange={onProductNameChange}
+          onChange={(value) => onFormChange({ productName: value })}
           label="Product Name"
           enabled={true}
           labelContainerStyle={styles.inputLabelContainer}
           required={true}
         />
         <AppFormInputText
+          control={formControl}
+          name={"productDescription"}
           value={productDescription}
-          onChange={onProductDescriptionChange}
+          onChange={(value) => onFormChange({ productDescription: value })}
           label="Description"
           enabled={true}
           multiline={true}
           labelContainerStyle={styles.inputLabelContainer}
         />
         <AppFormInputText
+          control={formControl}
+          name={"productBarcode"}
           value={productBarcode}
-          onChange={onProductBarcodeChange}
+          onChange={(value) => onFormChange({ productBarcode: value })}
           icon="Barcode"
           label="Barcode"
           enabled={true}
@@ -72,8 +80,10 @@ const ItemDetailGeneralInfoSection = ({
           )}
         />
         <AppFormInputText
+          control={formControl}
+          name={"productSku"}
           value={productSku}
-          onChange={onProductSkuChange}
+          onChange={(value) => onFormChange({ productSku: value })}
           label="SKU"
           enabled={true}
           multiline={true}

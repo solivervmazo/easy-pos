@@ -10,7 +10,7 @@
 
     React-Expo
     @reduxjs/toolkit
-
+    -- Input validator: yup react-hook-form @hookform/resolvers
 
 # File structure
 

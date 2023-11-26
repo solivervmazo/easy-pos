@@ -5,7 +5,12 @@ import ChipButton from "./ChipButton";
 import { appColors, appFonts, appSizes, appStyles } from "../themes";
 import { TextInput } from "react-native-gesture-handler";
 
+import { Controller } from "react-hook-form";
+
 const AppFormInputText = ({
+  name,
+  control,
+  errors,
   value = "",
   icon = "",
   label = "",
@@ -33,7 +38,6 @@ const AppFormInputText = ({
 }) => {
   const _inputRef = useRef(null);
   const [_inputValue, setInputValue] = useState(value);
-  const [_errors, setError] = useState([]);
   const [_focusedLineColor, setFocusedLineColor] = useState(focusedLineColor);
   const [_defaultLineColor, setDefaultLineColor] = useState(defaultLineColor);
   const [_inputBorderColor, setInputBorderColor] = useState(defaultLineColor);
@@ -64,9 +68,9 @@ const AppFormInputText = ({
   };
 
   const _renderErrors = () => {
-    if (_errors.length > 0)
-      return <Text style={[styles.errorText, errorTextStyle]}>Error</Text>;
-    return null;
+    return (
+      <Text style={[styles.errorText, errorTextStyle]}>{errors?.message}</Text>
+    );
   };
 
   const _onFocus = () => {
@@ -85,11 +89,36 @@ const AppFormInputText = ({
     setInputBorderColor(_defaultLineColor);
   };
 
-  const _onChangeHandle = (value) => {
+  const _onChangeHandle = (value, validatorHandle = (v) => {}) => {
     setInputValue(value);
+    validatorHandle(value);
     onChange(value);
   };
 
+  const _renderInput = ({ onChange, value: _value }) => {
+    return (
+      <TextInput
+        value={_value}
+        ref={_inputRef}
+        editable={enabled}
+        onFocus={_onFocus}
+        onBlur={_onBlur}
+        multiline={multiline}
+        onChange={(e) => _onChangeHandle(e.nativeEvent.text, onChange)}
+        cursorColor={appColors.black}
+        style={[
+          styles.input,
+          inputStyle,
+          {
+            borderColor: _inputBorderColor,
+            backgroundColor: enabled ? undefined : appColors.lightBgTertiary,
+          },
+        ]}
+        inputMode={inputMode}
+        placeholder={placeholder}
+      />
+    );
+  };
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.innerContainer, innerContainerStyle]}>
@@ -105,29 +134,18 @@ const AppFormInputText = ({
         </View>
         {!hideInput && (
           <View style={[styles.inputContainer, inputContainerStyle]}>
-            <TextInput
-              value={_inputValue}
-              ref={_inputRef}
-              editable={enabled}
-              onFocus={_onFocus}
-              onBlur={_onBlur}
-              multiline={multiline}
-              onChange={(e) => _onChangeHandle(e.nativeEvent.text)}
-              cursorColor={appColors.black}
-              style={[
-                styles.input,
-                inputStyle,
-                {
-                  borderColor: _inputBorderColor,
-                  backgroundColor: enabled
-                    ? undefined
-                    : appColors.lightBgTertiary,
-                },
-              ]}
-              inputMode={inputMode}
-              placeholder={placeholder}
-            />
-            {_renderErrors()}
+            {name ? (
+              <Controller
+                name={name}
+                control={control}
+                render={({ field: { onChange, value } }) => {
+                  return _renderInput({ onChange, value });
+                }}
+              />
+            ) : (
+              _renderInput({})
+            )}
+            {errors && _renderErrors({ onChange: () => {}, _inputValue })}
           </View>
         )}
       </View>
