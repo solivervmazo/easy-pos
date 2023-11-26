@@ -37,7 +37,6 @@ const AppFormInputText = ({
   defaultLineColor = appColors.black,
 }) => {
   const _inputRef = useRef(null);
-  const [_inputValue, setInputValue] = useState(value);
   const [_focusedLineColor, setFocusedLineColor] = useState(focusedLineColor);
   const [_defaultLineColor, setDefaultLineColor] = useState(defaultLineColor);
   const [_inputBorderColor, setInputBorderColor] = useState(defaultLineColor);
@@ -89,16 +88,18 @@ const AppFormInputText = ({
     setInputBorderColor(_defaultLineColor);
   };
 
-  const _onChangeHandle = (value, validatorHandle = (v) => {}) => {
-    setInputValue(value);
-    validatorHandle(value);
-    onChange(value);
+  const _onChangeHandle = (_value, validatorHandle = (v) => {}) => {
+    let newValue = _value;
+    // if (inputMode === "numeric") newValue = _value.replace(/[^0-9]/g, "");
+    // console.log(_value.replace(/[^0-9]/g, ""));
+    validatorHandle(newValue);
+    onChange(newValue);
   };
 
   const _renderInput = ({ onChange, value: _value }) => {
     return (
       <TextInput
-        value={_value}
+        value={_value.toString()}
         ref={_inputRef}
         editable={enabled}
         onFocus={_onFocus}
@@ -134,18 +135,18 @@ const AppFormInputText = ({
         </View>
         {!hideInput && (
           <View style={[styles.inputContainer, inputContainerStyle]}>
-            {name ? (
+            {control && name ? (
               <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, value } }) => {
+                render={({ field: { onChange, _ } }) => {
                   return _renderInput({ onChange, value });
                 }}
               />
             ) : (
-              _renderInput({})
+              _renderInput({ onChange: () => {}, value })
             )}
-            {errors && _renderErrors({ onChange: () => {}, _inputValue })}
+            {errors && _renderErrors()}
           </View>
         )}
       </View>

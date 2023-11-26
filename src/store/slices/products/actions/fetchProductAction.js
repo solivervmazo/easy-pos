@@ -8,7 +8,7 @@ export const fetchProductAction = createAsyncThunk(
   "product/fetchProductAction",
   async (payload = {}) => {
     const db = SQLlite.openDatabase(db_name);
-    const { orderBy = "product_id", desc = true } = payload;
+    const { orderBy = "id", desc = true } = payload;
     const { query, args } = selectProductsQuery({ orderBy, desc });
     let rows = [];
     await db.transactionAsync(async (tx) => {

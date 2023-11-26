@@ -26,13 +26,16 @@ export const fetchProductDetailBuilder = (builder) => {
       state.formLoading = true;
     })
     .addCase(fetchProductDetailAction.fulfilled, (state, action) => {
-      console.log("PAYLOAD:", action.payload);
-      state.form = {
+      state.productDetail = {
+        id: action.payload?.id,
         productId: action.payload?.product_id,
         productName: action.payload?.product_name,
         productDescription: action.payload?.product_description,
         productBarcode: action.payload?.product_barcode,
         productSku: action.payload?.product_sku,
+        productPrice: action.payload?.product_price,
+        productCode: action.payload?.product_code,
+        productShortkeyColor: action.payload?.product_shortkey_color,
       };
       state.formLoading = false;
     })

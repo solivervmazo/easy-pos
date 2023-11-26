@@ -11,7 +11,7 @@ const AppTable = ({
   itemKey,
   renderItem = ({ item, toggled }) => {},
   renderNoData = () => undefined,
-  renderActions = ({ actionSize }) => {},
+  renderActions = ({ actionSize, item }) => {},
   itemSeparatorComponent = () => {},
   actionsCount = 0,
   keyExtractor = (item) => {},
@@ -71,7 +71,7 @@ const AppTable = ({
               }
               actionsCount={actionsCount}
               contentStyle={{ flexDirection: "row" }}
-              actions={({ actionSize }) => renderActions({ actionSize })}
+              actions={({ actionSize }) => renderActions({ actionSize, item })}
               content={() => renderItem({ item, rowToggled })}
             />
           )}

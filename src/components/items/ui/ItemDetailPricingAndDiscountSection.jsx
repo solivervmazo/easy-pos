@@ -9,7 +9,12 @@ import {
 import { commonStyles } from "../styles";
 import { appColors } from "../../../themes";
 
-const ItemDetailPricingAndDiscountSection = () => {
+const ItemDetailPricingAndDiscountSection = ({
+  formControl,
+  formErrors,
+  productPrice,
+  onFormChange,
+}) => {
   return (
     <View style={[styles.container]}>
       <SectionHeader
@@ -20,7 +25,11 @@ const ItemDetailPricingAndDiscountSection = () => {
       />
       <View style={[styles.sectionContent]}>
         <AppFormInputText
-          value={"0"}
+          value={productPrice?.toString()}
+          control={formControl}
+          name={"productPrice"}
+          errors={formErrors?.productPrice}
+          onChange={(value) => onFormChange({ productPrice: value })}
           icon="Tags"
           label="Default Price"
           enabled={true}
@@ -44,7 +53,8 @@ const ItemDetailPricingAndDiscountSection = () => {
           )}
         />
         <ChipButton
-          label={"Add Rule"}
+          plain={true}
+          label={"Add Rule-Coming Soon"}
           containerStyle={styles.addRuleButtonContainer}
         />
       </View>

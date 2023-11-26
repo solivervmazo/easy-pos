@@ -16,92 +16,97 @@ import {
   fetchProductDetailAction,
   updateFormAction,
   productFormSchema,
+  generateProjectIdAction,
+  updateProductAction,
 } from "../../../store/slices/products/productSlice";
 import { useDrawerRoutes } from "../../../routes";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import FormSate from "../../../enums/FormState";
 
 const ItemDetailScreen = () => {
+  const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
-
+  const { formLoading, formActionState } = useSelector((state) => state.items);
+  const [_isNew, setIsNew] = useState(true);
   useFocusEffect(
     useCallback(() => {
-      id && dispatch(fetchProductDetailAction({ args: { product_id: id } }));
       return () => {
         dispatch(restartFormAction());
       };
     }, [])
   );
-  const [_confirm, setConfirm] = useState(false);
 
   const router = useRouter();
   const drawerRoutes = useDrawerRoutes();
-  const dispatch = useDispatch();
 
-  const {
-    formLoading,
-    formSubmitted,
-    // formState,
-    productDetail,
-    productDetail: {
-      productId,
-      productName,
-      productDescription,
-      productBarcode,
-      productSku,
-    },
-  } = useSelector((state) => state.items);
-  const [_productForm, setProductFrom] = useState(productDetail);
-
+  const [_confirm, setConfirm] = useState(false);
+  const { productDetail } = useSelector((state) => state.items);
   const {
     control: formControl,
     handleSubmit,
     formState: { errors: formErrors },
+    setValue,
   } = useForm({
     reValidateMode: "onChange",
     resolver: yupResolver(productFormSchema),
-    defaultValues: _productForm,
+    defaultValues: productDetail,
   });
 
-  const _saveFormHandle = () => {
-    if (!_confirm) {
-      // setConfirm(true);
-      return;
-    }
-    dispatch(
-      insertProductAction({
-        product_name: _productForm.productName,
-        product_description: _productForm.productDescription,
-        product_barcode: _productForm.productBarcode,
-        product_sku: _productForm.productSku,
-      })
-    );
+  const _generateIdHandle = () => {
+    dispatch(generateProjectIdAction({ random: true }));
   };
 
-  console.log("ERRORS", formErrors);
+  const _saveFormHandle = () => {
+    console.log("productDetail", productDetail);
+    if (!_confirm) {
+      setConfirm(true);
+      return;
+    }
+    if (_isNew) {
+      dispatch(insertProductAction(productDetail));
+    } else {
+      dispatch(updateProductAction(productDetail));
+    }
+  };
+
   const _navigateDoneEditingHandle = () => {
     router.replace(drawerRoutes["store-items"].path);
   };
 
   const _onFormChangeHandle = ({ ...args }) => {
     const updatedProductForm = {
-      ..._productForm,
+      ...productDetail,
       ...args,
     };
-    setProductFrom(updatedProductForm);
-    dispatch(updateFormAction(updatedProductForm));
+    dispatch(
+      updateFormAction({
+        formState: FormSate.editing,
+        productDetail: updatedProductForm,
+      })
+    );
   };
 
   useEffect(() => {
-    if (formSubmitted === 3) {
+    if (id != "undefined" && formActionState === FormSate.fresh) {
+      dispatch(updateFormAction({ formState: FormSate.editing }));
+      dispatch(fetchProductDetailAction({ args: { id: id } }));
+      setIsNew(false);
+    } else if (formActionState === FormSate.fresh) {
+      dispatch(generateProjectIdAction({ random: false }));
+      setValue("productId", productDetail.productId, { shouldDirty: true });
+      setIsNew(true);
+    } else if (formActionState === FormSate.editing) {
+      setValue("productId", productDetail.productId, { shouldDirty: true });
+    } else if (formActionState === FormSate.sumbmitted) {
       _navigateDoneEditingHandle();
     }
-  }, [formSubmitted]);
+  }, [formActionState, productDetail, id]);
 
   return (
     <>
       {formLoading && <AppSpinner />}
-      <ItemDetailScreenHeader />
+      <ItemDetailScreenHeader item={_isNew ? undefined : productDetail} />
       <View style={[styles.container]}>
         <ScrollView
           contentContainerStyle={{}}
@@ -113,23 +118,36 @@ const ItemDetailScreen = () => {
             formControl={formControl}
             formErrors={formErrors}
             onFormChange={_onFormChangeHandle}
+            onGenerateId={_generateIdHandle}
           />
           {/* Category and variations */}
           <Spacer size={25} horizontal={false} />
           {/* <ItemDetailCategoryAndVariationSection /> */}
           {/* Pricing and discounts */}
           <Spacer size={25} horizontal={false} />
-          {/* <ItemDetailPricingAndDiscountSection /> */}
+          <ItemDetailPricingAndDiscountSection
+            {...productDetail}
+            formControl={formControl}
+            formErrors={formErrors}
+            onFormChange={_onFormChangeHandle}
+          />
           {/* Shortkeys */}
           <Spacer size={25} horizontal={false} />
-          {/* <ItemDetailShortkeySection /> */}
+          <ItemDetailShortkeySection
+            {...productDetail}
+            formControl={formControl}
+            formErrors={formErrors}
+            onFormChange={_onFormChangeHandle}
+          />
         </ScrollView>
         <View style={[styles.formFooterContainer]}>
           <ChipButton
             onPress={handleSubmit(_saveFormHandle)}
             containerStyle={styles.saveButtonContainer}
             labelStyle={styles.saveButtonLabel}
-            label={_confirm ? "Tap again to confirm" : "Save"}
+            label={
+              _confirm ? "Tap again to confirm" : _isNew ? "Create" : "Update"
+            }
           />
         </View>
       </View>

@@ -29,16 +29,20 @@ const _layout = () => {
         );
         new Array(10).fill({}).map((item, index) => {
           const { query, args } = insertProductQuery({
-            product_name: `Item ${index} with ${[
+            productId:
+              (Math.floor(Math.random() * 999) + 1000).toString() +
+              index.toString(),
+            productName: `Item ${index} with ${[
               "sugar",
               "salt",
               "onion",
             ].splice(Math.floor(Math.random() * 3), 1)}`,
-            product_description: `Item Random Description ${index} with ${[
+            productDescription: `Item Random Description ${index} with ${[
               "sugar",
               "salt",
               "onion",
             ].splice(Math.floor(Math.random() * 3), 1)}`,
+            productPrice: (Math.random() * 99).toFixed(3),
           });
           tx.executeSql(query, args, (_, row) => {});
         });

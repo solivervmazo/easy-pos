@@ -22,12 +22,12 @@ const ItemsScreen = () => {
   const router = useRouter();
   const routes = useStackRoutes();
 
-  const navigateDetailHandle = (id, params = {}) => {
+  const _navigateDetailHandle = (id, params = {}) => {
     const _routePath = replaceSlugs(routes["items-detail"], [id]);
     router.push(_routePath);
   };
 
-  const refreshTableHandle = () => {
+  const _refreshTableHandle = () => {
     dispatch(fetchProductAction());
   };
 
@@ -40,13 +40,14 @@ const ItemsScreen = () => {
       {loading && <AppSpinner />}
       <AppTable
         itemsLength={productList.length}
-        itemKey={"product_id"}
+        itemKey={"id"}
         data={productList}
         renderItem={({ item, toggled }) => <ItemRow item={item} />}
         actionsCount={2}
-        renderActions={({ actionSize }) => (
+        renderActions={({ actionSize, item }) => (
           <>
             <IconButton
+              onPress={() => _navigateDetailHandle(item.id)}
               icon={"Pencil"}
               containerStyle={{
                 aspectRatio: "1/1",
@@ -77,7 +78,7 @@ const ItemsScreen = () => {
           calendarIcon: "",
           renderHeaderActions: () => (
             <ChipButton
-              onPress={navigateDetailHandle}
+              onPress={_navigateDetailHandle}
               buttonLeft={() => (
                 <IconButton
                   disabled
@@ -94,7 +95,7 @@ const ItemsScreen = () => {
               }}
             />
           ),
-          onRefreshPress: refreshTableHandle,
+          onRefreshPress: _refreshTableHandle,
         }}
       />
     </>

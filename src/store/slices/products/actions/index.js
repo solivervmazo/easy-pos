@@ -10,3 +10,11 @@ export {
   fetchProductDetailAction,
   fetchProductDetailBuilder,
 } from "./fetchProductDetailAction";
+export {
+  generateProjectIdAction,
+  generateProjectIdBuilder,
+} from "./generateProductIdAction";
+export {
+  updateProductAction,
+  updateProductBuilder,
+} from "./updateProductAction";

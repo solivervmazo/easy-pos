@@ -13,7 +13,12 @@ const ItemDetailGeneralInfoSection = ({
   productBarcode,
   productSku,
   onFormChange,
+  onGenerateId = () => {},
 }) => {
+  const _onGenerateIdHandle = () => {
+    onGenerateId();
+  };
+
   return (
     <View style={styles.container}>
       <SectionHeader
@@ -35,8 +40,9 @@ const ItemDetailGeneralInfoSection = ({
           inputMode="numeric"
           renderAction={() => (
             <ChipButton
+              onPress={_onGenerateIdHandle}
               containerStyle={styles.inputActionButtonContainer}
-              label={`Custom`}
+              label={`Generate`}
             />
           )}
           required={true}

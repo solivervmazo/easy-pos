@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as yup from "yup";
+import FormSate from "../../../enums/FormState";
 
 import {
   fetchProductAction,
@@ -8,17 +9,17 @@ import {
   fetchProductDetailBuilder,
   insertProductAction,
   insertProductBuilder,
+  generateProjectIdAction,
+  generateProjectIdBuilder,
+  updateProductAction,
+  updateProductBuilder,
 } from "./actions";
 
-export class FormSate {
-  static fresh = "FRESH";
-  static editing = "EDITING";
-  static view = "VIEW";
-  static update = "UPDATE";
-}
-
 export const productFormSchema = yup.object().shape({
-  productId: yup.string().required("Id is required"),
+  productId: yup
+    .string()
+    .required("Id is required")
+    .min(4, "Product id must contain at least 4 characters"),
   productName: yup
     .string()
     .required("Product name is required")
@@ -31,13 +32,16 @@ export const productFormSchema = yup.object().shape({
 const initialState = {
   loading: true,
   formLoading: false,
-  formSubmitted: 0,
+  formActionState: FormSate.fresh,
   productDetail: {
     productId: "0",
     productName: "",
     productDescription: "",
     productBarcode: "",
     productSku: "",
+    productPrice: 0,
+    productshortkeyColor: "",
+    productCode: "",
   },
   productList: [],
   error: null,
@@ -49,28 +53,41 @@ export const productSlice = createSlice({
   initialState,
   reducers: {
     restartFormAction: (state) => {
-      state.formSubmitted = 0;
+      state.formActionState = FormSate.fresh;
       state.productDetail = {
-        productId: "0",
+        id: 0,
+        productId: "",
         productName: "",
         productDescription: "",
         productBarcode: "",
         productSku: "",
+        productPrice: 0,
+        productshortkeyColor: "",
+        productCode: "",
       };
     },
     updateFormAction: (state, payload) => {
-      console.log("payload", payload);
-      state.productDetail = payload?.payload || state.productDetail;
+      state.formActionState = payload?.payload?.formState || FormSate.fresh;
+      state.productDetail =
+        payload?.payload?.productDetail || state.productDetail;
     },
   },
   extraReducers: (builder) => {
     fetchProductActionBuilder(builder);
     fetchProductDetailBuilder(builder);
     insertProductBuilder(builder);
+    generateProjectIdBuilder(builder);
+    updateProductBuilder(builder);
   },
 });
 
 // Action creators are generated for each case reducer function
 export const { restartFormAction, updateFormAction } = productSlice.actions;
-export { fetchProductAction, insertProductAction, fetchProductDetailAction };
+export {
+  fetchProductAction,
+  insertProductAction,
+  fetchProductDetailAction,
+  generateProjectIdAction,
+  updateProductAction,
+};
 export default productSlice.reducer;

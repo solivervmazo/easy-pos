@@ -6,7 +6,13 @@ import { useRouter } from "expo-router";
 import { useStackRoutes } from "../../../routes/index";
 import { appColors } from "../../../themes";
 
-const ItemDetailShortkeySection = () => {
+const ItemDetailShortkeySection = ({
+  formControl,
+  formErrors,
+  productCode,
+  productShortkeyColor,
+  onFormChange,
+}) => {
   const router = useRouter();
   const routes = useStackRoutes();
   const _selectShortkeyColorHandle = () => {
@@ -26,7 +32,12 @@ const ItemDetailShortkeySection = () => {
       <View style={[styles.sectionContent]}>
         <AppFormInputText
           icon="Shortkeys"
-          label="Item Code"
+          value={productCode?.toString()}
+          control={formControl}
+          name={"productCode"}
+          errors={formErrors?.productCode}
+          onChange={(value) => onFormChange({ productCode: value })}
+          label="Product Code"
           enabled={true}
           labelContainerStyle={styles.inputLabelContainer}
           renderAction={() => (
