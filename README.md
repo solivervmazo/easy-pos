@@ -8,9 +8,10 @@
 
 # Tech
 
-    React-Expo
-    @reduxjs/toolkit
+    -- Workflow: React-Expo
+    -- State management: redux/redux @reduxjs/toolkit
     -- Input validator: yup react-hook-form @hookform/resolvers
+    -- Toast: react-native-toast-notifications
 
 # File structure
 

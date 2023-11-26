@@ -10,6 +10,7 @@ import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDisco
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
 import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
+import { useToast } from "react-native-toast-notifications";
 import {
   insertProductAction,
   restartFormAction,
@@ -23,12 +24,15 @@ import { useDrawerRoutes } from "../../../routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import FormSate from "../../../enums/FormState";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const ItemDetailScreen = () => {
   const dispatch = useDispatch();
+  const _headerHeight = useHeaderHeight();
   const { id } = useLocalSearchParams();
   const { formLoading, formActionState } = useSelector((state) => state.items);
   const [_isNew, setIsNew] = useState(true);
+  const toast = useToast();
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -58,7 +62,6 @@ const ItemDetailScreen = () => {
   };
 
   const _saveFormHandle = () => {
-    console.log("productDetail", productDetail);
     if (!_confirm) {
       setConfirm(true);
       return;
@@ -68,6 +71,12 @@ const ItemDetailScreen = () => {
     } else {
       dispatch(updateProductAction(productDetail));
     }
+  };
+
+  const _errorFormHandle = () => {
+    toast.show("Fields are required", {
+      type: "danger",
+    });
   };
 
   const _navigateDoneEditingHandle = () => {
@@ -142,7 +151,7 @@ const ItemDetailScreen = () => {
         </ScrollView>
         <View style={[styles.formFooterContainer]}>
           <ChipButton
-            onPress={handleSubmit(_saveFormHandle)}
+            onPress={handleSubmit(_saveFormHandle, _errorFormHandle)}
             containerStyle={styles.saveButtonContainer}
             labelStyle={styles.saveButtonLabel}
             label={

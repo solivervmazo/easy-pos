@@ -7,6 +7,7 @@ import { Stack } from "expo-router";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
+import { ToastProvider } from "react-native-toast-notifications";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -68,10 +69,18 @@ const _layout = () => {
   return (
     (ready && (
       <Provider store={store}>
-        <Stack
-          onLayout={onLayoutRootView}
-          screenOptions={{ headerShown: false }}
-        />
+        <ToastProvider
+          placement="top"
+          duration={5000}
+          animationType="slide-in"
+          animationDuration={250}
+          offsetTop={80}
+        >
+          <Stack
+            onLayout={onLayoutRootView}
+            screenOptions={{ headerShown: false }}
+          />
+        </ToastProvider>
       </Provider>
     )) ||
     null
