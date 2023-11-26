@@ -7,17 +7,17 @@ import {
   ChipButton,
   AppSpinner,
 } from "../../../ui";
-import { appColors, appFonts, appSizes, appStyles } from "../../../themes";
+import { appColors, appSizes } from "../../../themes";
 import ItemRow from "../ui/ItemRow";
 import { useStackRoutes, replaceSlugs } from "../../../routes";
 import { useRouter } from "expo-router";
 
 import { useSelector, useDispatch } from "react-redux";
-import { fetchItems } from "../../../store/slices/itemSlice";
+import { fetchProductAction } from "../../../store/slices/products/productSlice";
 
 const ItemsScreen = () => {
   const dispatch = useDispatch();
-  const { loading, itemList } = useSelector((state) => state.items);
+  const { loading, productList } = useSelector((state) => state.items);
 
   const router = useRouter();
   const routes = useStackRoutes();
@@ -28,19 +28,20 @@ const ItemsScreen = () => {
   };
 
   const refreshTableHandle = () => {
-    dispatch(fetchItems());
+    dispatch(fetchProductAction());
   };
 
   useEffect(() => {
-    dispatch(fetchItems());
+    dispatch(fetchProductAction());
   }, [dispatch]);
 
   return (
     <>
       {loading && <AppSpinner />}
       <AppTable
-        itemsLength={itemList.length}
-        data={itemList}
+        itemsLength={productList.length}
+        itemKey={"product_id"}
+        data={productList}
         renderItem={({ item, toggled }) => <ItemRow item={item} />}
         actionsCount={2}
         renderActions={({ actionSize }) => (

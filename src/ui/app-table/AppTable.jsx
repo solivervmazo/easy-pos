@@ -8,6 +8,7 @@ import { appColors, appFonts, appSizes, appStyles } from "../../themes";
 
 const AppTable = ({
   data,
+  itemKey,
   renderItem = ({ item, toggled }) => {},
   renderNoData = () => undefined,
   renderActions = ({ actionSize }) => {},
@@ -74,7 +75,7 @@ const AppTable = ({
               content={() => renderItem({ item, rowToggled })}
             />
           )}
-          keyExtractor={(item) => keyExtractor(item)}
+          keyExtractor={(item) => (itemKey ? item[itemKey] : item)}
           ItemSeparatorComponent={() => itemSeparatorComponent()}
         />
       )}

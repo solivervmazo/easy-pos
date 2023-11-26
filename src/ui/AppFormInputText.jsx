@@ -27,6 +27,7 @@ const AppFormInputText = ({
   labelInnerContainerStyle = {},
   onFocus = ({ defaultLineColor, focusedLineColor }) => undefined,
   onBlur = ({ defaultLineColor, focusedLineColor }) => undefined,
+  onChange = (value) => value,
   focusedLineColor = appColors.themeColor,
   defaultLineColor = appColors.black,
 }) => {
@@ -84,6 +85,11 @@ const AppFormInputText = ({
     setInputBorderColor(_defaultLineColor);
   };
 
+  const _onChangeHandle = (value) => {
+    setInputValue(value);
+    onChange(value);
+  };
+
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.innerContainer, innerContainerStyle]}>
@@ -106,6 +112,7 @@ const AppFormInputText = ({
               onFocus={_onFocus}
               onBlur={_onBlur}
               multiline={multiline}
+              onChange={(e) => _onChangeHandle(e.nativeEvent.text)}
               cursorColor={appColors.black}
               style={[
                 styles.input,

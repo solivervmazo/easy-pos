@@ -6,7 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { Stack } from "expo-router";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
-import products from "../src/db/products";
+import products, { insertProductQuery } from "../src/db/products";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -24,9 +24,31 @@ const _layout = () => {
   useEffect(() => {
     db.transaction(
       (tx) => {
-        tx.executeSql(products(), null, null, (_, error) => console.log(error));
+        products().forEach((stmnt) =>
+          tx.executeSql(stmnt, null, null, (_, error) => console.log(error))
+        );
+        new Array(10).fill({}).map((item, index) => {
+          const { query, args } = insertProductQuery({
+            product_name: `Item ${index} with ${[
+              "sugar",
+              "salt",
+              "onion",
+            ].splice(Math.floor(Math.random() * 3), 1)}`,
+            product_description: `Item Random Description ${index} with ${[
+              "sugar",
+              "salt",
+              "onion",
+            ].splice(Math.floor(Math.random() * 3), 1)}`,
+          });
+          tx.executeSql(query, args, (_, row) => {});
+        });
       },
-      () => setReady(true)
+      (err) => {
+        console.log(err);
+      },
+      () => {
+        setReady(true);
+      }
     );
   }, []);
 

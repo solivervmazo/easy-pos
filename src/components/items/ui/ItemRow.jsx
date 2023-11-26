@@ -5,7 +5,7 @@ import { appColors, appFonts, appSizes, appStyles } from "../../../themes";
 import { FlatList } from "react-native-gesture-handler";
 
 const ItemRow = ({ item }) => {
-  const { itemName, itemNumber, price, categories } = item;
+  const { product_name, product_id, price = 0, categories } = item;
   return (
     <>
       <View style={[styles.itemNameContainer]}>
@@ -14,7 +14,7 @@ const ItemRow = ({ item }) => {
           ellipsizeMode={"tail"}
           style={[styles.itemName]}
         >
-          {itemName}
+          {product_name}
         </Text>
         <View style={[styles.tagsContainer]}>
           <IconButton icon={"Tags"} disabled={true} />
@@ -33,7 +33,7 @@ const ItemRow = ({ item }) => {
       </View>
       <View style={styles.priceAndItemNumberContainer}>
         <Text style={styles.price}>$ {price}</Text>
-        <Text style={[styles.itemNumber]}>#{itemNumber}</Text>
+        <Text style={[styles.itemNumber]}>#{product_id}</Text>
       </View>
     </>
   );
