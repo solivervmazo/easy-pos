@@ -102,276 +102,286 @@ class _Icon {
   }
 }
 
-const Add = (props) => {
+export const Add = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("plus", "plus");
 };
 
-const Back = (props) => {
+export const Back = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("arrow-back-outline", "arrow-back-sharp");
 };
 
-const Bank = (props) => {
+export const Bank = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("bank", "bank");
 };
 
-const Barcode = (props) => {
+export const Barcode = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("barcode", "barcode");
 };
 
-const Bed = (props) => {
+export const Bed = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("bed-outline", "bed-sharp");
 };
 
-const Calculator = (props) => {
+export const Calculator = (props) => {
   const icon = new _Icon(props);
   return icon.fontawesome5("calculator", "calculator");
 };
 
-const Calendar = (props) => {
+export const Calendar = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("calendar", "calendar");
 };
 
-const Car = (props) => {
+export const Car = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("car-outline", "car-sharp");
 };
 
-const ChevLeft = (props) => {
+export const ChevLeft = (props) => {
   const icon = new _Icon(props);
   return icon.octicons("chevron-left", "chevron-left");
 };
 
-const ChevRight = (props) => {
+export const ChevRight = (props) => {
   const icon = new _Icon(props);
   return icon.octicons("chevron-right", "chevron-right");
 };
 
-const Close = (props) => {
+export const Close = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("close", "close");
 };
 
-const CursorText = (props) => {
+export const CursorText = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("cursor-text", "cursor-text");
 };
 
-const Dial = (props) => {
+export const Copy = (props) => {
+  const icon = new _Icon(props);
+  return icon.feather("copy", "copy");
+};
+
+export const Dial = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("phone-dial", "phone-dial-outline");
 };
 
-const Down = (props) => {
+export const Down = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("down", "down");
 };
 
-const Filters = (props) => {
+export const Filters = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("filter", "filter");
 };
 
-const Gps = (props) => {
+export const Gps = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("gps-fixed", "gps-fixed");
 };
 
-const Heart = (props) => {
+export const Heart = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("md-heart-outline", "md-heart-sharp");
 };
 
-const Home = (props) => {
+export const Home = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("home", "home");
 };
 
-const Items = (props) => {
+export const Items = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("inbox", "inbox");
 };
 
-const Info = (props) => {
+export const Info = (props) => {
   const icon = new _Icon(props);
   return icon.fontawesome5("info", "info");
 };
 
-const Keyboard = (props) => {
+export const Keyboard = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("keyboard", "keyboard");
 };
 
-const KeyboardOff = (props) => {
+export const KeyboardOff = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("keyboard-off", "keyboard-off");
 };
 
-const Location = (props) => {
+export const Location = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("location-outline", "location-sharp");
 };
 
-const MenuDot = (props) => {
+export const MenuDot = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("dots-vertical", "dots-vertical");
 };
 
-const Minus = (props) => {
+export const Minus = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("minus", "minus");
 };
 
-const OpenLink = (props) => {
+export const OpenLink = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("open-outline", "open");
 };
 
-const Pencil = (props) => {
+export const Pencil = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("pencil", "pencil");
 };
 
-const Pet = (props) => {
+export const Pet = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("pets", "pets");
 };
 
-const Place = (props) => {
+export const Place = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("map-outline", "map-sharp");
 };
 
-const PlayNext = (props) => {
+export const PlayNext = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("caretright", "caretright");
 };
 
-const PlayPrev = (props) => {
+export const PlayPrev = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("caretleft", "caretleft");
 };
 
-const PlayEnd = (props) => {
+export const PlayEnd = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("stepforward", "stepforward");
 };
 
-const PlayStart = (props) => {
+export const PlayStart = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("stepbackward", "stepbackward");
 };
 
-const Pool = (props) => {
+export const Pool = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("pool", "pool");
 };
 
-const Pos = (props) => {
+export const Pos = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("point-of-sale", "point-of-sale");
 };
 
-const PosManualMode = (props) => {
+export const PosManualMode = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("magnify-scan", "magnify-scan");
 };
 
-const PosScanMode = (props) => {
+export const PosScanMode = (props) => {
   const icon = new _Icon(props);
   return icon.feather("camera", "camera");
 };
 
-const PosShortkeysMode = (props) => {
+export const PosShortkeysMode = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("scan1", "scan1");
 };
 
-const Qr = (props) => {
+export const Qr = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("qr-code-outline", "qr-code");
 };
 
-const Receipt = (props) => {
+export const Receipt = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("receipt-outline", "receipt-sharp");
 };
 
-const ReceiptReturns = (props) => {
+export const ReceiptReturns = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("book-cancel-outline", "book-cancel");
 };
 
-const Refresh = (props) => {
+export const Refresh = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("refresh", "refresh");
 };
 
-const Restaurant = (props) => {
+export const Restaurant = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("restaurant-outline", "restaurant-sharp");
 };
 
-const Save = (props) => {
+export const Save = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("save", "save");
 };
 
-const Search = (props) => {
+export const Search = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("search-outline", "search-sharp");
 };
 
-const Share = (props) => {
+export const Share = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("ios-share-social-outline", "ios-share-social-sharp");
 };
 
-const Shortkeys = (props) => {
+export const Slash = (props) => {
+  const icon = new _Icon(props);
+  return icon.feather("slash", "slash");
+};
+
+export const Shortkeys = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("view-grid-plus-outline", "view-grid-plus");
 };
-const Star = (props) => {
+export const Star = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("md-star-outline", "md-star-sharp");
 };
 
-const Tags = (props) => {
+export const Tags = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("tagso", "tags");
 };
 
-const Tap = (props) => {
+export const Tap = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("gesture-tap", "gesture-tap");
 };
 
-const Tv = (props) => {
+export const Tv = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("tv-outline", "tv-sharp");
 };
 
-const Unit = (props) => {
+export const Unit = (props) => {
   const icon = new _Icon(props);
   return icon.feather("sliders", "sliders");
 };
 
-const Wallet = (props) => {
+export const Wallet = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("wallet-outline", "wallet");
 };
 
-const Warehouse = (props) => {
+export const Warehouse = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("storefront-outline", "storefront");
 };
 
-const Wifi = (props) => {
+export const Wifi = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("wifi", "wifi");
 };
@@ -392,6 +402,7 @@ const Icon = {
   ChevRight,
   Close,
   CursorText,
+  Copy,
   Heart, //
   Home,
   Info,
@@ -422,6 +433,7 @@ const Icon = {
   Refresh,
   Restaurant, //
   Save,
+  Slash,
   Shortkeys,
   Search, //
   Share, //

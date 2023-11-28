@@ -122,7 +122,9 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 1,
   },
-  contentContainer: {},
+  contentContainer: {
+    flex: 1,
+  },
   headerContainer: {
     flexDirection: "row",
     alignItems: "flex-start",

@@ -13,6 +13,7 @@ const AppLayout = ({ onLayoutRootView }) => {
   useEffect(() => {
     dispatch(getQueueAction());
     if (onQueue && Object.keys(onQueue || {}).length > 0 && toast) {
+      toast.hideAll();
       const {
         message = false,
         options = {},
