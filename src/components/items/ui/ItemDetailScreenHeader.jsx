@@ -10,6 +10,7 @@ const ItemDetailScreenHeader = ({ item }) => {
       options={{
         title: _title,
         headerShown: true,
+        // headerTitle: () => <SearchBar page={"Items"} icon="PosScanMode" />,
       }}
     />
   );

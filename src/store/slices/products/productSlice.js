@@ -33,6 +33,7 @@ const initialState = {
   loading: true,
   formLoading: false,
   formActionState: FormSate.fresh,
+  toastOffset: 80,
   productDetail: {
     productId: "0",
     productName: "",
@@ -71,6 +72,10 @@ export const productSlice = createSlice({
       state.productDetail =
         payload?.payload?.productDetail || state.productDetail;
     },
+    updateToastOffset: (state, payload) => {
+      console.log("payload", payload);
+      state.toastOffset = payload.payload;
+    },
   },
   extraReducers: (builder) => {
     fetchProductActionBuilder(builder);
@@ -82,7 +87,8 @@ export const productSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { restartFormAction, updateFormAction } = productSlice.actions;
+export const { restartFormAction, updateFormAction, updateToastOffset } =
+  productSlice.actions;
 export {
   fetchProductAction,
   insertProductAction,

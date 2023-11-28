@@ -1,13 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Provider } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { StyleSheet, View } from "react-native";
-import { Stack } from "expo-router";
+import {
+  Slot,
+  Stack,
+  useFocusEffect,
+  usePathname,
+  useSegments,
+} from "expo-router";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
-import { ToastProvider } from "react-native-toast-notifications";
+import { ToastProvider, useToast } from "react-native-toast-notifications";
+import { getQueueAction } from "../src/store/slices/toast/toastSlice";
+import { appColors, appConstants } from "../src/themes";
+import { View } from "react-native";
+import AppLayout from "../src/components/app/layouts/AppLayout";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -71,22 +80,17 @@ const _layout = () => {
       <Provider store={store}>
         <ToastProvider
           placement="top"
-          duration={5000}
+          duration={4000}
           animationType="slide-in"
           animationDuration={250}
-          offsetTop={80}
+          style={{ marginTop: 100 }}
         >
-          <Stack
-            onLayout={onLayoutRootView}
-            screenOptions={{ headerShown: false }}
-          />
+          <AppLayout onLayoutRootView={onLayoutRootView} />
         </ToastProvider>
       </Provider>
     )) ||
     null
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default _layout;

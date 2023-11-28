@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { AppSpinner, ChipButton, Spacer } from "../../../ui/";
-import { appColors, appSizes, appSpacing } from "../../../themes";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { appColors, appConstants, appSizes, appSpacing } from "../../../themes";
+import { ScrollView } from "react-native-gesture-handler";
 import ItemDetailScreenHeader from "../ui/ItemDetailScreenHeader";
 import ItemDetailGeneralInfoSection from "../ui/ItemDetailGeneralInfoSection";
 import ItemDetailCategoryAndVariationSection from "../ui/ItemDetailCategoryAndVariationSection";
@@ -10,7 +10,6 @@ import ItemDetailPricingAndDiscountSection from "../ui/ItemDetailPricingAndDisco
 import ItemDetailShortkeySection from "../ui/ItemDetailShortkeySection";
 import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { useToast } from "react-native-toast-notifications";
 import {
   insertProductAction,
   restartFormAction,
@@ -24,15 +23,13 @@ import { useDrawerRoutes } from "../../../routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import FormSate from "../../../enums/FormState";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { addQueueAction } from "../../../store/slices/toast/toastSlice";
 
 const ItemDetailScreen = () => {
   const dispatch = useDispatch();
-  const _headerHeight = useHeaderHeight();
   const { id } = useLocalSearchParams();
   const { formLoading, formActionState } = useSelector((state) => state.items);
   const [_isNew, setIsNew] = useState(true);
-  const toast = useToast();
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -74,16 +71,31 @@ const ItemDetailScreen = () => {
   };
 
   const _errorFormHandle = () => {
-    toast.show("Fields are required", {
-      type: "danger",
-    });
+    dispatch(
+      addQueueAction({
+        message: "Fields are required",
+        options: {
+          type: "danger",
+        },
+        offset: appConstants.TOAST_ON_STACK_OFFSET,
+      })
+    );
   };
 
   const _navigateDoneEditingHandle = () => {
     router.replace(drawerRoutes["store-items"].path);
+    dispatch(
+      addQueueAction({
+        message: `Successfully ${_isNew ? "saved new" : "updated"} product.`,
+        options: {
+          type: "success",
+        },
+      })
+    );
   };
 
   const _onFormChangeHandle = ({ ...args }) => {
+    setConfirm(false);
     const updatedProductForm = {
       ...productDetail,
       ...args,
@@ -114,8 +126,8 @@ const ItemDetailScreen = () => {
 
   return (
     <>
-      {formLoading && <AppSpinner />}
       <ItemDetailScreenHeader item={_isNew ? undefined : productDetail} />
+      {formLoading && <AppSpinner />}
       <View style={[styles.container]}>
         <ScrollView
           contentContainerStyle={{}}

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectProductsQuery } from "../../../../db/products";
 import * as SQLlite from "expo-sqlite";
+import FormSate from "../../../../enums/FormState";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -31,6 +32,7 @@ export const generateProjectIdBuilder = (builder) => {
   return builder
     .addCase(generateProjectIdAction.pending, (state) => {
       state.formLoading = true;
+      state.formActionState = FormSate.editing;
     })
     .addCase(generateProjectIdAction.fulfilled, (state, action) => {
       state.formLoading = false;
