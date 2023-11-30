@@ -1,11 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectProductsQuery } from "../../../../db/products";
 import * as SQLlite from "expo-sqlite";
+import { RequestState, SpinnerState } from "../../../../enums";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const fetchProductAction = createAsyncThunk(
-  "product/fetchProductAction",
+  "products/fetchProductAction",
   async (payload = {}) => {
     const db = SQLlite.openDatabase(db_name);
     const { orderBy = "id", desc = true } = payload;
@@ -21,15 +22,31 @@ export const fetchProductAction = createAsyncThunk(
 export const fetchProductActionBuilder = (builder) => {
   return builder
     .addCase(fetchProductAction.pending, (state) => {
-      state.loading = true;
+      state.screenSpinner = SpinnerState.show;
     })
     .addCase(fetchProductAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.productList = action.payload;
+      return {
+        ...state,
+        productTable: {
+          state: RequestState.fulfilled, //No use
+          data: action.payload?.map((product) => ({
+            id: product.id,
+            productId: product.product_id,
+            productName: product.product_name,
+            productDescription: product.product_description,
+            productBarcode: product.product_barcode,
+            productSku: product.product_sku,
+            categoryId: product.category_id,
+            productCode: product.product_code,
+            productPrice: product.product_price,
+            productShortkeyColor: product.product_shortkey_color,
+          })),
+        },
+        screenSpinner: SpinnerState.hidden,
+      };
     })
     .addCase(fetchProductAction.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
       console.log(action.error.message);
+      state.screenSpinner = SpinnerState.show;
     });
 };

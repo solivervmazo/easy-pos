@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import ColorPicker, {
-  Panel5,
-  Panel1,
-  Panel2,
-  Panel3,
-  Panel4,
-} from "reanimated-color-picker";
+import ColorPicker, { Panel3 } from "reanimated-color-picker";
 import { appColors, appSizes, appSpacing } from "../themes";
 import AppCard from "./AppCard";
 import Spacer from "./core/Spacer";
@@ -17,9 +11,7 @@ const AppColorPicker = ({
   colorValue = undefined,
   onSelect = ({ colorValue }) => undefined,
 }) => {
-  const [_colorValue, setColorValue] = useState(undefined);
-  const colorPickerRef = useRef(null);
-  const colorTextRef = useRef(null);
+  const [_colorValue, setColorValue] = useState(colorValue);
 
   const _onSelectHandle = ({ hex }) => {
     setColorValue(hex);
@@ -28,6 +20,7 @@ const AppColorPicker = ({
 
   const _onClearHandle = () => {
     setColorValue(undefined);
+    onSelect({ colorValue: undefined });
   };
 
   return (

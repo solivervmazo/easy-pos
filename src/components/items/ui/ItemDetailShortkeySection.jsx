@@ -4,7 +4,8 @@ import { AppFormInputText, ChipButton, SectionHeader } from "../../../ui";
 import { commonStyles } from "../styles";
 import { useRouter } from "expo-router";
 import { useStackRoutes } from "../../../routes/index";
-import { appColors } from "../../../themes";
+import { appColors, appSizes } from "../../../themes";
+import Icon from "../../../ui/core/Icon";
 
 const ItemDetailShortkeySection = ({
   formControl,
@@ -48,15 +49,25 @@ const ItemDetailShortkeySection = ({
                   style={{
                     height: appSizes.Icon.large,
                     width: appSizes.Icon.large,
-                    borderWidth: 1,
-                    borderBlockColor: appColors.themeColor,
+                    borderWidth: 0.5,
+                    borderColor: appColors.lightBgSecondary,
                     overflow: "hidden",
-                    backgroundColor: appColors.darkBgSecondary,
+                    backgroundColor:
+                      productShortkeyColor || appColors.lightBgTertiary,
                   }}
-                />
+                >
+                  {!productShortkeyColor && (
+                    <Icon.Slash
+                      color={appColors.darkTextTertiary}
+                      size={appSizes.Icon.large}
+                    />
+                  )}
+                </View>
               )}
               containerStyle={styles.inputActionButtonContainer}
-              label={`Select color`}
+              label={`${
+                productShortkeyColor ? productShortkeyColor : "Select color"
+              }`}
             />
           )}
         />

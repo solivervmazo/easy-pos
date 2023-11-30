@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { AppSpinner, ChipButton, Spacer } from "../../../ui/";
 import { appColors, appConstants, appSizes, appSpacing } from "../../../themes";
 import { ScrollView } from "react-native-gesture-handler";
@@ -27,14 +27,17 @@ import { addQueueAction } from "../../../store/slices/toast/toastSlice";
 const ItemDetailScreen = () => {
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
-
-  const productForm = useSelector((state) => state.products.productForm);
+  const formLoading = useSelector((state) => state.products.formLoading);
+  const formActionState = useSelector(
+    (state) => state.products.formActionState
+  );
   const [_isNew, setIsNew] = useState(true);
-  const [_tableLoading, setTableLoading] = useState(!productForm);
 
   const router = useRouter();
   const drawerRoutes = useDrawerRoutes();
 
+  const [_confirm, setConfirm] = useState(false);
+  const { productDetail } = useSelector((state) => state.products);
   const {
     control: formControl,
     handleSubmit,
@@ -43,26 +46,23 @@ const ItemDetailScreen = () => {
   } = useForm({
     reValidateMode: "onChange",
     resolver: yupResolver(productFormSchema),
-    defaultValues: productForm?.body,
+    defaultValues: productDetail,
   });
+  getValues();
 
   const _generateIdHandle = () => {
     dispatch(generateProjectIdAction({ random: true }));
   };
 
   const _saveFormHandle = () => {
-    if (productForm?.state === FormState.editing) {
-      dispatch(
-        updateProductFormAction({
-          state: FormState.confirming,
-        })
-      );
-    } else if (productForm?.state === FormState.confirming) {
-      if (_isNew) {
-        dispatch(insertProductAction(productForm.body));
-      } else {
-        dispatch(updateProductAction(productForm.body));
-      }
+    if (!_confirm) {
+      setConfirm(true);
+      return;
+    }
+    if (_isNew) {
+      dispatch(insertProductAction(productDetail));
+    } else {
+      dispatch(updateProductAction(productDetail));
     }
   };
 
@@ -78,8 +78,8 @@ const ItemDetailScreen = () => {
     );
   };
 
-  const _navigateDoneEditingHandle = ({ redirect = true }) => {
-    redirect && router.push(drawerRoutes["store-items"].path);
+  const _navigateDoneEditingHandle = () => {
+    router.replace(drawerRoutes["store-items"].path);
     dispatch(
       addQueueAction({
         message: `Successfully ${_isNew ? "saved new" : "updated"} product.`,
@@ -91,38 +91,39 @@ const ItemDetailScreen = () => {
   };
 
   const _onFormChangeHandle = ({ ...args }) => {
+    setConfirm(false);
+    const updatedProductForm = {
+      ...productDetail,
+      ...args,
+    };
     dispatch(
       updateProductFormAction({
-        body: { ...productForm.body, ...args },
+        formState: FormState.editing,
+        productDetail: updatedProductForm,
       })
     );
   };
 
   useEffect(() => {
-    if (productForm?.state == FormState.sumbmitted) {
-      _navigateDoneEditingHandle({ redirect: true });
-    } else {
-      if (!productForm) {
-        const searchId =
-          id === undefined || id === "undefined" ? undefined : id;
-        setIsNew(!searchId);
-        dispatch(fetchProductDetailAction({ id: searchId }));
-      } else if (productForm?.state === FormState.idle) {
-        if (productForm.body) {
-          Object.keys(productForm.body).forEach((attr) =>
-            setValue(attr, productForm.body[attr], { shouldDirty: true })
-          );
-        }
-      }
+    if (id != "undefined" && formActionState === FormState.fresh) {
+      dispatch(updateProductFormAction({ formState: FormState.editing }));
+      dispatch(fetchProductDetailAction({ args: { id: id } }));
+      setIsNew(false);
+    } else if (formActionState === FormState.fresh) {
+      dispatch(generateProjectIdAction({ random: false }));
+      setValue("productId", productDetail.productId, { shouldDirty: true });
+      setIsNew(true);
+    } else if (formActionState === FormState.editing) {
+      setValue("productId", productDetail.productId, { shouldDirty: true });
+    } else if (formActionState === FormState.sumbmitted) {
+      _navigateDoneEditingHandle();
     }
-  }, [productForm, dispatch]);
+  }, [formActionState, productDetail, id]);
 
   return (
     <>
-      <ItemDetailScreenHeader item={_isNew ? undefined : productForm?.body} />
-      {(!productForm || productForm?.state === FormState.pending) && (
-        <AppSpinner />
-      )}
+      <ItemDetailScreenHeader item={_isNew ? undefined : productDetail} />
+      {formLoading && <AppSpinner />}
       <View style={[styles.container]}>
         <ScrollView
           contentContainerStyle={{}}
@@ -130,7 +131,7 @@ const ItemDetailScreen = () => {
         >
           {/* General information */}
           <ItemDetailGeneralInfoSection
-            {...productForm?.body}
+            {...productDetail}
             formControl={formControl}
             formErrors={formErrors}
             onFormChange={_onFormChangeHandle}
@@ -142,7 +143,7 @@ const ItemDetailScreen = () => {
           {/* Pricing and discounts */}
           <Spacer size={25} horizontal={false} />
           <ItemDetailPricingAndDiscountSection
-            {...productForm?.body}
+            {...productDetail}
             formControl={formControl}
             formErrors={formErrors}
             onFormChange={_onFormChangeHandle}
@@ -150,7 +151,7 @@ const ItemDetailScreen = () => {
           {/* Shortkeys */}
           <Spacer size={25} horizontal={false} />
           <ItemDetailShortkeySection
-            {...productForm?.body}
+            {...productDetail}
             formControl={formControl}
             formErrors={formErrors}
             onFormChange={_onFormChangeHandle}
@@ -158,16 +159,11 @@ const ItemDetailScreen = () => {
         </ScrollView>
         <View style={[styles.formFooterContainer]}>
           <ChipButton
-            disabled={productForm?.state === FormState.idle}
             onPress={handleSubmit(_saveFormHandle, _errorFormHandle)}
             containerStyle={styles.saveButtonContainer}
             labelStyle={styles.saveButtonLabel}
             label={
-              productForm?.state === FormState.confirming
-                ? "Tap again to confirm"
-                : _isNew
-                ? "Create"
-                : "Update"
+              _confirm ? "Tap again to confirm" : _isNew ? "Create" : "Update"
             }
           />
         </View>

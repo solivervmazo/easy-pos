@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { appConstants } from "../themes";
+import { appColors, appConstants } from "../themes";
 import Icon from "./core/Icon";
 const ChipButton = ({
   label,
@@ -13,10 +13,11 @@ const ChipButton = ({
   labelStyle = {},
   flat = false,
   plain = false,
+  disabled = false,
 }) => {
   return (
     <TouchableOpacity
-      disabled={plain}
+      disabled={disabled}
       onPress={onPress}
       activeOpacity={appConstants.ACTIVE_OPACITY}
       containerStyle={innerContainerStyle}
@@ -33,6 +34,7 @@ const ChipButton = ({
           gap: 5,
         },
         containerStyle,
+        disabled ? { backgroundColor: appColors.lightTextSecondary } : {},
       ]}
     >
       {buttonLeft({ Icon: Icon.Icons })}

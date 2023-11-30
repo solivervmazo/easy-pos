@@ -4,12 +4,12 @@ import {
   insertProductQuery,
 } from "../../../../db/products";
 import * as SQLlite from "expo-sqlite";
-import FormSate from "../../../../enums/FormState";
+import FormState from "../../../../enums/FormState";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const insertProductAction = createAsyncThunk(
-  "product/insertProduct",
+  "products/insertProduct",
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
     const { query, args } = insertProductQuery(payload);
@@ -32,23 +32,36 @@ export const insertProductAction = createAsyncThunk(
 export const insertProductBuilder = (builder) => {
   return builder
     .addCase(insertProductAction.pending, (state) => {
-      state.formLoading = true;
+      state.productForm.state = FormState.pending;
     })
     .addCase(insertProductAction.fulfilled, (state, action) => {
-      state.form = {
+      const productList = Object.assign([], state.productList);
+      productList.unshift({
+        id: action.payload.id,
         productId: action.payload.product_id,
         productName: action.payload.product_name,
         productDescription: action.payload.product_description,
         productBarcode: action.payload.product_barcode,
         productSku: action.payload.product_sku,
+        categoryId: action.payload.category_id,
+        productCode: action.payload.product_code,
+        productPrice: action.payload.product_price,
+        productShortkeyColor: action.payload.product_shortkey_color,
+      });
+      return {
+        ...state,
+        productForm: {
+          state: FormState.sumbmitted,
+          body: undefined,
+        },
+        productTable: {
+          ...state.productTable,
+          data: productList,
+        },
       };
-      state.productList.unshift(action.payload);
-      state.formLoading = false;
-      state.formActionState = FormSate.sumbmitted;
     })
     .addCase(insertProductAction.rejected, (state, action) => {
-      state.formLoading = false;
-      state.error = action.error.message;
       console.log(action.error.message);
+      state.productForm.state = FormState.editing;
     });
 };

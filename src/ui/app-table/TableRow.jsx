@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { View, Animated, StyleSheet } from "react-native";
 import { appColors, appSizes } from "../../themes";
 import { Octicons } from "@expo/vector-icons";
@@ -12,40 +12,54 @@ const ACTION_ICON_SIZE = appSizes.Icon.medium;
 const TableRow = ({
   content = () => {},
   actions = ({ actionSize }) => {},
+  toggleKey,
   actionsCount = 0,
   toggled = false,
   containerStyle = {},
   contentStyle = {},
   actionContainerStyle = {},
   actionContentStyle = {},
-  onToggle = () => {},
+  onToggle = ({ toggled, toggledKey }) => {},
 }) => {
   const rowActionContainerWidth = useRef(
     new Animated.Value(ACTION_TOGGLER_WIDTH)
   ).current;
   const rowActionIconDeg = useRef(new Animated.Value(0)).current;
+  const [_toggled, setToggled] = useState(false);
 
   const animateRowActionIconDeg = rowActionIconDeg.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "180deg"],
   });
 
-  const toggleRowAction = useCallback(() => {
+  const _animateToggle = useCallback((_toggled) => {
     Animated.parallel([
       Animated.timing(rowActionContainerWidth, {
-        toValue: toggled
+        toValue: !_toggled
           ? ACTION_TOGGLER_WIDTH
           : ACTION_BUTTON_WIDTH * actionsCount + ACTION_TOGGLER_WIDTH,
         duration: 100,
         useNativeDriver: false,
       }),
       Animated.timing(rowActionIconDeg, {
-        toValue: toggled ? 0 : 1,
+        toValue: !_toggled ? 0 : 1,
         duration: 100,
         useNativeDriver: false,
       }),
-    ]).start(onToggle);
+    ]).start(onToggle({ toggled: _toggled, toggledKey: toggleKey }));
   });
+
+  const toggleRowAction = useCallback((_toggled) => {
+    _animateToggle(!toggled);
+  });
+
+  useEffect(
+    useCallback(() => {
+      _animateToggle(toggled);
+    }),
+
+    [toggled]
+  );
 
   return (
     <View style={[styles.itemContainer, containerStyle]}>
@@ -62,7 +76,7 @@ const TableRow = ({
         >
           <TouchableOpacity
             style={styles.itemActionToggleButton}
-            onPress={toggleRowAction}
+            onPress={() => toggleRowAction(toggled)}
           >
             <AnimatedIcon
               name={"chevron-right"}

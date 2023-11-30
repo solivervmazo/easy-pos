@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { FlatList } from "react-native-gesture-handler";
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { StyleSheet, View, Text } from "react-native";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
@@ -9,7 +9,7 @@ import { appColors, appFonts, appSizes, appStyles } from "../../themes";
 const AppTable = ({
   data,
   itemKey,
-  renderItem = ({ item, toggled }) => {},
+  renderItem = ({ item, toggled }) => null,
   renderNoData = () => undefined,
   renderActions = ({ actionSize, item }) => {},
   itemSeparatorComponent = () => {},
@@ -18,7 +18,7 @@ const AppTable = ({
   tableContainerStyle = {},
   noDataContainerStyle = {},
   noDataLableStyle = {},
-  onRowToggle = ({ toggled, setToggled }) => {},
+  onRowToggle = ({ toggled }) => {},
   itemsLength = 0,
   itemsPerPage = 10,
   hasHeader = true,
@@ -35,12 +35,17 @@ const AppTable = ({
   },
 }) => {
   const [rowToggled, setRowToggled] = useState(false);
+  const [_rowToggledKey, setRowToggledKey] = useState(undefined);
   const _onRowToggle = useCallback(
-    (_onToggle) => {
-      setRowToggled(!rowToggled);
-      if (_onToggle) _onToggle({ rowToggled, setRowToggled });
+    (_toggled, key) => {
+      if (_toggled == false) {
+        if (key === _rowToggledKey) setRowToggledKey(undefined);
+      } else {
+        setRowToggledKey(key);
+      }
+      if (onRowToggle) onRowToggle({ toggled: _toggled });
     },
-    [rowToggled]
+    [_rowToggledKey]
   );
 
   const _renderNoData = () => {
@@ -65,17 +70,23 @@ const AppTable = ({
           data={data}
           renderItem={({ item }) => (
             <TableRow
-              toggled={rowToggled}
-              onToggle={({ rowToggled, setRowToggled }) =>
-                _onRowToggle(onRowToggle)
+              toggleKey={item[itemKey]}
+              toggled={_rowToggledKey == item[itemKey]}
+              onToggle={({ toggled, toggledKey }) =>
+                _onRowToggle(toggled, item[itemKey])
               }
               actionsCount={actionsCount}
               contentStyle={{ flexDirection: "row" }}
               actions={({ actionSize }) => renderActions({ actionSize, item })}
-              content={() => renderItem({ item, rowToggled })}
+              content={() =>
+                renderItem({ item, toggled: _rowToggledKey == item[itemKey] })
+              }
+              key={`app-table-lists-row-${item[itemKey]}`}
             />
           )}
-          keyExtractor={(item) => (itemKey ? item[itemKey] : item)}
+          keyExtractor={(item) =>
+            `app-table-lists-flatlist-row-${item[itemKey]}`
+          }
           ItemSeparatorComponent={() => itemSeparatorComponent()}
         />
       )}

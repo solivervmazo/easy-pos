@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import FormSate from "../../../enums/FormState";
+import {
+  FormState,
+  LoadState,
+  RequestState,
+  SpinnerState,
+} from "../../../enums/";
 
 import {
   fetchProductAction,
@@ -30,51 +35,64 @@ export const productFormSchema = yup.object().shape({
 });
 
 const initialState = {
-  loading: true,
-  formLoading: false,
-  formActionState: FormSate.fresh,
-  toastOffset: 80,
+  productListState: RequestState.idle, //
+  loading: true, //
+  formLoading: false, //
+  formActionState: FormState.fresh, //
+  screenSpinner: SpinnerState.show,
+  productForm: undefined,
+  productTable: {
+    state: RequestState.idle,
+    data: undefined,
+  },
   productDetail: {
+    //
     productId: "0",
     productName: "",
     productDescription: "",
     productBarcode: "",
     productSku: "",
     productPrice: 0,
-    productshortkeyColor: "",
+    productShortkeyColor: "",
     productCode: "",
   },
-  productList: [],
-  error: null,
-  response: null,
+  productList: [], //
+  error: null, //
+  response: null, //
+  refreshProductList: LoadState.init, //
 };
 
 export const productSlice = createSlice({
-  name: "product",
+  name: "products",
   initialState,
   reducers: {
     restartFormAction: (state) => {
-      state.formActionState = FormSate.fresh;
-      state.productDetail = {
-        id: 0,
-        productId: "",
-        productName: "",
-        productDescription: "",
-        productBarcode: "",
-        productSku: "",
-        productPrice: 0,
-        productshortkeyColor: "",
-        productCode: "",
+      return {
+        ...state,
+        formActionState: FormState.fresh,
+        productForm: undefined,
+        productDetail: {
+          id: 0,
+          productId: "",
+          productName: "",
+          productDescription: "",
+          productBarcode: "",
+          productSku: "",
+          productPrice: 0,
+          productShortkeyColor: "",
+          productCode: "",
+        },
       };
     },
-    updateFormAction: (state, payload) => {
-      state.formActionState = payload?.payload?.formState || FormSate.fresh;
-      state.productDetail =
-        payload?.payload?.productDetail || state.productDetail;
+    updateProductFormAction: (state, { payload }) => {
+      state.productForm.state = payload.state || FormState.editing;
+      if (payload.body) state.productForm.body = payload.body;
     },
-    updateToastOffset: (state, payload) => {
-      console.log("payload", payload);
-      state.toastOffset = payload.payload;
+    refreshProductListAction: (state, payload) => {
+      return {
+        ...state,
+        refreshProductList: payload.payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -87,8 +105,11 @@ export const productSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { restartFormAction, updateFormAction, updateToastOffset } =
-  productSlice.actions;
+export const {
+  restartFormAction,
+  updateProductFormAction,
+  refreshProductListAction,
+} = productSlice.actions;
 export {
   fetchProductAction,
   insertProductAction,
@@ -96,4 +117,6 @@ export {
   generateProjectIdAction,
   updateProductAction,
 };
+export const productTableSelector = (state) => state.products.productTable;
+
 export default productSlice.reducer;

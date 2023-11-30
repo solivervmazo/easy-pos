@@ -6,15 +6,21 @@ const initialState = {
 };
 
 export const toastSlice = createSlice({
-  name: "product",
+  name: "toast",
   initialState,
   reducers: {
     addQueueAction: (state, payload) => {
-      console.log(payload);
-      state.toastQueue.push(payload?.payload);
+      return {
+        ...state,
+        // toastQueue: state.toastQueue.push(payload?.payload),
+      };
     },
     getQueueAction: (state, payload) => {
-      state.onQueue = state.toastQueue.pop();
+      return {
+        ...state,
+        onQueue: state.toastQueue.pop(),
+        toastQueue: state.toastQueue,
+      };
     },
   },
 });
