@@ -130,7 +130,7 @@ export const updateProductQuery = (
 
 export default products = () => {
   return [
-    `DROP TABLE IF EXIST  products`,
+    `DROP TABLE IF EXISTS products`,
     `CREATE TABLE IF NOT EXISTS products(
       id INTEGER PRIMARY KEY,
       product_id TEXT UNIQUE,

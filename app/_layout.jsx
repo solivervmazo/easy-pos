@@ -1,21 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  Slot,
-  Stack,
-  useFocusEffect,
-  usePathname,
-  useSegments,
-} from "expo-router";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
-import { ToastProvider, useToast } from "react-native-toast-notifications";
-import { getQueueAction } from "../src/store/slices/toast/toastSlice";
-import { appColors, appConstants } from "../src/themes";
-import { View } from "react-native";
+import categories from "../src/db/categories";
+import { ToastProvider } from "react-native-toast-notifications";
 import AppLayout from "../src/components/app/layouts/AppLayout";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
@@ -34,9 +25,11 @@ const _layout = () => {
   useEffect(() => {
     db.transaction(
       (tx) => {
-        products().forEach((stmnt) =>
-          tx.executeSql(stmnt, null, null, (_, error) => console.log(error))
-        );
+        products()
+          .concat(categories())
+          .forEach((stmnt) =>
+            tx.executeSql(stmnt, null, null, (_, error) => console.log(error))
+          );
         new Array(10).fill({}).map((item, index) => {
           const { query, args } = insertProductQuery({
             productId:

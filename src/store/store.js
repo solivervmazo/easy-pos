@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productSlice from "./slices/products/productSlice";
 import toastSlice from "./slices/toast/toastSlice";
-import categoriesSlice from "./slices/products/categoriesSlice";
+import categoriesSlice from "./slices/categories/categoriesSlice";
 export const store = configureStore({
   reducer: {
     toast: toastSlice,

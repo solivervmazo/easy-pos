@@ -1,28 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  selectProductsQuery,
-  insertProductQuery,
-} from "../../../../db/products";
+  selectcategoriesQuery,
+  insertCategoryQuery,
+} from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
-import { generateProductId } from "../../../helpers/generateProductId";
+import { generateCategoryId } from "../../../helpers/generateCategoryId";
 import { FormState } from "../../../../enums";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
-export const fetchProductDetailAction = createAsyncThunk(
-  "products/fetchProductDetail",
+export const fetchCategoryDetailAction = createAsyncThunk(
+  "categories/fetchCategoryDetail",
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
     if (!payload.id) {
-      const productId = await generateProductId(db);
+      const CategoryId = await generateCategoryId(db);
       return {
         state: FormState.idle,
         body: {
-          productId: productId,
+          CategoryId: CategoryId,
         },
       };
     } else {
-      const { query, args } = selectProductsQuery({
+      const { query, args } = selectcategoriesQuery({
         args: { id: payload.id },
         limit: 1,
       });
@@ -35,69 +35,43 @@ export const fetchProductDetailAction = createAsyncThunk(
   }
 );
 
-export const fetchProductDetailBuilder = (builder) => {
+export const fetchCategoryDetailBuilder = (builder) => {
   builder
-    .addCase(fetchProductDetailAction.pending, (state) => {
-      // return {
-      //   ...state,
-      //   formLoading: true,
-      // };
-    })
-    .addCase(fetchProductDetailAction.fulfilled, (state, { payload }) => {
+    .addCase(fetchCategoryDetailAction.pending, (state) => {})
+    .addCase(fetchCategoryDetailAction.fulfilled, (state, { payload }) => {
       if (!payload.body?.id) {
-        state.productForm = {
+        state.CategoryForm = {
           ...payload,
           body: {
             ...payload.body,
-            productName: "",
-            productDescription: "",
-            productBarcode: "",
-            productSku: "",
-            productPrice: 0,
-            productShortkeyColor: "",
-            productCode: "",
+            CategoryName: "",
+            CategoryDescription: "",
+            CategoryBarcode: "",
+            categoriesku: "",
+            CategoryPrice: 0,
+            categorieshortkeyColor: "",
+            CategoryCode: "",
           },
         };
       } else {
-        state.productForm = {
+        state.CategoryForm = {
           ...payload,
           body: {
             id: payload?.body?.id,
-            productId: payload?.body?.product_id,
-            productName: payload?.body?.product_name,
-            productDescription: payload?.body?.product_description,
-            productBarcode: payload?.body?.product_barcode,
-            productSku: payload?.body?.product_sku,
+            CategoryId: payload?.body?.Category_id,
+            CategoryName: payload?.body?.Category_name,
+            CategoryDescription: payload?.body?.Category_description,
+            CategoryBarcode: payload?.body?.Category_barcode,
+            categoriesku: payload?.body?.Category_sku,
             categoryId: payload?.body?.category_id,
-            productCode: payload?.body?.product_code,
-            productPrice: payload?.body?.product_price,
-            productShortkeyColor: payload?.body?.product_shortkey_color,
+            CategoryCode: payload?.body?.Category_code,
+            CategoryPrice: payload?.body?.Category_price,
+            categorieshortkeyColor: payload?.body?.Category_shortkey_color,
           },
         };
       }
-      // return {
-      //   ...state,
-      //   formLoading: false,
-      //   productDetail: {
-      //     ...state.prductDetail,
-      //     id: action.payload?.id,
-      //     productId: action.payload?.product_id,
-      //     productName: action.payload?.product_name,
-      //     productDescription: action.payload?.product_description,
-      //     productBarcode: action.payload?.product_barcode,
-      //     productSku: action.payload?.product_sku,
-      //     productPrice: action.payload?.product_price,
-      //     productCode: action.payload?.product_code,
-      //     productShortkeyColor: action.payload?.product_shortkey_color,
-      //   },
-      // };
     })
-    .addCase(fetchProductDetailAction.rejected, (state, action) => {
+    .addCase(fetchCategoryDetailAction.rejected, (state, action) => {
       console.log(action.error.message);
-      // return {
-      //   ...state,
-      //   formLoading: false,
-      //   error: action.error.message,
-      // };
     });
 };

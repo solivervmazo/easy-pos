@@ -1,5 +1,5 @@
 import { selectProductsQuery } from "../../db/products";
-
+import { generateStringId } from "./generateStringId";
 export const generateProductId = async (db, random = false) => {
   const { query, args } = selectProductsQuery({
     orderBy: "id",
@@ -11,8 +11,5 @@ export const generateProductId = async (db, random = false) => {
     rows = await tx.executeSqlAsync(query, args);
   });
   const latestProjectId = rows?.rows?.[0]?.id || 0;
-  return `${
-    (random ? Math.floor(Math.random() * 999999) + 1000000 : 1000000) +
-    latestProjectId
-  }`;
+  return generateStringId(latestProjectId, random);
 };

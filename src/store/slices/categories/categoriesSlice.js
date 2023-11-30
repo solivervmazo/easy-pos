@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as yup from "yup";
-import { FormState, RequestState, SpinnerState } from "../../../enums/";
+import { FormState, RequestState, SpinnerState } from "../../../enums";
 
 import {
   fetchCategoryAction,
@@ -59,7 +59,6 @@ export const categoriesSlice = createSlice({
     fetchCategoryActionBuilder(builder);
     fetchCategoryDetailBuilder(builder);
     insertCategoryBuilder(builder);
-    generateProjectIdBuilder(builder);
     updateCategoryBuilder(builder);
   },
 });
@@ -67,8 +66,8 @@ export const categoriesSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   restartFormAction,
-  updateCategoryFormAction: updatecategoryFormAction,
-  refreshCategoryListAction: refreshcategoryListAction,
+  updateCategoryFormAction,
+  refreshCategoryListAction,
 } = categoriesSlice.actions;
 export {
   fetchCategoryAction,

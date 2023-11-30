@@ -106,7 +106,7 @@ export const updateCategoryQuery = (
 
 export default categories = () => {
   return [
-    `DROP TABLE IF EXIST categories`,
+    `DROP TABLE IF EXISTS categories`,
     `CREATE TABLE IF NOT EXISTS categories(
       id INTEGER PRIMARY KEY,
       category_id TEXT UNIQUE,
