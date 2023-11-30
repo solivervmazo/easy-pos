@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { AppColorPicker, AppModal } from "../../../ui";
 import { useDispatch, useSelector } from "react-redux";
-import { updateFormAction } from "../../../store/slices/products/productSlice";
+import {
+  productFormSelector,
+  updateProductFormAction,
+} from "../../../store/slices/products/productSlice";
 import FormState from "../../../enums/FormState";
 
 const ScreenHeader = () => (
@@ -21,9 +24,9 @@ const ScreenHeader = () => (
 const ItemSelectShortkeyColor = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { productDetail } = useSelector((state) => state.products);
+  const productForm = useSelector(productFormSelector);
   const [_colorValue, setColorValue] = useState(
-    productDetail?.productShortkeyColor
+    productForm?.body.productShortkeyColor
   );
 
   const _changeColorHandle = ({ colorValue }) => {
@@ -32,13 +35,12 @@ const ItemSelectShortkeyColor = () => {
 
   const _submitColorHandle = () => {
     const updatedProductForm = {
-      ...productDetail,
+      ...productForm?.body,
       productShortkeyColor: _colorValue || "",
     };
     dispatch(
-      updateFormAction({
-        formState: FormState.editing,
-        productDetail: updatedProductForm,
+      updateProductFormAction({
+        body: { ...productForm.body, ...updatedProductForm },
       })
     );
     router.canGoBack() && router.back();
@@ -52,7 +54,7 @@ const ItemSelectShortkeyColor = () => {
           onConfirm={_submitColorHandle}
           renderContent={() => (
             <AppColorPicker
-              colorValue={productDetail?.productShortkeyColor || undefined}
+              colorValue={productForm?.body.productShortkeyColor || undefined}
               onSelect={_changeColorHandle}
             />
           )}

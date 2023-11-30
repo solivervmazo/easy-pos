@@ -118,5 +118,6 @@ export {
   updateProductAction,
 };
 export const productTableSelector = (state) => state.products.productTable;
+export const productFormSelector = (state) => state.products.productForm;
 
 export default productSlice.reducer;

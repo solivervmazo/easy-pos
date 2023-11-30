@@ -38,7 +38,6 @@ const ProductListTable = () => {
     }),
     [productTable, dispatch]
   );
-  console.log("aa");
   return (
     <AppTable
       itemsLength={productTable?.data?.length}

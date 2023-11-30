@@ -25,7 +25,6 @@ const TableRow = ({
     new Animated.Value(ACTION_TOGGLER_WIDTH)
   ).current;
   const rowActionIconDeg = useRef(new Animated.Value(0)).current;
-  const [_toggled, setToggled] = useState(false);
 
   const animateRowActionIconDeg = rowActionIconDeg.interpolate({
     inputRange: [0, 1],
