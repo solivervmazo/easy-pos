@@ -5,9 +5,9 @@ import * as SplashScreen from "expo-splash-screen";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
-import categories from "../src/db/categories";
+import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
-import AppLayout from "../src/components/app/layouts/AppLayout";
+import AppLayout from "../src/features/app/layouts/AppLayout";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -46,6 +46,19 @@ const _layout = () => {
               "onion",
             ].splice(Math.floor(Math.random() * 3), 1)}`,
             productPrice: (Math.random() * 99).toFixed(3),
+          });
+          tx.executeSql(query, args, (_, row) => {});
+        });
+
+        new Array(10).fill({}).map((item, index) => {
+          const { query, args } = insertCategoryQuery({
+            categoryId:
+              (Math.floor(Math.random() * 999) + 1000).toString() +
+              index.toString(),
+            categoryName: `${["food", "drinks", "add-ons"].splice(
+              Math.floor(Math.random() * 3),
+              1
+            )}`,
           });
           tx.executeSql(query, args, (_, row) => {});
         });

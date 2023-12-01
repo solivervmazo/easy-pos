@@ -1,0 +1,19 @@
+import React from "react";
+import { Stack } from "expo-router";
+
+const ProductDetailScreenHeader = ({ item }) => {
+  const _title = `${item ? "" : "New "}Product${
+    item?.productId ? `(${item.productId})` : ""
+  }`;
+  return (
+    <Stack.Screen
+      options={{
+        title: _title,
+        headerShown: true,
+        // headerTitle: () => <SearchBar page={"Items"} icon="PosScanMode" />,
+      }}
+    />
+  );
+};
+
+export default ProductDetailScreenHeader;

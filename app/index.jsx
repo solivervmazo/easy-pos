@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { AppIndex } from "../src/components/app";
-import { Redirect, Stack } from "expo-router";
+import { StyleSheet } from "react-native";
+import { Redirect } from "expo-router";
 const index = () => {
   // return <Redirect href={"/items/[id]"} />;
-  return <Redirect href={"/(drawer)/(store)/items"} />;
+  return <Redirect href={"/(drawer)/(units)/products"} />;
+  // return null;
   // return <Stack.Screen></Stack.Screen>;
 };
 

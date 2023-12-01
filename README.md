@@ -60,7 +60,7 @@
 
 - /app/*modules
     Uses Stack Navigation otherwise (drawer)
-    ***Note:*** *Use ScreensComponents from **src/components/\*modules/** in each _layout.jsx .*
+    ***Note:*** *Use ScreensComponents from **src/features/\*modules/** in each _layout.jsx .*
 
 - /app/(drawer)/(*drawer route)
     Completely unrelated to modules, you can set drawer routes in *src/routes/routes.jsx*.
@@ -80,7 +80,7 @@
 - /src/components
     Modular components.
 
-- /src/components/*modules
+- /src/features/*modules
     ***/index.js*** - Use imports for shareable components
     ***/screens/\*.jsx*** - Use direct import when used
     ***/layouts/\*.jsx*** - To be strictly used in _layout.jsx, use direct import when used

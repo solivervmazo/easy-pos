@@ -1,10 +1,8 @@
 import React from "react";
-import { HomeContextProvider } from "../../src/components/home";
-import { AuthScreen } from "../../src/screens";
-import { Stack } from "expo-router";
+import AuthLoginScreen from "../../src/features/auth/screens/AuthLoginScreen";
 
 const _layout = () => {
-  return <AuthScreen />;
+  return <AuthLoginScreen />;
 };
 
 export default _layout;

@@ -1,11 +1,8 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { AppScreen } from "../../src/screens";
+import AppDrawerLayout from "../../src/myapp/AppDrawerLayout";
 
 const _layout = () => {
-  return <AppScreen />;
+  return <AppDrawerLayout />;
 };
-
-const styles = StyleSheet.create({});
 
 export default _layout;

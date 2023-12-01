@@ -1,5 +1,5 @@
+import { Text, View } from "react-native";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 const Dummy = () => {
   return (
@@ -8,7 +8,5 @@ const Dummy = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default Dummy;

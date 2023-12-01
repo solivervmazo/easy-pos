@@ -75,7 +75,7 @@ export {
   fetchCategoryDetailAction,
   updateCategoryAction,
 };
-export const categoryTableSelector = (state) => state.categorys.categoryTable;
-export const categoryFormSelector = (state) => state.categorys.categoryForm;
+export const categoryTableSelector = (state) => state.categories.categoryTable;
+export const categoryFormSelector = (state) => state.categories.categoryForm;
 
 export default categoriesSlice.reducer;

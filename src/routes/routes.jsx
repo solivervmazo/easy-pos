@@ -1,17 +1,6 @@
 // **NOTE: path  must match the url from root following expo fiel base routing
 
-const drawer = {
-  home: {
-    path: "(home)/home",
-    options: {
-      routeOptions: {
-        key: "home",
-        icon: "Home",
-      },
-      drawerLabel: "Home",
-      title: "Home",
-    },
-  },
+const _storeDrawerRoutes = {
   store: {
     path: "(store)/index",
     options: {
@@ -21,18 +10,6 @@ const drawer = {
       },
       drawerLabel: "Store",
       title: "Store",
-    },
-  },
-  "store-items": {
-    path: "(store)/items",
-    options: {
-      routeOptions: {
-        key: "store-items",
-        icon: "Items",
-        initialScreen: "index",
-      },
-      drawerLabel: "Items",
-      title: "Items",
     },
   },
   "store-pos": {
@@ -49,24 +26,64 @@ const drawer = {
   },
 };
 
-const stack = {
-  "items-detail": {
-    path: "items/[$id]",
-    slugs: ["$id"],
+const _unitsPrefix = "units";
+const _unitsDrawerRoutes = {
+  tools: {
+    path: `(${_unitsPrefix})/index`,
     options: {
       routeOptions: {
-        key: "store-pos-manual",
-        icon: "Pos",
+        head: true,
+        key: "units",
       },
-      drawerLabel: "Point of sale",
-      title: "Point of sale",
+      drawerLabel: "Units",
+      title: "Units",
+    },
+  },
+  [`${_unitsPrefix}-products`]: {
+    path: `(${_unitsPrefix})/products`,
+    options: {
+      routeOptions: {
+        key: `${_unitsPrefix}-products`,
+        icon: "Items",
+        initialScreen: "index",
+      },
+      drawerLabel: "Products",
+      title: "Products",
+    },
+  },
+};
+
+const drawer = {
+  home: {
+    path: "(home)/home",
+    options: {
+      routeOptions: {
+        key: "home",
+        icon: "Home",
+      },
+      drawerLabel: "Home",
+      title: "Home",
+    },
+  },
+  ..._storeDrawerRoutes,
+  ..._unitsDrawerRoutes,
+};
+
+const PRODUCTS_PREFIX = "products";
+const PRODUCTS_PRODUCTS_PREFIX = "products";
+const stack = {
+  [`${PRODUCTS_PREFIX}-detail`]: {
+    path: `${PRODUCTS_PREFIX}/${PRODUCTS_PRODUCTS_PREFIX}/[$id]`,
+    slugs: ["$id"],
+    options: {
+      routeOptions: {},
     },
     modals: {
       "detail-select-category": {
-        path: "items/select-category",
+        path: `${PRODUCTS_PREFIX}/${PRODUCTS_PRODUCTS_PREFIX}/select-category`,
       },
       "detail-select-shortkey-color": {
-        path: "items/select-shortkey-color",
+        path: `${PRODUCTS_PREFIX}/${PRODUCTS_PRODUCTS_PREFIX}/select-shortkey-color`,
       },
     },
   },

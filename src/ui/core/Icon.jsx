@@ -142,6 +142,11 @@ export const Car = (props) => {
   return icon.ionicons("car-outline", "car-sharp");
 };
 
+export const Category = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("shapes-outline", "shapes-sharp");
+};
+
 export const ChevLeft = (props) => {
   const icon = new _Icon(props);
   return icon.octicons("chevron-left", "chevron-left");
@@ -398,6 +403,7 @@ const Icon = {
   Car, //
   Calculator,
   Calendar,
+  Category,
   ChevLeft,
   ChevRight,
   Close,

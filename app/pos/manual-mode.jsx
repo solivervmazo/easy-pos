@@ -1,5 +1,5 @@
 import React from "react";
-import PosManualModeScreen from "../../src/components/pos/screens/PosManualModeScreen";
+import PosManualModeScreen from "../../src/features/pos/screens/PosManualModeScreen";
 
 const ManualMode = () => {
   return <PosManualModeScreen />;

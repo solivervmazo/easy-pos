@@ -10,7 +10,7 @@ import {
 import { Spacer, SectionHeader, ChipButton } from "../../../src/ui";
 import Icon from "../../../src/ui/core/Icon";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { PosQuickMode } from "../../../src/components/pos";
+import { PosQuickMode } from "../../../src/features/pos";
 const TR = [
   {
     id: 1,

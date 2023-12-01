@@ -1,8 +1,7 @@
 import React from "react";
-import { AuthLogin } from "../../../src/components/auth";
-
+import AuthLoginScreen from "../../../src/features/auth/screens/AuthLoginScreen";
 const home = () => {
-  return <AuthLogin />;
+  return <AuthLoginScreen />;
 };
 
 export default home;
