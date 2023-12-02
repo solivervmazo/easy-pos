@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchProductAction,
   productTableSelector,
-  restartFormAction,
+  restartProductFormAction,
 } from "../../../store/slices/products/productSlice";
 import { RequestState } from "../../../enums";
 
@@ -21,7 +21,7 @@ const ProductListTable = () => {
   const routes = useStackRoutes();
 
   const _navigateDetailHandle = useCallback((id, params = {}) => {
-    dispatch(restartFormAction());
+    dispatch(restartProductFormAction());
     const _routePath = replaceSlugs(routes["products-detail"], [id]);
     router.push(_routePath);
   });

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as yup from "yup";
 import {
   FormState,
   LoadState,
@@ -18,98 +17,85 @@ import {
   generateProjectIdBuilder,
   updateProductAction,
   updateProductBuilder,
-} from "./actions";
+} from "./actions/products";
 
-export const productFormSchema = yup.object().shape({
-  productId: yup
-    .string()
-    .required("Id is required")
-    .min(4, "Product id must contain at least 4 characters"),
-  productName: yup
-    .string()
-    .required("Product name is required")
-    .min(3, "Product name must contain at least 3 characters"),
-  productDescription: yup.string(),
-  productBarcode: yup.string(),
-  productSku: yup.string(),
-});
+import {
+  fetchCategoryAction,
+  fetchCategoryActionBuilder,
+  fetchCategoryDetailAction,
+  fetchCategoryDetailBuilder,
+  insertCategoryAction,
+  insertCategoryBuilder,
+  // generateProjectIdAction,
+  // generateProjectIdBuilder,
+  updateCategoryAction,
+  updateCategoryBuilder,
+} from "./actions/categories";
 
 const initialState = {
-  productListState: RequestState.idle, //
-  loading: true, //
-  formLoading: false, //
-  formActionState: FormState.fresh, //
-  screenSpinner: SpinnerState.show,
+  screenProductSpinner: SpinnerState.show,
   productForm: undefined,
   productTable: {
     state: RequestState.idle,
     data: undefined,
   },
-  productDetail: {
-    //
-    productId: "0",
-    productName: "",
-    productDescription: "",
-    productBarcode: "",
-    productSku: "",
-    productPrice: 0,
-    productShortkeyColor: "",
-    productCode: "",
+  /**categories */
+  screenCategorySpinner: SpinnerState.show,
+  categoryForm: undefined,
+  categoryTable: {
+    state: RequestState.idle,
+    data: undefined,
   },
-  productList: [], //
-  error: null, //
-  response: null, //
-  refreshProductList: LoadState.init, //
 };
 
 export const productSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    restartFormAction: (state) => {
+    /**products */
+    restartProductFormAction: (state) => {
       return {
         ...state,
-        formActionState: FormState.fresh,
         productForm: undefined,
-        productDetail: {
-          id: 0,
-          productId: "",
-          productName: "",
-          productDescription: "",
-          productBarcode: "",
-          productSku: "",
-          productPrice: 0,
-          productShortkeyColor: "",
-          productCode: "",
-        },
       };
     },
     updateProductFormAction: (state, { payload }) => {
       state.productForm.state = payload.state || FormState.editing;
       if (payload.body) state.productForm.body = payload.body;
     },
-    refreshProductListAction: (state, payload) => {
+    /**categories */
+    restartCategoryFormAction: (state) => {
       return {
         ...state,
-        refreshProductList: payload.payload,
+        categoryForm: undefined,
       };
+    },
+    updateCategoryFormAction: (state, { payload }) => {
+      state.categoryForm.state = payload.state || FormState.editing;
+      if (payload.body) state.categoryForm.body = payload.body;
     },
   },
   extraReducers: (builder) => {
+    /**products */
     fetchProductActionBuilder(builder);
     fetchProductDetailBuilder(builder);
     insertProductBuilder(builder);
     generateProjectIdBuilder(builder);
     updateProductBuilder(builder);
+    /**categories**/
+    fetchCategoryActionBuilder(builder);
+    fetchCategoryDetailBuilder(builder);
+    insertCategoryBuilder(builder);
+    // generateProjectIdBuilder(builder);
+    updateCategoryBuilder(builder);
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  restartFormAction,
-  updateProductFormAction,
-  refreshProductListAction,
-} = productSlice.actions;
+
+/**products */
+export const { restartProductFormAction, updateProductFormAction } =
+  productSlice.actions;
 export {
   fetchProductAction,
   insertProductAction,
@@ -120,4 +106,16 @@ export {
 export const productTableSelector = (state) => state.products.productTable;
 export const productFormSelector = (state) => state.products.productForm;
 
+/**categories */
+export const { restartCategoryFormAction, updateCategoryFormAction } =
+  productSlice.actions;
+export {
+  fetchCategoryAction,
+  insertCategoryAction,
+  fetchCategoryDetailAction,
+  // generateProjectIdAction,
+  updateCategoryAction,
+};
+export const categoryTableSelector = (state) => state.products.categoryTable;
+export const categoryFormSelector = (state) => state.products.categoryForm;
 export default productSlice.reducer;

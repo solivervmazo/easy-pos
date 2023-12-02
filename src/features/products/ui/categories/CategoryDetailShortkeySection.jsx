@@ -1,24 +1,24 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { AppFormInput, ChipButton, SectionHeader } from "../../../ui";
-import { commonStyles } from "../styles";
+import { AppFormInput, ChipButton, SectionHeader } from "../../../../ui";
+import { commonStyles } from "../../styles";
 import { useRouter } from "expo-router";
-import { useStackRoutes } from "../../../routes/index";
-import { appColors, appSizes } from "../../../themes";
-import Icon from "../../../ui/core/Icon";
+import { useStackRoutes } from "../../../../routes/index";
+import { appColors, appSizes } from "../../../../themes";
+import Icon from "../../../../ui/core/Icon";
 
-const ProductDetailShortkeySection = ({
+const CategoryDetailShortkeySection = ({
   formControl,
   formErrors,
-  productCode,
-  productShortkeyColor,
+  categoryCode,
+  categoryShortkeyColor,
   onFormChange,
 }) => {
   const router = useRouter();
   const routes = useStackRoutes();
   const _selectShortkeyColorHandle = () => {
     router.push(
-      routes["products-detail"].modals["detail-select-shortkey-color"].path
+      routes["categories-detail"].modals["detail-select-shortkey-color"].path
     );
   };
 
@@ -33,12 +33,12 @@ const ProductDetailShortkeySection = ({
       <View style={[styles.sectionContent]}>
         <AppFormInput
           icon="Shortkeys"
-          value={productCode?.toString()}
+          value={categoryCode?.toString()}
           control={formControl}
-          name={"productCode"}
-          errors={formErrors?.productCode}
-          onChange={(value) => onFormChange({ productCode: value })}
-          label="Product Code"
+          name={"categoryCode"}
+          errors={formErrors?.categoryCode}
+          onChange={(value) => onFormChange({ categoryCode: value })}
+          label="Category Code"
           enabled={true}
           labelContainerStyle={styles.inputLabelContainer}
           renderAction={() => (
@@ -53,10 +53,10 @@ const ProductDetailShortkeySection = ({
                     borderColor: appColors.lightBgSecondary,
                     overflow: "hidden",
                     backgroundColor:
-                      productShortkeyColor || appColors.lightBgTertiary,
+                      categoryShortkeyColor || appColors.lightBgTertiary,
                   }}
                 >
-                  {!productShortkeyColor && (
+                  {!categoryShortkeyColor && (
                     <Icon.Slash
                       color={appColors.darkTextTertiary}
                       size={appSizes.Icon.large}
@@ -66,7 +66,7 @@ const ProductDetailShortkeySection = ({
               )}
               containerStyle={styles.inputActionButtonContainer}
               label={`${
-                productShortkeyColor ? productShortkeyColor : "Select color"
+                categoryShortkeyColor ? categoryShortkeyColor : "Select color"
               }`}
             />
           )}
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
   addRuleButtonContainer: { marginHorizontal: 10 },
 });
 
-export default ProductDetailShortkeySection;
+export default CategoryDetailShortkeySection;

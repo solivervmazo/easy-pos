@@ -9,7 +9,7 @@ import FormState from "../../../../enums/FormState";
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const insertCategoryAction = createAsyncThunk(
-  "categories/insertCategory",
+  "products/insertCategory",
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
     const { query, args } = insertCategoryQuery(payload);
@@ -35,7 +35,7 @@ export const insertCategoryBuilder = (builder) => {
       state.categoryForm.state = FormState.pending;
     })
     .addCase(insertCategoryAction.fulfilled, (state, action) => {
-      const categoryList = Object.assign([], state.categoryList);
+      const categoryList = Object.assign([], state.categoryTable?.data || []);
       categoryList.unshift({
         id: action.payload.id,
         categoryId: action.payload.category_id,

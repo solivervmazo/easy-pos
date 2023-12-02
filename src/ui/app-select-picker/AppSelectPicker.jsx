@@ -35,6 +35,7 @@ const AppSelectPicker = ({
   showRecents = true,
   canSearch = true,
   onClear = ({ searchValue }) => {},
+  onSelect = (value) => value,
   recentSearchCount = 3, // set 0 to disable
   renderClearButton = ({ onClear = ({ searchValue }) => {} }) => {
     /** set null to disable */
@@ -94,13 +95,19 @@ const AppSelectPicker = ({
   };
 
   const _$select = ({ itemKeyIndex }) => {
-    const selected = _$picker._$selection(
+    const searchResult = _$picker._$selection(
       searchResults,
       itemKeyIndex,
       multiple
     );
-    setSearchResults(selected);
-    setSelection(_$picker._$filter(selected));
+    setSearchResults(searchResult);
+    const selected = _$picker._$filter(searchResult);
+    setSelection(selected);
+    onSelect(
+      _$picker._$deleteReservedKeys(
+        multiple ? selected : selected[0] || undefined
+      )
+    );
   };
 
   const _$reset = (selectedValue = []) => {

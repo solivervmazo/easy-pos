@@ -2,10 +2,10 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import ProductDetailScreen from "../../../src/features/products/screens/ProductDetailScreen";
 
-const ItemDetail = () => {
+const ProductDetail = () => {
   return <ProductDetailScreen />;
 };
 
-export default ItemDetail;
+export default ProductDetail;
 
 const styles = StyleSheet.create({});

@@ -54,6 +54,29 @@ export const _$recentFilterStrategy = (haystack, needle = "", limit = 0) => {
     .filter((_, index) => index < limit);
 };
 
+export const _$deleteReservedKeys = (obj) => {
+  const _deleteKeys = (o) => {
+    const oCloned = { ...o };
+    Object.keys(oCloned).forEach((key) => {
+      if (key.startsWith("_$")) delete oCloned[key];
+    });
+    return oCloned;
+  };
+
+  if (typeof obj === "object") {
+    if (Array.isArray(obj)) {
+      let cloneObj = [].concat(obj);
+      cloneObj.forEach((o, i) => (cloneObj[i] = _deleteKeys(o)));
+      return cloneObj;
+    } else {
+      const cloneObj = Object.assign({}, obj);
+      _deleteKeys(cloneObj);
+      return cloneObj;
+    }
+  }
+  return obj;
+};
+
 export const _$searchStrategy = (
   haystack,
   needle,

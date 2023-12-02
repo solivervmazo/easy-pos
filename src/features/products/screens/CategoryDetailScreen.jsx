@@ -1,37 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
-import { AppSpinner, ChipButton, Spacer } from "../../../ui";
+import {
+  AppFormInput,
+  AppSpinner,
+  ChipButton,
+  SectionHeader,
+  Spacer,
+} from "../../../ui";
 import { appColors, appConstants, appSizes, appSpacing } from "../../../themes";
 import { ScrollView } from "react-native-gesture-handler";
-import CategoryDetailScreenHeader from "../ui/CategoryDetailScreenHeader";
-import CategoryDetailGeneralInfoSection from "../ui/CategoryDetailGeneralInfoSection";
-import CategoryDetailCategoryAndVariationSection from "../ui/CategoryDetailCategoryAndVariationSection";
-import CategoryDetailPricingAndDiscountSection from "../ui/CategoryDetailPricingAndDiscountSection";
-import CategoryDetailShortkeySection from "../ui/CategoryDetailShortkeySection";
-import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   insertCategoryAction,
   fetchCategoryDetailAction,
   updateCategoryFormAction,
-  categoryFormSchema,
-  generateProjectIdAction,
+  // generateProjectIdAction,
   updateCategoryAction,
-} from "../../../store/slices/categories/categorySlice";
+  categoryFormSelector,
+} from "../../../store/slices/products/productSlice";
 import { useDrawerRoutes } from "../../../routes";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import FormState from "../../../enums/FormState";
 import { addQueueAction } from "../../../store/slices/toast/toastSlice";
-import { commonStyles } from "../styles";
-
+import TabsScreenHeader from "../ui/TabsScreenHeader";
+import categoryFormSchema from "../validator/categoryFormSchema";
+import CategoryDetailGeneralInfoSection from "../ui/categories/CategoryDetailGeneralInfoSection";
+import CategoryDetailShortkeySection from "../ui/categories/CategoryDetailShortkeySection";
 const CategoryDetailScreen = () => {
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
 
-  const categoryForm = useSelector((state) => state.categories.categoryForm);
+  const categoryForm = useSelector(categoryFormSelector);
   const [_isNew, setIsNew] = useState(true);
-  const [_tableLoading, setTableLoading] = useState(!categoryForm);
 
   const router = useRouter();
   const drawerRoutes = useDrawerRoutes();
@@ -80,7 +82,7 @@ const CategoryDetailScreen = () => {
   };
 
   const _navigateDoneEditingHandle = ({ redirect = true }) => {
-    redirect && router.push(drawerRoutes["store-items"].path);
+    redirect && router.push(drawerRoutes["units-products"].path);
     dispatch(
       addQueueAction({
         message: `Successfully ${_isNew ? "saved new" : "updated"} category.`,
@@ -117,11 +119,12 @@ const CategoryDetailScreen = () => {
       }
     }
   }, [categoryForm, dispatch]);
-
   return (
     <>
-      <CategoryDetailScreenHeader
-        item={_isNew ? undefined : categoryForm?.body}
+      <TabsScreenHeader
+        renderTitle={(titleComposer) =>
+          titleComposer("Category", categoryForm?.body?.categorId, _isNew)
+        }
       />
       {(!categoryForm || categoryForm?.state === FormState.pending) && (
         <AppSpinner />
@@ -132,64 +135,20 @@ const CategoryDetailScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* General information */}
-          <SectionHeader
-            titleSize={appSizes.Text.medium}
-            containerStyle={styles.sectionHeaderContainer}
-            title={"General Information"}
-            titleColor={appColors.themeColor}
+          <CategoryDetailGeneralInfoSection
+            {...categoryForm?.body}
+            formControl={formControl}
+            formErrors={formErrors}
+            onFormChange={_onFormChangeHandle}
           />
           {/* Category and variations */}
           <Spacer size={25} horizontal={false} />
-          <SectionHeader
-            titleSize={appSizes.Text.medium}
-            containerStyle={styles.sectionHeaderContainer}
-            title={"Shortkey"}
-            titleColor={appColors.themeColor}
+          <CategoryDetailShortkeySection
+            {...categoryForm?.body}
+            formControl={formControl}
+            formErrors={formErrors}
+            onFormChange={_onFormChangeHandle}
           />
-          <View style={[styles.sectionContent]}>
-            <AppFormInputText
-              icon="Shortkeys"
-              value={categoryCode?.toString()}
-              control={formControl}
-              name={"categoryCode"}
-              errors={formErrors?.categoryCode}
-              onChange={(value) => onFormChange({ categoryCode: value })}
-              label="Category Code"
-              enabled={true}
-              labelContainerStyle={styles.inputLabelContainer}
-              renderAction={() => (
-                <ChipButton
-                  onPress={_selectShortkeyColorHandle}
-                  buttonRight={() => (
-                    <View
-                      style={{
-                        height: appSizes.Icon.large,
-                        width: appSizes.Icon.large,
-                        borderWidth: 0.5,
-                        borderColor: appColors.lightBgSecondary,
-                        overflow: "hidden",
-                        backgroundColor:
-                          categoryShortkeyColor || appColors.lightBgTertiary,
-                      }}
-                    >
-                      {!categoryShortkeyColor && (
-                        <Icon.Slash
-                          color={appColors.darkTextTertiary}
-                          size={appSizes.Icon.large}
-                        />
-                      )}
-                    </View>
-                  )}
-                  containerStyle={styles.inputActionButtonContainer}
-                  label={`${
-                    categoryShortkeyColor
-                      ? categoryShortkeyColor
-                      : "Select color"
-                  }`}
-                />
-              )}
-            />
-          </View>
         </ScrollView>
         <View style={[styles.formFooterContainer]}>
           <ChipButton
@@ -212,7 +171,6 @@ const CategoryDetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  ...commonStyles,
   container: {
     flex: 1,
     gap: 10,

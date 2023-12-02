@@ -13,6 +13,50 @@ const CategoryRow = ({ item }) => {
     categories,
     categoryShortkeyColor,
   } = item;
+
+  const _renderCodeOrColor = () => {
+    const _shortKeyText = (
+      <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
+        {`Shortkey Color`}
+      </Text>
+    );
+    const _renderNone = (
+      <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
+        {`No shortkey`}
+      </Text>
+    );
+    const _renderCode = () => (
+      <Text style={[styles.shortkeyCode]}>{categoryCode}</Text>
+    );
+    const _renderColor = () => (
+      <View
+        style={{
+          borderWidth: 0.5,
+          width: appSizes.Icon.medium,
+          aspectRatio: "1/1",
+          borderColor: appColors.lightBgSecondary,
+          backgroundColor: categoryShortkeyColor || appColors.lightBgTertiary,
+        }}
+      ></View>
+    );
+    if (!categoryCode && !categoryShortkeyColor) return _renderNone;
+    if (categoryCode && categoryShortkeyColor)
+      return (
+        <>
+          {_renderCode()}
+          {_renderColor()}
+        </>
+      );
+    if (categoryCode) return _renderCode();
+    if (categoryShortkeyColor)
+      return (
+        <>
+          {_shortKeyText}
+          {_renderColor()}
+        </>
+      );
+  };
+
   return (
     <>
       <View style={[styles.itemNameContainer]}>
@@ -45,40 +89,20 @@ const CategoryRow = ({ item }) => {
               !categoryDescription ? styles.itemLabelsNoTest : {},
             ]}
           >
-            {categoryDescription || `No description`}
+            {categoryDescription || `No additional information`}
           </Text>
         )}
       </View>
-      <View style={styles.priceAndItemNumberContainer}>
+      <View style={styles.shortkeyAndIdContainer}>
         <View
           style={{
             flexDirection: "row",
             gap: 5,
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {!categoryCode && !categoryShortkeyColor ? (
-            <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
-              {`No shortkey`}
-            </Text>
-          ) : categoryCode ? (
-            <Text style={[styles.itemCode]}>$ {categoryCode}</Text>
-          ) : (
-            <View
-              style={{
-                borderWidth: 0.5,
-                borderColor: appColors.lightBgSecondary,
-                backgroundColor:
-                  categoryShortkeyColor || appColors.lightBgTertiary,
-              }}
-            >
-              {!categoryShortkeyColor && (
-                <Icon.Slash
-                  color={appColors.darkTextTertiary}
-                  size={appSizes.Icon.medium}
-                />
-              )}
-            </View>
-          )}
+          {_renderCodeOrColor()}
         </View>
         <Text style={[styles.itemLabels]}>#{categoryId}</Text>
       </View>
@@ -107,15 +131,15 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     ...appStyles.textLightShadow,
   },
-  priceAndItemNumberContainer: {
+  shortkeyAndIdContainer: {
     justifyContent: "flex-end",
     alignItems: "flex-end",
     padding: 10,
   },
-  itemCode: {
+  shortkeyCode: {
     fontSize: appSizes.Text.regular,
-    fontFamily: appFonts.bold,
-    textTransform: "capitalize",
+    fontFamily: appFonts.regular,
+    textTransform: "uppercase",
     ...appStyles.textLightShadow,
   },
   itemLabels: {

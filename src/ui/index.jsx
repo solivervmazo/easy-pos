@@ -15,7 +15,7 @@ import AppModal from "./AppModal";
 import AppDaterangePicker from "./app-daterange-picker/AppDaterangePicker";
 import AppCard from "./AppCard";
 import AppSearchInput from "./AppSearchInput";
-import AppFormInputText from "./AppFormInputText";
+import AppFormInput from "./app-input-form/AppFormInput";
 import AppSelectPicker from "./app-select-picker/AppSelectPicker";
 import AppColorPicker from "./AppColorPicker";
 import AppSpinner from "./AppSpinner";
@@ -33,7 +33,7 @@ export {
   AppDaterangePicker,
   AppCard,
   AppSearchInput,
-  AppFormInputText,
+  AppFormInput,
   AppSelectPicker,
   AppColorPicker,
   AppSpinner,

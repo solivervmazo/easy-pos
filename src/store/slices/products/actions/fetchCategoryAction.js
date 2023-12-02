@@ -6,7 +6,7 @@ import { RequestState, SpinnerState } from "../../../../enums";
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const fetchCategoryAction = createAsyncThunk(
-  "categories/fetchCategoryAction",
+  "products/fetchCategoryAction",
   async (payload = {}) => {
     const db = SQLlite.openDatabase(db_name);
     const { orderBy = "id", desc = true } = payload;
@@ -22,7 +22,7 @@ export const fetchCategoryAction = createAsyncThunk(
 export const fetchCategoryActionBuilder = (builder) => {
   return builder
     .addCase(fetchCategoryAction.pending, (state) => {
-      state.screenSpinner = SpinnerState.show;
+      state.screenCategorySpinner = SpinnerState.show;
     })
     .addCase(fetchCategoryAction.fulfilled, (state, action) => {
       return {
@@ -35,15 +35,15 @@ export const fetchCategoryActionBuilder = (builder) => {
             categoryName: category.category_name,
             categoryDescription: category.category_description,
             categoryCode: category.category_code,
-            categoryParetId: category.category_parent_id,
+            categoryParentId: category.category_parent_id,
             categoryShortkeyColor: category.category_shortkey_color,
           })),
         },
-        screenSpinner: SpinnerState.hidden,
+        screenCategorySpinner: SpinnerState.hidden,
       };
     })
     .addCase(fetchCategoryAction.rejected, (state, action) => {
       console.log(action.error.message);
-      state.screenSpinner = SpinnerState.show;
+      state.screenCategorySpinner = SpinnerState.hidden;
     });
 };

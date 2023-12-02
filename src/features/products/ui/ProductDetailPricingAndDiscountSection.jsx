@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
-  AppFormInputText,
+  AppFormInput,
   ChipButton,
   IconButton,
   SectionHeader,
@@ -24,7 +24,7 @@ const ProductDetailPricingAndDiscountSection = ({
         titleColor={appColors.themeColor}
       />
       <View style={[styles.sectionContent]}>
-        <AppFormInputText
+        <AppFormInput
           value={productPrice?.toString()}
           control={formControl}
           name={"productPrice"}

@@ -2,15 +2,15 @@ import React, { useCallback, useEffect } from "react";
 import { IconButton, Spacer, AppTable, ChipButton } from "../../../../ui";
 import { appColors, appSizes } from "../../../../themes";
 import CategoryRow from "./CategoryRow";
-import { useStackRoutes, replaceSlugs } from "../../../../routes";
+import { replaceSlugs, useStackRoutes } from "../../../../routes";
 import { useRouter } from "expo-router";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchCategoryAction,
   categoryTableSelector,
-  restartFormAction,
-} from "../../../../store/slices/categories/categoriesSlice";
+  restartCategoryFormAction,
+} from "../../../../store/slices/products/productSlice";
 import { RequestState } from "../../../../enums";
 
 const CategoryListTable = () => {
@@ -20,10 +20,14 @@ const CategoryListTable = () => {
   const router = useRouter();
   const routes = useStackRoutes();
 
+  const categoryDetailRoute = routes["categories-detail"];
+
   const _navigateDetailHandle = useCallback((id, params = {}) => {
-    dispatch(restartFormAction());
-    const _routePath = replaceSlugs(routes["items-detail"], [id]);
-    router.push(_routePath);
+    dispatch(restartCategoryFormAction());
+    if (categoryDetailRoute) {
+      const _routePath = replaceSlugs(categoryDetailRoute, [id]);
+      router.push(_routePath);
+    }
   });
 
   const _refreshTableHandle = () => {

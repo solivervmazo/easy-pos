@@ -1,19 +1,29 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import IconButton from "./IconButton";
-import ChipButton from "./ChipButton";
-import { appColors, appFonts, appSizes, appStyles } from "../themes";
+import IconButton from "../IconButton";
+import ChipButton from "../ChipButton";
+import { appColors, appFonts, appSizes, appStyles } from "../../themes";
 import { TextInput } from "react-native-gesture-handler";
+import AppInputSelect from "./app-input-select/AppInputSelect";
 
 import { Controller } from "react-hook-form";
 
-const AppFormInputText = ({
+class InputType {
+  static text = "text";
+  static select = "select";
+}
+
+const AppFormInput = ({
   name,
   control,
   errors,
   value = "",
   icon = "",
   label = "",
+  valueKey,
+  inputType = InputType.text,
+  returnValue,
+  renderTextValue = (value, text) => text,
   required = false,
   enabled = true,
   inputMode = "text",
@@ -45,7 +55,11 @@ const AppFormInputText = ({
     if (icon)
       return (
         <IconButton
-          containerStyle={{}}
+          containerStyle={{
+            paddingHorizontal: 0,
+            padding: 0,
+            marginEnd: 5,
+          }}
           icon={icon}
           plain={true}
           disabled={true}
@@ -96,10 +110,23 @@ const AppFormInputText = ({
     onChange(newValue);
   };
 
-  const _renderInput = ({ onChange, value: _value }) => {
+  const _calculateValue = (_value) => {
+    let calculatedValue = undefined;
+    if (typeof _value === "string") calculatedValue = _value.toString();
+    else if (typeof _value === "object" && !Array.isArray(_value)) {
+      calculatedValue = valueKey
+        ? _value[valueKey]
+        : undefined; /**Missing valueKey typeof value is object */
+    } else {
+      /**value of AppFormInput is not valid should either string | object */
+    }
+    return renderTextValue(value, calculatedValue);
+  };
+
+  const _renderInputTypeText = ({ onChange, value: _value, args = {} }) => {
     return (
       <TextInput
-        value={_value.toString()}
+        value={_calculateValue(_value)}
         ref={_inputRef}
         editable={enabled}
         onFocus={_onFocus}
@@ -111,14 +138,38 @@ const AppFormInputText = ({
           styles.input,
           inputStyle,
           {
+            ...(args?.display ? { display: args.display } : {}),
             borderColor: _inputBorderColor,
             backgroundColor: enabled ? undefined : appColors.lightBgTertiary,
           },
         ]}
         inputMode={inputMode}
         placeholder={placeholder}
+        {...args}
       />
     );
+  };
+
+  const _renderInputTypeSelect = ({ onChange, value: _value }) => {
+    const args = {
+      editable: false,
+      display: "none",
+    };
+    return (
+      <>
+        <AppInputSelect isForm={true} containerStyle={{}} />
+
+        {_renderInputTypeText({ onChange, value: _value, args })}
+      </>
+    );
+  };
+
+  const _renderInput = ({ onChange, value: _value }) => {
+    if (inputType == InputType.text) {
+      return _renderInputTypeText({ onChange, value: _value });
+    } else if (inputType == InputType.select) {
+      return _renderInputTypeSelect({ onChange, value: _value });
+    }
   };
   return (
     <View style={[styles.container, containerStyle]}>
@@ -187,4 +238,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppFormInputText;
+export default AppFormInput;

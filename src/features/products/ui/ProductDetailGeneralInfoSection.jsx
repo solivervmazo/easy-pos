@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { SectionHeader, ChipButton, AppFormInputText } from "../../../ui";
+import { SectionHeader, ChipButton, AppFormInput } from "../../../ui";
 import { appColors, appSizes } from "../../../themes";
 import { commonStyles } from "../styles";
 
@@ -28,7 +28,7 @@ const ProductDetailGeneralInfoSection = ({
         titleColor={appColors.themeColor}
       />
       <View style={[styles.sectionContent]}>
-        <AppFormInputText
+        <AppFormInput
           control={formControl}
           name={"productId"}
           errors={formErrors?.productId}
@@ -47,7 +47,7 @@ const ProductDetailGeneralInfoSection = ({
           )}
           required={true}
         />
-        <AppFormInputText
+        <AppFormInput
           control={formControl}
           name={"productName"}
           errors={formErrors.productName}
@@ -58,7 +58,7 @@ const ProductDetailGeneralInfoSection = ({
           labelContainerStyle={styles.inputLabelContainer}
           required={true}
         />
-        <AppFormInputText
+        <AppFormInput
           control={formControl}
           name={"productDescription"}
           value={productDescription}
@@ -68,7 +68,7 @@ const ProductDetailGeneralInfoSection = ({
           multiline={true}
           labelContainerStyle={styles.inputLabelContainer}
         />
-        <AppFormInputText
+        <AppFormInput
           control={formControl}
           name={"productBarcode"}
           value={productBarcode}
@@ -85,7 +85,7 @@ const ProductDetailGeneralInfoSection = ({
             />
           )}
         />
-        <AppFormInputText
+        <AppFormInput
           control={formControl}
           name={"productSku"}
           value={productSku}

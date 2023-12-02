@@ -6,10 +6,13 @@ import { SpinnerState } from "../../../enums";
 import CategoryListTable from "../ui/categories/CategoryListTable";
 
 const CategoriesScreen = () => {
-  const screenSpinner = useSelector((state) => state.categories.screenSpinner);
+  const screenCategorySpinner = useSelector(
+    (state) => state.products.screenCategorySpinner
+  );
+
   return (
     <>
-      {screenSpinner === SpinnerState.show && <AppSpinner />}
+      {screenCategorySpinner === SpinnerState.show && <AppSpinner />}
       <CategoryListTable />
     </>
   );

@@ -3,18 +3,17 @@ import { StyleSheet, View } from "react-native";
 import { AppSpinner, ChipButton, Spacer } from "../../../ui";
 import { appColors, appConstants, appSizes, appSpacing } from "../../../themes";
 import { ScrollView } from "react-native-gesture-handler";
-import ProductDetailScreenHeader from "../ui/ProductDetailScreenHeader";
 import ProductDetailGeneralInfoSection from "../ui/ProductDetailGeneralInfoSection";
 import ProductDetailCategoryAndVariationSection from "../ui/ProductDetailCategoryAndVariationSection";
 import ProductDetailPricingAndDiscountSection from "../ui/ProductDetailPricingAndDiscountSection";
 import ProductDetailShortkeySection from "../ui/ProductDetailShortkeySection";
 import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
+import productFormSchema from "../validator/productFormSchema";
 import {
   insertProductAction,
   fetchProductDetailAction,
   updateProductFormAction,
-  productFormSchema,
   generateProjectIdAction,
   updateProductAction,
 } from "../../../store/slices/products/productSlice";
@@ -23,6 +22,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import FormState from "../../../enums/FormState";
 import { addQueueAction } from "../../../store/slices/toast/toastSlice";
+import TabsScreenHeader from "../ui/TabsScreenHeader";
 
 const ProductDetailScreen = () => {
   const dispatch = useDispatch();
@@ -79,7 +79,10 @@ const ProductDetailScreen = () => {
   };
 
   const _navigateDoneEditingHandle = ({ redirect = true }) => {
-    redirect && router.push(drawerRoutes["store-items"].path);
+    redirect &&
+      router.push({
+        pathname: drawerRoutes["units-products"].path,
+      });
     dispatch(
       addQueueAction({
         message: `Successfully ${_isNew ? "saved new" : "updated"} product.`,
@@ -119,8 +122,10 @@ const ProductDetailScreen = () => {
 
   return (
     <>
-      <ProductDetailScreenHeader
-        item={_isNew ? undefined : productForm?.body}
+      <TabsScreenHeader
+        renderTitle={(titleComposer) =>
+          titleComposer("Product", productForm?.body?.productId, _isNew)
+        }
       />
       {(!productForm || productForm?.state === FormState.pending) && (
         <AppSpinner />

@@ -22,7 +22,7 @@ export const fetchProductAction = createAsyncThunk(
 export const fetchProductActionBuilder = (builder) => {
   return builder
     .addCase(fetchProductAction.pending, (state) => {
-      state.screenSpinner = SpinnerState.show;
+      state.screenProductSpinner = SpinnerState.show;
     })
     .addCase(fetchProductAction.fulfilled, (state, action) => {
       return {
@@ -42,11 +42,11 @@ export const fetchProductActionBuilder = (builder) => {
             productShortkeyColor: product.product_shortkey_color,
           })),
         },
-        screenSpinner: SpinnerState.hidden,
+        screenProductSpinner: SpinnerState.hidden,
       };
     })
     .addCase(fetchProductAction.rejected, (state, action) => {
       console.log(action.error.message);
-      state.screenSpinner = SpinnerState.show;
+      state.screenProductSpinner = SpinnerState.show;
     });
 };

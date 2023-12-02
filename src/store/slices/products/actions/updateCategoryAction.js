@@ -9,7 +9,7 @@ import FormState from "../../../../enums/FormState";
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const updateCategoryAction = createAsyncThunk(
-  "categories/updateCategoryAction",
+  "products/updateCategoryAction",
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
     if (!payload.id) return null;

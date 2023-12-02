@@ -4,7 +4,7 @@ import {
   SectionHeader,
   IconButton,
   ChipButton,
-  AppFormInputText,
+  AppFormInput,
 } from "../../../ui";
 import { appColors, appSizes } from "../../../themes";
 import { useRouter } from "expo-router";
@@ -26,7 +26,7 @@ const ProductDetailCategoryAndVariationSection = () => {
         titleColor={appColors.themeColor}
       />
       <View style={[styles.sectionContent]}>
-        <AppFormInputText
+        <AppFormInput
           icon="Items"
           label="Category"
           enabled={true}
@@ -34,7 +34,7 @@ const ProductDetailCategoryAndVariationSection = () => {
           placeholder="Search category"
           onFocus={_selectCategoryHandle}
         />
-        <AppFormInputText
+        <AppFormInput
           label="New variations"
           placeholder="Select variation to add one"
           enabled={false}

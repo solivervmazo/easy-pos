@@ -35,7 +35,7 @@ export const insertProductBuilder = (builder) => {
       state.productForm.state = FormState.pending;
     })
     .addCase(insertProductAction.fulfilled, (state, action) => {
-      const productList = Object.assign([], state.productList);
+      const productList = Object.assign([], state.productTable?.data || []);
       productList.unshift({
         id: action.payload.id,
         productId: action.payload.product_id,

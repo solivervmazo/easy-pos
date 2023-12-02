@@ -10,6 +10,10 @@ export {
   fetchCategoryDetailAction,
   fetchCategoryDetailBuilder,
 } from "./fetchCategoryDetailAction";
+// export {
+//   generateProjectIdAction,
+//   generateProjectIdBuilder,
+// } from "./generateCategoryIdAction";
 export {
   updateCategoryAction,
   updateCategoryBuilder,

@@ -356,6 +356,11 @@ export const Star = (props) => {
   return icon.ionicons("md-star-outline", "md-star-sharp");
 };
 
+export const Tag = (props) => {
+  const icon = new _Icon(props);
+  return icon.antdesign("tago", "tag");
+};
+
 export const Tags = (props) => {
   const icon = new _Icon(props);
   return icon.antdesign("tagso", "tags");
@@ -444,6 +449,7 @@ const Icon = {
   Search, //
   Share, //
   Star, //
+  Tag,
   Tags,
   Tap,
   Tv, //

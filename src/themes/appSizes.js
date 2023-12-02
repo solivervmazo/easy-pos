@@ -3,6 +3,7 @@ export default appSizes = {
     xSmall: 10,
     small: 13,
     semiRegular: 14,
+    slightlyRegular: 15,
     regular: 16,
     medium: 20,
     large: 24,
