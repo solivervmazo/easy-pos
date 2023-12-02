@@ -8,10 +8,22 @@ import products, { insertProductQuery } from "../src/db/products";
 import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
 import AppLayout from "../src/features/app/layouts/AppLayout";
+import {
+  MD3LightTheme as DefaultTheme,
+  PaperProvider,
+} from "react-native-paper";
 
-import { PaperProvider } from "react-native-paper";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "tomato",
+    secondary: "yellow",
+  },
+};
 
 const _layout = () => {
   const db = SQLlite.openDatabase(db_name);
@@ -86,7 +98,12 @@ const _layout = () => {
   return (
     (ready && (
       <Provider store={store}>
-        <PaperProvider>
+        <PaperProvider
+          theme={theme}
+          settings={{
+            icon,
+          }}
+        >
           <ToastProvider
             placement="top"
             duration={4000}
