@@ -8,6 +8,8 @@ import products, { insertProductQuery } from "../src/db/products";
 import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
 import AppLayout from "../src/features/app/layouts/AppLayout";
+
+import { PaperProvider } from "react-native-paper";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -84,15 +86,17 @@ const _layout = () => {
   return (
     (ready && (
       <Provider store={store}>
-        <ToastProvider
-          placement="top"
-          duration={4000}
-          animationType="slide-in"
-          animationDuration={250}
-          style={{ marginTop: 100 }}
-        >
-          <AppLayout onLayoutRootView={onLayoutRootView} />
-        </ToastProvider>
+        <PaperProvider>
+          <ToastProvider
+            placement="top"
+            duration={4000}
+            animationType="slide-in"
+            animationDuration={250}
+            style={{ marginTop: 100 }}
+          >
+            <AppLayout onLayoutRootView={onLayoutRootView} />
+          </ToastProvider>
+        </PaperProvider>
       </Provider>
     )) ||
     null
