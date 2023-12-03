@@ -70,8 +70,7 @@ export const _$deleteReservedKeys = (obj) => {
       return cloneObj;
     } else {
       const cloneObj = Object.assign({}, obj);
-      _deleteKeys(cloneObj);
-      return cloneObj;
+      return _deleteKeys(cloneObj);
     }
   }
   return obj;

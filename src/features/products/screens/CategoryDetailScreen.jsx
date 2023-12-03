@@ -34,7 +34,6 @@ const CategoryDetailScreen = () => {
 
   const categoryForm = useSelector(categoryFormSelector);
   const [_isNew, setIsNew] = useState(true);
-
   const router = useRouter();
   const drawerRoutes = useDrawerRoutes();
 

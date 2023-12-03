@@ -1,10 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  selectCategoriesQuery,
   insertCategoryQuery,
+  requestCategoryDetail,
+  categoryTransform,
 } from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
 import FormState from "../../../../enums/FormState";
+import { RequestState } from "../../../../enums";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -16,14 +18,25 @@ export const insertCategoryAction = createAsyncThunk(
     let response = null;
     await db.transactionAsync(async (tx) => {
       const result = await tx.executeSqlAsync(query, args);
-
-      const { query: selectQuery, args: selectArgs } = selectCategoriesQuery({
-        args: {
-          id: result.insertId,
-        },
+      const makeRequestCategoryDetail = await requestCategoryDetail(db, {
+        id: result.insertId,
       });
-      const inserted = await tx.executeSqlAsync(selectQuery, selectArgs);
-      response = inserted?.rows[0];
+      if (makeRequestCategoryDetail.state === RequestState.fulfilled) {
+        const insertedCategory = makeRequestCategoryDetail.body;
+        if (insertedCategory.category_parent_id) {
+          const makeRequestCategoryParentDetail = await requestCategoryDetail(
+            db,
+            {
+              id: insertedCategory.category_parent_id,
+            }
+          );
+          if (makeRequestCategoryParentDetail.state == RequestState.fulfilled) {
+            insertedCategory["category_parent"] =
+              makeRequestCategoryParentDetail.body;
+          }
+        }
+        response = insertedCategory;
+      }
     });
     return response;
   }
@@ -37,13 +50,8 @@ export const insertCategoryBuilder = (builder) => {
     .addCase(insertCategoryAction.fulfilled, (state, action) => {
       const categoryList = Object.assign([], state.categoryTable?.data || []);
       categoryList.unshift({
-        id: action.payload.id,
-        categoryId: action.payload.category_id,
-        categoryName: action.payload.category_name,
-        categoryDescription: action.payload.category_description,
-        categoryCode: action.payload.category_code,
-        categoryParentId: action.payload.category_parent_id,
-        categoryShortkeyColor: action.payload.category_shortkey_color,
+        ...categoryTransform(action.payload),
+        categoryParent: categoryTransform(action.payload.category_parent),
       });
       return {
         ...state,

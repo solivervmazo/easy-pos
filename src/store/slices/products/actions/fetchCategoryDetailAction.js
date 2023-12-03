@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  selectCategoriesQuery,
-  insertCategoryQuery,
+  requestCategoryDetail,
+  requestGenerateCategoryId,
+  categoryTransform,
 } from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
-import { generateCategoryId } from "../../../helpers/generateCategoryId";
-import { FormState } from "../../../../enums";
+import { FormState, RequestState } from "../../../../enums";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -14,23 +14,36 @@ export const fetchCategoryDetailAction = createAsyncThunk(
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
     if (!payload.id) {
-      const categoryId = await generateCategoryId(db);
-      return {
-        state: FormState.idle,
-        body: {
-          categoryId: categoryId,
-        },
-      };
+      const request = await requestGenerateCategoryId(db);
+      if (request.state === RequestState.fulfilled) {
+        return {
+          state: FormState.idle,
+          body: {
+            categoryId: request.body,
+          },
+        };
+      } else {
+        throw Error(request.message);
+      }
     } else {
-      const { query, args } = selectCategoriesQuery({
-        args: { id: payload.id },
-        limit: 1,
-      });
-      let rows = [];
-      await db.transactionAsync(async (tx) => {
-        rows = await tx.executeSqlAsync(query, args);
-      });
-      return { state: FormState.idle, body: rows?.rows[0] };
+      const request = await requestCategoryDetail(false, { id: payload.id });
+      if (request.state === RequestState.fulfilled) {
+        const categoryDetail = {
+          ...request.body,
+        };
+        const parentId = categoryDetail.category_parent_id;
+        if (parentId) {
+          const requestParent = await requestCategoryDetail(false, {
+            id: parentId,
+          });
+          if (requestParent.state == RequestState.fulfilled) {
+            categoryDetail["categoryParent"] = requestParent.body;
+          }
+        }
+        return { state: FormState.idle, body: categoryDetail };
+      } else {
+        throw Error(request.message);
+      }
     }
   }
 );
@@ -48,18 +61,15 @@ export const fetchCategoryDetailBuilder = (builder) => {
             categoryDescription: "",
             categoryCode: "",
             categorieshortkeyColor: "",
+            categoryParent: {},
           },
         };
       } else {
         state.categoryForm = {
           ...payload,
           body: {
-            id: payload?.body?.id,
-            categoryId: payload?.body?.category_id,
-            categoryName: payload?.body?.category_name,
-            categoryDescription: payload?.body?.category_description,
-            categoryCode: payload?.body?.category_code,
-            categoryShortkeyColor: payload?.body?.category_shortkey_color,
+            ...categoryTransform(payload?.body),
+            categoryParent: categoryTransform(payload?.body?.categoryParent),
           },
         };
       }

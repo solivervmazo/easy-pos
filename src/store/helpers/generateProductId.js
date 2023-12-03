@@ -1,5 +1,5 @@
 import { selectProductsQuery } from "../../db/products";
-import { generateStringId } from "./generateStringId";
+import { generateStringId } from "../../utils";
 export const generateProductId = async (db, random = false) => {
   const { query, args } = selectProductsQuery({
     orderBy: "id",

@@ -1,52 +1,49 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import IconButton from "../IconButton";
-import ChipButton from "../ChipButton";
 import { appColors, appFonts, appSizes, appStyles } from "../../themes";
-import { TextInput } from "react-native-gesture-handler";
-import AppInputSelect from "./app-input-select/AppInputSelect";
-
+import { appFormInputArgs } from "./args/appFormInputArgs";
 import { Controller } from "react-hook-form";
 
-class InputType {
-  static text = "text";
-  static select = "select";
-}
+const AppFormInputBase = (
+  args = {
+    ...appFormInputArgs,
+  }
+) => {
+  const {
+    name = appFormInputArgs.name,
+    control = appFormInputArgs.control,
+    errors = appFormInputArgs.errors,
+    value = appFormInputArgs.value,
+    icon = appFormInputArgs.icon,
+    label = appFormInputArgs.label,
+    valueKey = appFormInputArgs.valueKey,
+    returnValue = appFormInputArgs.returnValue,
+    renderTextValue = appFormInputArgs.renderTextValue,
+    required = appFormInputArgs.required,
+    enabled = appFormInputArgs.enabled,
+    inputMode = appFormInputArgs.inputMode,
+    multiline = appFormInputArgs.multiline,
+    placeholder = appFormInputArgs.placeholder,
+    hideInput = appFormInputArgs.hideInput,
+    renderInput = appFormInputArgs.renderInput,
+    renderAction = appFormInputArgs.renderAction,
+    onValidate = appFormInputArgs.onValidate,
+    containerStyle = appFormInputArgs.containerStyle,
+    innerContainerStyle = appFormInputArgs.innerContainerStyle,
+    labelStyle = appFormInputArgs.labelStyle,
+    inputContainerStyle = appFormInputArgs.inputContainerStyle,
+    inputStyle = appFormInputArgs.inputStyle,
+    errorTextStyle = appFormInputArgs.errorTextStyle,
+    labelContainerStyle = appFormInputArgs.labelContainerStyle,
+    labelInnerContainerStyle = appFormInputArgs.labelInnerContainerStyle,
+    onFocus = appFormInputArgs.onFocus,
+    onBlur = appFormInputArgs.onBlur,
+    onChange = appFormInputArgs.onChange,
+    focusedLineColor = appFormInputArgs.focusedLineColor,
+    defaultLineColor = appFormInputArgs.defaultLineColor,
+  } = args;
 
-const AppFormInput = ({
-  name,
-  control,
-  errors,
-  value = "",
-  icon = "",
-  label = "",
-  valueKey,
-  inputType = InputType.text,
-  returnValue,
-  renderTextValue = (value, text) => text,
-  required = false,
-  enabled = true,
-  inputMode = "text",
-  multiline = false,
-  placeholder = "",
-  hideInput = false,
-  renderAction = ({ inputRef }) => undefined,
-  onValidate = ({ inputValue, errorMessages = [] }) => {},
-  containerStyle = {},
-  innerContainerStyle = {},
-  labelStyle = {},
-  inputContainerStyle = {},
-  inputStyle = {},
-  errorTextStyle = {},
-  labelContainerStyle = {},
-  labelInnerContainerStyle = {},
-  onFocus = ({ defaultLineColor, focusedLineColor }) => undefined,
-  onBlur = ({ defaultLineColor, focusedLineColor }) => undefined,
-  onChange = (value) => value,
-  focusedLineColor = appColors.themeColor,
-  defaultLineColor = appColors.black,
-}) => {
-  const _inputRef = useRef(null);
   const [_focusedLineColor, setFocusedLineColor] = useState(focusedLineColor);
   const [_defaultLineColor, setDefaultLineColor] = useState(defaultLineColor);
   const [_inputBorderColor, setInputBorderColor] = useState(defaultLineColor);
@@ -75,7 +72,7 @@ const AppFormInput = ({
   };
 
   const _renderAction = () => {
-    const _rendered = renderAction({ inputRef: _inputRef });
+    const _rendered = renderAction();
     if (_rendered) return _rendered;
     return null;
   };
@@ -86,27 +83,8 @@ const AppFormInput = ({
     );
   };
 
-  const _onFocus = () => {
-    onFocus({
-      defaultLineColor: _defaultLineColor,
-      focusedLineColor: _focusedLineColor,
-    });
-    setInputBorderColor(_focusedLineColor);
-  };
-
-  const _onBlur = () => {
-    onBlur({
-      defaultLineColor: _defaultLineColor,
-      focusedLineColor: _focusedLineColor,
-    });
-    setInputBorderColor(_defaultLineColor);
-  };
-
-  const _onChangeHandle = (_value, validatorHandle = (v) => {}) => {
-    let newValue = _value;
-    // if (inputMode === "numeric") newValue = _value.replace(/[^0-9]/g, "");
-    validatorHandle(newValue);
-    onChange(newValue);
+  const _setLineColor = (colorValue = _focusedLineColor) => {
+    setInputBorderColor(colorValue);
   };
 
   const _calculateValue = (_value) => {
@@ -122,58 +100,22 @@ const AppFormInput = ({
     return renderTextValue(value, calculatedValue);
   };
 
-  const _renderInputTypeText = ({ onChange, value: _value, args = {} }) => {
-    return (
-      <TextInput
-        value={_calculateValue(_value)}
-        ref={_inputRef}
-        editable={enabled}
-        onFocus={_onFocus}
-        onBlur={_onBlur}
-        multiline={multiline}
-        onChange={(e) => _onChangeHandle(e.nativeEvent.text, onChange)}
-        cursorColor={appColors.black}
-        style={[
-          styles.input,
-          inputStyle,
-          {
-            ...(args?.display ? { display: args.display } : {}),
-            borderColor: _inputBorderColor,
-            backgroundColor: enabled ? undefined : appColors.lightBgTertiary,
-          },
-        ]}
-        inputMode={inputMode}
-        placeholder={placeholder}
-        {...args}
-      />
-    );
-  };
-
-  const _renderInputTypeSelect = ({ onChange, value: _value }) => {
-    const args = {
-      editable: false,
-      display: "none",
-    };
-    return (
-      <>
-        <AppInputSelect isForm={true} containerStyle={{}} />
-
-        {_renderInputTypeText({ onChange, value: _value, args })}
-      </>
-    );
-  };
-
-  const _renderInput = ({ onChange, value: _value }) => {
-    if (inputType == InputType.text) {
-      return _renderInputTypeText({ onChange, value: _value });
-    } else if (inputType == InputType.select) {
-      return _renderInputTypeSelect({ onChange, value: _value });
-    }
+  const _renderInput = ({ onChange: _onValidatorChange, value: _value }) => {
+    return renderInput({
+      ...args,
+      $_onValidatorChange: _onValidatorChange,
+      $_inputValue: _value,
+      $_focusedLineColor: _focusedLineColor,
+      $_defaultLineColor: _defaultLineColor,
+      $_inputBorderColor: _inputBorderColor,
+      $_setLineColor: _setLineColor,
+      $_calculateValue: _calculateValue,
+    });
   };
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={[styles.innerContainer, innerContainerStyle]}>
-        <View style={[styles.labelContainer]}>
+        <View style={[styles.labelContainer, labelContainerStyle]}>
           <View style={[styles.labelInnerContainer, labelInnerContainerStyle]}>
             {_icon()}
             <Text style={[styles.label, labelStyle]}>
@@ -224,7 +166,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginStart: 25,
   },
-  input: {
+  inputText: {
+    fontSize: appSizes.Text.regular,
+    borderBottomWidth: 1,
+    padding: 3,
+  },
+  inputTextPlaceholder: {
     fontSize: appSizes.Text.regular,
     borderBottomWidth: 1,
     padding: 3,
@@ -237,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AppFormInput;
+export default AppFormInputBase;

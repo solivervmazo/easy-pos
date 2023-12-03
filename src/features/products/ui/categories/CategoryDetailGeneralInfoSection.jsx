@@ -10,6 +10,7 @@ import { appColors, appSizes } from "../../../../themes";
 import { commonStyles } from "../../styles";
 import { useRouter } from "expo-router";
 import { useStackRoutes } from "../../../../routes";
+import { AppTextInput, AppSelectInput } from "../../../../ui/";
 
 const CategoryDetailGeneralInfoSection = ({
   formControl,
@@ -17,7 +18,7 @@ const CategoryDetailGeneralInfoSection = ({
   categoryId,
   categoryName,
   categoryDescription,
-  parentCategory = { id: 0, categoryName: "HAHA", categoryCode: "KKK" },
+  categoryParent,
   onFormChange,
   onGenerateId = () => {},
 }) => {
@@ -26,7 +27,6 @@ const CategoryDetailGeneralInfoSection = ({
   const _onGenerateIdHandle = () => {
     onGenerateId();
   };
-
   const _openSelectParentCategoryHandle = () => {
     router.push(
       routes["categories-detail"].modals["detail-select-category"].path
@@ -54,7 +54,7 @@ const CategoryDetailGeneralInfoSection = ({
           required={true}
           labelStyle={styles.inputLabel}
         />
-        <AppFormInput
+        <AppTextInput
           control={formControl}
           name={"categoryName"}
           errors={formErrors.categoryName}
@@ -66,7 +66,7 @@ const CategoryDetailGeneralInfoSection = ({
           required={true}
           labelStyle={styles.inputLabel}
         />
-        <AppFormInput
+        <AppTextInput
           control={formControl}
           name={"categoryDescription"}
           value={categoryDescription}
@@ -77,35 +77,22 @@ const CategoryDetailGeneralInfoSection = ({
           labelContainerStyle={styles.inputLabelContainer}
           labelStyle={styles.inputLabel}
         />
-        <AppFormInput
-          icon="Tag"
-          value={parentCategory}
-          inputType="select"
-          valueKey={"categoryName"}
+        <AppSelectInput
           control={formControl}
-          name={"categoryParentId"}
-          renderTextValue={(value, text) => `${text}(${value.categoryCode})`}
-          errors={formErrors?.categoryCode}
-          onChange={(value) => onFormChange({ categoryCode: value })}
+          icon="Tag"
+          value={categoryParent}
+          valueKey={"categoryName"}
+          name={"categoryParent"}
+          placeholder="Select Parent Category"
+          renderTextValue={(value, text) =>
+            text && value ? `${text}(${value.categoryId})` : ""
+          }
+          errors={formErrors?.categoryParent}
+          onChange={(value) => onFormChange({ categoryParent: value })}
           label="Parent Category"
           enabled={true}
           labelContainerStyle={styles.inputLabelContainer}
-          renderAction={() => (
-            <ChipButton
-              onPress={_openSelectParentCategoryHandle}
-              buttonRight={() => (
-                <IconButton
-                  icon={"Down"}
-                  color={appColors.lightText}
-                  plain={true}
-                  disabled={true}
-                  size={appSizes.Icon.small}
-                />
-              )}
-              containerStyle={styles.inputActionButtonContainer}
-              label={`Select`}
-            />
-          )}
+          onSelectPress={_openSelectParentCategoryHandle}
         />
       </View>
     </View>

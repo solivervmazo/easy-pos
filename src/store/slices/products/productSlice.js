@@ -1,4 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  createDraftSafeSelector,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import {
   FormState,
   LoadState,
@@ -46,6 +50,7 @@ const initialState = {
     state: RequestState.idle,
     data: undefined,
   },
+  list: [],
 };
 
 export const productSlice = createSlice({
@@ -117,5 +122,40 @@ export {
   updateCategoryAction,
 };
 export const categoryTableSelector = (state) => state.products.categoryTable;
+
+export const categoryListSelector2 = createSelector(
+  [categoryTableSelector],
+  (table) => table.data.filter((row) => true)
+);
+
+// export const categoryListSelector = (state, { level }) =>
+//   makeCategoryListSelector()(state, { level });
+
+export const categoryListSelector = createSelector(
+  [
+    categoryTableSelector,
+    (state, { categoryLookup }) => categoryLookup,
+    (state, { rootLookup }) => rootLookup,
+  ],
+  (table, categoryLookup, rootLookup) =>
+    table.data.filter(
+      (row) =>
+        row.id != categoryLookup &&
+        row.categoryRootId != categoryLookup &&
+        (row.categoryRootId != rootLookup || row.categoryRootId == 0)
+    )
+);
+
+const makeCategoryListSelector = () => {
+  return createSelector(
+    [(state) => categoryTableSelector(state), (state, { level }) => level],
+    (table, { level }) => {
+      return table.data.filter((row) =>
+        level === 0 ? true : row.categoryLevel < level
+      );
+    }
+  );
+};
+
 export const categoryFormSelector = (state) => state.products.categoryForm;
 export default productSlice.reducer;

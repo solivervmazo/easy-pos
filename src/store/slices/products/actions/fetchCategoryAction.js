@@ -1,5 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { selectCategoriesQuery } from "../../../../db/categories";
+import {
+  requestCategoryDetail,
+  selectCategoriesQuery,
+  categoryTransform,
+} from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
 import { RequestState, SpinnerState } from "../../../../enums";
 
@@ -11,11 +15,25 @@ export const fetchCategoryAction = createAsyncThunk(
     const db = SQLlite.openDatabase(db_name);
     const { orderBy = "id", desc = true } = payload;
     const { query, args } = selectCategoriesQuery({ orderBy, desc });
-    let rows = [];
-    await db.transactionAsync(async (tx) => {
-      rows = await tx.executeSqlAsync(query, args);
+    let sqlRows = {};
+    await db.transactionAsync(async (ctx) => {
+      sqlRows = await ctx.executeSqlAsync(query, args);
     });
-    return rows?.rows || [];
+
+    const tableRows = sqlRows?.rows || [];
+    await Promise.all(
+      tableRows.map(async (row, index) => {
+        if (row.category_parent_id) {
+          const requestCategoryParent = await requestCategoryDetail(db, {
+            id: row.category_parent_id,
+          });
+          if (requestCategoryParent.state === RequestState.fulfilled) {
+            tableRows[index]["category_parent"] = requestCategoryParent.body;
+          }
+        }
+      })
+    );
+    return tableRows;
   }
 );
 
@@ -30,13 +48,8 @@ export const fetchCategoryActionBuilder = (builder) => {
         categoryTable: {
           state: RequestState.fulfilled, //No use
           data: action.payload?.map((category) => ({
-            id: category.id,
-            categoryId: category.category_id,
-            categoryName: category.category_name,
-            categoryDescription: category.category_description,
-            categoryCode: category.category_code,
-            categoryParentId: category.category_parent_id,
-            categoryShortkeyColor: category.category_shortkey_color,
+            ...categoryTransform(category),
+            categoryParent: categoryTransform(category.category_parent),
           })),
         },
         screenCategorySpinner: SpinnerState.hidden,

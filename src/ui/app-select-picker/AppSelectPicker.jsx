@@ -36,6 +36,7 @@ const AppSelectPicker = ({
   canSearch = true,
   onClear = ({ searchValue }) => {},
   onSelect = (value) => value,
+  onClearSelection = () => {},
   recentSearchCount = 3, // set 0 to disable
   renderClearButton = ({ onClear = ({ searchValue }) => {} }) => {
     /** set null to disable */
@@ -88,6 +89,7 @@ const AppSelectPicker = ({
 
   const _onClearSelectionHandle = () => {
     _$reset([]);
+    onClearSelection();
   };
 
   const _onRemoveSelectionHandle = ({ itemKeyIndex }) => {
