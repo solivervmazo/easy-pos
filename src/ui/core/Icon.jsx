@@ -182,6 +182,11 @@ export const Down = (props) => {
   return icon.antdesign("down", "down");
 };
 
+export const Drawer = (props) => {
+  const icon = new _Icon(props);
+  return icon.octicons("three-bars", "three-bars");
+};
+
 export const Filters = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("filter", "filter");
@@ -405,6 +410,7 @@ const Icon = {
   Bed, //
   Dial, //
   Down,
+  Drawer,
   Car, //
   Calculator,
   Calendar,

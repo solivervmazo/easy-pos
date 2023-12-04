@@ -9,34 +9,39 @@ import ProductsScreen from "../screens/ProductsScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
 import { Icon } from "../../../ui";
 import { appColors, appFonts, appSizes } from "../../../themes";
+import Animated from "react-native-reanimated";
 
 const Tabs = createMaterialTopTabNavigator();
+
+const AppTabsBar = (props) => {
+  const remainingTabsWidth =
+    (props.layout.width - 60) / (props.state.routes.length - 1);
+  return (
+    <Animated.View>
+      <MaterialTopTabBar
+        {...props}
+        renderTabBarItem={(props) => {
+          return (
+            <TabBarItem
+              {...props}
+              defaultTabWidth={
+                props.route.name === "products" ? 60 : remainingTabsWidth
+              }
+              style={{
+                height: 50,
+              }}
+            />
+          );
+        }}
+      />
+    </Animated.View>
+  );
+};
 
 const ProductsTabsLayout = () => {
   return (
     <Tabs.Navigator
-      tabBar={(props) => {
-        const remainingTabsWidth =
-          (props.layout.width - 60) / (props.state.routes.length - 1);
-        return (
-          <MaterialTopTabBar
-            {...props}
-            renderTabBarItem={(props) => {
-              return (
-                <TabBarItem
-                  {...props}
-                  defaultTabWidth={
-                    props.route.name === "products" ? 60 : remainingTabsWidth
-                  }
-                  style={{
-                    height: 50,
-                  }}
-                />
-              );
-            }}
-          />
-        );
-      }}
+      tabBar={(props) => <AppTabsBar {...props} />}
       screenOptions={{
         tabBarStyle: {
           backgroundColor: appColors.themeColor,
