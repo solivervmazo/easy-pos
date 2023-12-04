@@ -1,5 +1,5 @@
 import React from "react";
-import AppDrawerLayout from "../../src/myapp/AppDrawerLayout";
+import AppDrawerLayout from "../../src/app/layouts/AppDrawerLayout";
 
 const _layout = () => {
   return <AppDrawerLayout />;

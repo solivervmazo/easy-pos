@@ -7,6 +7,7 @@ const TableHeader = ({
   calendarIcon = "Calendar", // set null to disable
   filterIcon = "Filters", // set null to disable
   refreshIcon = "Refresh", // set null to disable
+  searchIcon = "Search", // set null to disable
   onDateFilterPress = () => undefined,
   onFilterPress = () => {},
   onRefreshPress = () => {},

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Stack } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
-import { getQueueAction } from "../../../store/slices/toast/toastSlice";
-import { appColors, appConstants } from "../../../themes";
+import { getQueueAction } from "../../store/slices/toast/toastSlice";
+import { appColors, appConstants } from "../../themes";
 
 const AppLayout = ({ onLayoutRootView }) => {
   const dispatch = useDispatch();

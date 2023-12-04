@@ -7,7 +7,7 @@ import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
 import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
-import AppLayout from "../src/features/app/layouts/AppLayout";
+import AppLayout from "../src/app/layouts/AppLayout";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 

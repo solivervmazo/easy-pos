@@ -97,7 +97,7 @@ const TablePagination = ({
   };
 
   useEffect(() => {
-    // _scrollPaginationToCenter();
+    _scrollPaginationToCenter();
     _calculateCumberOfPages();
   }, [itemsLength, _currentPage]);
 
