@@ -16,7 +16,6 @@ import { RequestState } from "../../../../enums";
 const CategoryListTable = () => {
   const dispatch = useDispatch();
   const categoryTable = useSelector(categoryTableSelector);
-  console.log(categoryTable?.data);
   const router = useRouter();
   const routes = useStackRoutes();
 

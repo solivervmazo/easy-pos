@@ -50,7 +50,7 @@ const _layout = () => {
           tx.executeSql(query, args, (_, row) => {});
         });
 
-        new Array(10).fill({}).map((item, index) => {
+        new Array(100).fill({}).map((item, index) => {
           const { query, args } = insertCategoryQuery({
             categoryId:
               (Math.floor(Math.random() * 999) + 1000).toString() +

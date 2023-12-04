@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import { StyleSheet, View, Text } from "react-native";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
@@ -36,6 +36,9 @@ const AppTable = ({
 }) => {
   const [rowToggled, setRowToggled] = useState(false);
   const [_rowToggledKey, setRowToggledKey] = useState(undefined);
+  const [_currentPage, setCurrentPage] = useState(1);
+  const [_filteredData, setFilteredData] = useState([]);
+
   const _onRowToggle = useCallback(
     (_toggled, key) => {
       if (_toggled == false) {
@@ -48,6 +51,10 @@ const AppTable = ({
     [_rowToggledKey]
   );
 
+  const _onPageChangeHandle = (page) => {
+    setCurrentPage(page);
+  };
+
   const _renderNoData = () => {
     const _rendered = renderNoData();
     return (
@@ -59,6 +66,17 @@ const AppTable = ({
     );
   };
 
+  const _paginateData = () => {
+    const startSlice = itemsPerPage * (_currentPage - 1);
+    const endSlice = itemsPerPage * _currentPage;
+    const slicedData = [].concat(data).slice(startSlice, endSlice);
+    setFilteredData(slicedData);
+  };
+
+  useEffect(() => {
+    _paginateData();
+  }, [_currentPage, data]);
+
   return (
     <View style={{ flex: 1 }}>
       {hasHeader && <TableHeader {...headerOptions} />}
@@ -67,7 +85,7 @@ const AppTable = ({
         <FlatList
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ ...tableContainerStyle }}
-          data={data}
+          data={_filteredData}
           renderItem={({ item }) => (
             <TableRow
               toggleKey={item[itemKey]}
@@ -90,7 +108,12 @@ const AppTable = ({
           ItemSeparatorComponent={() => itemSeparatorComponent()}
         />
       )}
-      <TablePagination itemsLength={itemsLength} itemsPerPage={itemsPerPage} />
+      <TablePagination
+        currentPage={_currentPage}
+        onChange={({ page }) => _onPageChangeHandle(page)}
+        itemsLength={itemsLength}
+        itemsPerPage={itemsPerPage}
+      />
     </View>
   );
 };
