@@ -123,11 +123,6 @@ export {
 };
 export const categoryTableSelector = (state) => state.products.categoryTable;
 
-export const categoryListSelector2 = createSelector(
-  [categoryTableSelector],
-  (table) => table.data.filter((row) => true)
-);
-
 // export const categoryListSelector = (state, { level }) =>
 //   makeCategoryListSelector()(state, { level });
 
@@ -145,17 +140,6 @@ export const categoryListSelector = createSelector(
         (row.categoryRootId != rootLookup || row.categoryRootId == 0)
     )
 );
-
-const makeCategoryListSelector = () => {
-  return createSelector(
-    [(state) => categoryTableSelector(state), (state, { level }) => level],
-    (table, { level }) => {
-      return table.data.filter((row) =>
-        level === 0 ? true : row.categoryLevel < level
-      );
-    }
-  );
-};
 
 export const categoryFormSelector = (state) => state.products.categoryForm;
 export default productSlice.reducer;

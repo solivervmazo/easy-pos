@@ -9,10 +9,11 @@ import { appColors, appFonts, appSizes, appStyles } from "../../themes";
 const AppTable = ({
   data,
   itemKey,
+  searchValue = "",
   renderItem = ({ item, toggled }) => null,
   renderNoData = () => undefined,
   renderActions = ({ actionSize, item }) => {},
-  itemSeparatorComponent = () => {},
+  itemSeparatorComponent = () => null,
   actionsCount = 0,
   keyExtractor = (item) => {},
   tableContainerStyle = {},
@@ -69,23 +70,33 @@ const AppTable = ({
   const _paginateData = () => {
     const startSlice = itemsPerPage * (_currentPage - 1);
     const endSlice = itemsPerPage * _currentPage;
-    const slicedData = [].concat(data).slice(startSlice, endSlice);
-    setFilteredData(slicedData);
+    const slicedData = []
+      .concat(data || [])
+      .slice(startSlice, endSlice)
+      .filter((row) => {
+        const src = Object.values(row).some((value) =>
+          (typeof value === "number" ? value : value || "")
+            .toString()
+            .includes(searchValue)
+        );
+        return src || false;
+      });
+    setFilteredData(slicedData || []);
   };
 
   useEffect(() => {
     _paginateData();
-  }, [_currentPage, data]);
+  }, [_currentPage, data, searchValue]);
 
   return (
     <View style={{ flex: 1 }}>
       {hasHeader && <TableHeader {...headerOptions} />}
-      {_renderNoData()}
+      {itemsLength == 0 && _renderNoData()}
       {itemsLength > 0 && (
         <FlatList
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ ...tableContainerStyle }}
-          data={data}
+          data={_filteredData}
           renderItem={({ item }) => (
             <TableRow
               toggleKey={item[itemKey]}
@@ -111,7 +122,7 @@ const AppTable = ({
       <TablePagination
         currentPage={_currentPage}
         onChange={({ page }) => _onPageChangeHandle(page)}
-        itemsLength={itemsLength}
+        itemsLength={_filteredData.length}
         itemsPerPage={itemsPerPage}
       />
     </View>

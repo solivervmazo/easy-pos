@@ -12,12 +12,22 @@ import {
   restartCategoryFormAction,
 } from "../../../../store/slices/products/productSlice";
 import { RequestState } from "../../../../enums";
+import { productCategorySearchValueSelector } from "../../../../store/slices/header/headerSlice";
 
-const CategoryListTable = () => {
+const CategoryListTable = ({ featureName }) => {
   const dispatch = useDispatch();
-  const categoryTable = useSelector(categoryTableSelector);
   const router = useRouter();
   const routes = useStackRoutes();
+
+  const categoryTable = useSelector(categoryTableSelector);
+
+  const searchValue = useSelector((state) =>
+    productCategorySearchValueSelector(state, {
+      feature: featureName + "_SEARCH_VALUE",
+    })
+  );
+
+  // console.log("SEARAWR", searchValue);
 
   const categoryDetailRoute = routes["categories-detail"];
 
@@ -41,8 +51,10 @@ const CategoryListTable = () => {
     }),
     [categoryTable, dispatch]
   );
+
   return (
     <AppTable
+      searchValue={searchValue}
       itemsLength={categoryTable?.data?.length}
       itemKey={"id"}
       data={categoryTable?.data}
