@@ -10,7 +10,6 @@ const IconButton = ({
   color = appColors.themeColor,
   iconStyle = {},
   containerStyle = {},
-
   innerContainerStyle = {},
   onPress,
   plain = false,

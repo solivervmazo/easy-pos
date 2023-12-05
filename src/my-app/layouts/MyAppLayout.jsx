@@ -5,7 +5,7 @@ import { useToast } from "react-native-toast-notifications";
 import { getQueueAction } from "../../store/slices/toast/toastSlice";
 import { appColors, appConstants } from "../../themes";
 
-const AppLayout = ({ onLayoutRootView }) => {
+const MyAppLayout = ({ onLayoutRootView }) => {
   const dispatch = useDispatch();
   const { toastQueue, onQueue } = useSelector((state) => state.toast);
   const toast = useToast();
@@ -42,4 +42,4 @@ const AppLayout = ({ onLayoutRootView }) => {
   );
 };
 
-export default AppLayout;
+export default MyAppLayout;

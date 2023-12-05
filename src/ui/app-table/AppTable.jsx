@@ -85,7 +85,7 @@ const AppTable = ({
         <FlatList
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ ...tableContainerStyle }}
-          data={_filteredData}
+          data={data}
           renderItem={({ item }) => (
             <TableRow
               toggleKey={item[itemKey]}

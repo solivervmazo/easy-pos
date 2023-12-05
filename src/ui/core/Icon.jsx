@@ -192,6 +192,11 @@ export const Filters = (props) => {
   return icon.ionicons("filter", "filter");
 };
 
+export const Forward = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("arrow-forward-outline", "arrow-forward-sharp");
+};
+
 export const Gps = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons("gps-fixed", "gps-fixed");
@@ -420,6 +425,7 @@ const Icon = {
   Close,
   CursorText,
   Copy,
+  Forward,
   Heart, //
   Home,
   Info,

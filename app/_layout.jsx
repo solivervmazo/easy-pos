@@ -7,7 +7,7 @@ import * as SQLlite from "expo-sqlite";
 import products, { insertProductQuery } from "../src/db/products";
 import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
-import AppLayout from "../src/app/layouts/AppLayout";
+import MyAppLayout from "../src/my-app/layouts/MyAppLayout";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -50,7 +50,7 @@ const _layout = () => {
           tx.executeSql(query, args, (_, row) => {});
         });
 
-        new Array(100).fill({}).map((item, index) => {
+        new Array(10).fill({}).map((item, index) => {
           const { query, args } = insertCategoryQuery({
             categoryId:
               (Math.floor(Math.random() * 999) + 1000).toString() +
@@ -80,7 +80,6 @@ const _layout = () => {
   if (!fontsLoaded && !fontError) {
     return null;
   }
-
   return (
     (ready && (
       <Provider store={store}>
@@ -91,7 +90,7 @@ const _layout = () => {
           animationDuration={250}
           style={{ marginTop: 100 }}
         >
-          <AppLayout onLayoutRootView={onLayoutRootView} />
+          <MyAppLayout onLayoutRootView={onLayoutRootView} />
         </ToastProvider>
       </Provider>
     )) ||
