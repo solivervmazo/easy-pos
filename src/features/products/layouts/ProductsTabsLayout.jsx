@@ -7,6 +7,7 @@ import { TabBarItem } from "react-native-tab-view/src/TabBarItem";
 import { TabBarIndicator } from "react-native-tab-view/src/TabBarIndicator";
 import ProductsScreen from "../screens/ProductsScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
+import ProductVariationsScreen from "../screens/ProductVariationsScreen";
 import { Icon } from "../../../ui";
 import { appColors, appFonts, appSizes } from "../../../themes";
 import Animated, {
@@ -130,6 +131,7 @@ const ProductsTabsLayout = () => {
         component={ProductsScreen}
       />
       <Tabs.Screen name="categories" component={CategoriesScreen} />
+      <Tabs.Screen name="variations" component={ProductVariationsScreen} />
     </Tabs.Navigator>
   );
 };

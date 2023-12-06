@@ -69,13 +69,23 @@ export const {
 export const searchValueSelector = (state) => state.header.searchValue;
 export const searchInputPlaceholderSelector = (state) =>
   state.header.searchInputPlaceholder;
+/** products */
+export const productTabsHeaderModeSelector = (state, { feature }) => {
+  const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
+  return state.header[headerModeToSelect];
+};
+
 export const productCategorySearchValueSelector = (state, { feature }) => {
   const searchValueToSelect = feature + SEARCH_VALUE_SUFFIX;
   return state.header[searchValueToSelect];
 };
-export const productTabsHeaderModeSelector = (state, { feature }) => {
-  const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
-  return state.header[headerModeToSelect];
+
+export const productProductVariationSearchValueSelector = (
+  state,
+  { feature }
+) => {
+  const searchValueToSelect = feature + SEARCH_VALUE_SUFFIX;
+  return state.header[searchValueToSelect];
 };
 
 export default headerSlice.reducer;

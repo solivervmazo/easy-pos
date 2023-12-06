@@ -1,6 +1,7 @@
 const PRODUCTS_PREFIX = "products";
 const PRODUCTS_PRODUCTS_PREFIX = "products";
 const PRODUCTS_CATEGORIES_PREFIX = "categories";
+const PRODUCTS_VARIATIONS_PREFIX = "product-variations";
 export const productsStackRoutes = {
   [`${PRODUCTS_PRODUCTS_PREFIX}-detail`]: {
     path: `${PRODUCTS_PREFIX}/${PRODUCTS_PRODUCTS_PREFIX}/[$id]`,
@@ -30,6 +31,13 @@ export const productsStackRoutes = {
       "detail-select-shortkey-color": {
         path: `${PRODUCTS_PREFIX}/${PRODUCTS_CATEGORIES_PREFIX}/select-shortkey-color`,
       },
+    },
+  },
+  [`${PRODUCTS_VARIATIONS_PREFIX}-detail`]: {
+    path: `${PRODUCTS_PREFIX}/${PRODUCTS_VARIATIONS_PREFIX}/[$id]`,
+    slugs: ["$id"],
+    options: {
+      routeOptions: {},
     },
   },
 };

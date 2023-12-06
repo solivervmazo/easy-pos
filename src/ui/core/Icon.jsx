@@ -391,6 +391,11 @@ export const Unit = (props) => {
   return icon.feather("sliders", "sliders");
 };
 
+export const Variant = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("brush-variant", "brush-variant");
+};
+
 export const Wallet = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("wallet-outline", "wallet");
@@ -466,6 +471,7 @@ const Icon = {
   Tap,
   Tv, //
   Unit,
+  Variant,
   Wallet,
   Warehouse, //
   Wifi, //

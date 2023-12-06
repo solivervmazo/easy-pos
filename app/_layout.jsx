@@ -8,6 +8,9 @@ import products, { insertProductQuery } from "../src/db/products";
 import categories, { insertCategoryQuery } from "../src/db/categories";
 import { ToastProvider } from "react-native-toast-notifications";
 import MyAppLayout from "../src/my-app/layouts/MyAppLayout";
+import productVariations, {
+  insertProductVariationQuery,
+} from "../src/db/productVariations";
 const db_name = "easy-pos";
 SplashScreen.preventAutoHideAsync();
 
@@ -27,6 +30,7 @@ const _layout = () => {
       (tx) => {
         products()
           .concat(categories())
+          .concat(productVariations())
           .forEach((stmnt) =>
             tx.executeSql(stmnt, null, null, (_, error) => console.log(error))
           );
@@ -57,6 +61,19 @@ const _layout = () => {
               index.toString(),
             categoryName: `${["food", "drinks", "add-ons"].splice(
               Math.floor(Math.random() * 3),
+              1
+            )}`,
+          });
+          tx.executeSql(query, args, (_, row) => {});
+        });
+
+        new Array(3).fill({}).map((item, index) => {
+          const { query, args } = insertProductVariationQuery({
+            productVariationId:
+              (Math.floor(Math.random() * 999) + 1000).toString() +
+              index.toString(),
+            productVariationName: `${["size", "color", "section"].splice(
+              index,
               1
             )}`,
           });
