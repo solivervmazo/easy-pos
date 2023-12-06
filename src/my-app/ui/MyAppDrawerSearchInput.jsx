@@ -1,18 +1,14 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { appColors } from "../../themes";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  headerChangeSearchValueAction,
-  searchValueSelector,
-} from "../../store/slices/header/headerSlice";
 import { TextInput } from "react-native-gesture-handler";
 
-const MyAppDrawerSearchInput = () => {
-  const dispatch = useDispatch();
-  const searchValue = useSelector(searchValueSelector);
-  const _onSearchValueChange = (value) => {
-    dispatch(headerChangeSearchValueAction({ searchValue: value }));
+const MyAppDrawerSearchInput = ({
+  searchValue,
+  onChange = ({ searchValue }) => searchValue,
+}) => {
+  _onChangeHandle = (searchValue) => {
+    onChange({ searchValue });
   };
 
   return (
@@ -22,7 +18,7 @@ const MyAppDrawerSearchInput = () => {
       style={styles.input}
       placeholder="Search in product categories"
       placeholderTextColor={appColors.themeColorSecondary}
-      onChange={(e) => _onSearchValueChange(e.nativeEvent.text)}
+      onChange={(e) => _onChangeHandle(e.nativeEvent.text)}
     />
   );
 };

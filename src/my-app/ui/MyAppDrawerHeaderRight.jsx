@@ -3,20 +3,46 @@ import { StyleSheet, View } from "react-native";
 import { appSizes } from "../../themes";
 import { IconButton } from "../../ui";
 import MyAppDrawerSearchInput from "./MyAppDrawerSearchInput";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  headerChangeSearchValueAction,
+  searchValueSelector,
+} from "../../store/slices/header/headerSlice";
 const MyAppDrawerHeaderRight = ({
-  onPress = () => {},
+  onShowInput,
+  onClearInput,
   showInput = false,
   tintColor,
 }) => {
+  const dispatch = useDispatch();
+  const searchValue = useSelector(searchValueSelector);
+  const _onSearchValueChange = (value) => {
+    dispatch(headerChangeSearchValueAction({ searchValue: value }));
+  };
+
+  const _onClearInputHandle = () => {
+    onClearInput ? onClearInput() : () => {};
+    _onSearchValueChange("");
+  };
+
+  const _onShowInputHandle = () => {
+    onShowInput ? onShowInput() : () => {};
+  };
+
   const _onPressHandle = () => {
-    onPress();
+    showInput ? _onClearInputHandle() : _onShowInputHandle();
   };
   return (
     <View style={styles.container}>
-      {showInput ? <MyAppDrawerSearchInput /> : null}
+      {showInput ? (
+        <MyAppDrawerSearchInput
+          searchValue={searchValue}
+          onChange={({ searchValue }) => _onSearchValueChange(searchValue)}
+        />
+      ) : null}
       <IconButton
         onPress={_onPressHandle}
-        icon={"Search"}
+        icon={showInput ? "Close" : "Search"}
         color={tintColor}
         size={appSizes.Icon.large}
       />

@@ -105,7 +105,7 @@ const MyAppDrawerLayout = ({ onLayout }) => {
             <MyAppDrawerHeaderRight
               showInput={_headerMode == HeaderMode.search}
               tintColor={tintColor}
-              onPress={_toggleHeaderMode}
+              onShowInput={_toggleHeaderMode}
             />
           ),
         })}
