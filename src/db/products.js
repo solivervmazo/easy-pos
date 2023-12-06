@@ -3,13 +3,9 @@ const response = async (db, query, args = null) => {
   return await db.transactionAsync((tx) => tx.executeSqlAsync(query, args));
 };
 
-export const selectProductsQuery = ({
-  args = {},
-  orderBy = null,
-  desc = false,
-  limit = 0,
-}) => {
-  const {
+const selectProductInternalQuery = (
+  alias,
+  {
     id = null,
     product_id = null,
     product_name = null,
@@ -18,30 +14,135 @@ export const selectProductsQuery = ({
     product_sku = null,
     category_id = null,
     product_code = null,
-  } = args;
+  }
+) => {
+  let query = ``;
+
+  if (id) query += ` ${alias}id = ? `;
+  if (product_id)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_id = ? `;
+  if (product_name)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_name = ? `;
+  if (product_description)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_description = ? `;
+  if (product_barcode)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_barcode = ? `;
+  if (product_sku)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_sku = ? `;
+  if (category_id)
+    query += ` ${query != "" ? "OR" : ""} ${alias}category_id = ? `;
+  if (product_code)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_code = ? `;
+
+  return {
+    query,
+    args: [
+      ...(id ? [id] : []),
+      ...(product_id ? [product_id] : []),
+      ...(product_name ? [product_name] : []),
+      ...(product_description ? [product_description] : []),
+      ...(product_barcode ? [product_barcode] : []),
+      ...(product_sku ? [product_sku] : []),
+      ...(category_id ? [category_id] : []),
+      ...(product_code ? [product_code] : []),
+    ],
+  };
+};
+
+const selectProductVariationInternalQuery = (
+  alias,
+  {
+    id = null,
+    product_variation_main_product_id = null,
+    product_variation_sub_products_id = null,
+    product_variation_type = null,
+  },
+  query = ""
+) => {
+  let _query = query;
+
+  if (id) _query += `${_query != "" ? "OR" : ""} ${alias}id = ? `;
+  if (product_variation_main_product_id)
+    _query += ` ${
+      _query != "" ? "OR" : ""
+    } ${alias}product_variation_main_product_id = ? `;
+  if (product_variation_sub_products_id)
+    _query += ` ${
+      _query != "" ? "OR" : ""
+    } ${alias}product_variation_sub_products_id = ? `;
+  if (product_variation_type)
+    _query += ` ${
+      _query != "" ? "OR" : ""
+    } ${alias}product_variation_type = ? `;
+
+  return {
+    query: _query,
+    args: [
+      ...(id ? [id] : []),
+      ...(product_variation_main_product_id
+        ? [product_variation_main_product_id]
+        : []),
+      ...(product_variation_sub_products_id
+        ? [product_variation_sub_products_id]
+        : []),
+      ...(product_variation_type ? [product_variation_type] : []),
+    ],
+  };
+};
+
+export const selectProductsQuery = ({
+  args = {},
+  orderBy = null,
+  desc = false,
+  limit = 0,
+}) => {
   const _orderBy = orderBy
     ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
     : false;
 
   const _limit = ` ${limit > 0 ? `LIMIT ${limit}` : ""}`;
+  const { query: productsQuery, args: productsArgs } =
+    selectProductInternalQuery("", args);
 
-  let _where = ``;
-
-  if (id) _where += `id = ? `;
-  if (product_id) _where += ` ${_where != "" ? "OR" : ""} product_id = ? `;
-  if (product_name) _where += ` ${_where != "" ? "OR" : ""} product_name = ? `;
-  if (product_description)
-    _where += ` ${_where != "" ? "OR" : ""} product_description = ? `;
-  if (product_barcode)
-    _where += ` ${_where != "" ? "OR" : ""} product_barcode = ? `;
-  if (product_sku) _where += ` ${_where != "" ? "OR" : ""} product_sku = ? `;
-  if (category_id) _where += ` ${_where != "" ? "OR" : ""} category_id = ? `;
-  if (product_code) _where += ` ${_where != "" ? "OR" : ""} product_code = ? `;
+  let _where = productsQuery;
   if (_where != "") _where = ` WHERE ${_where}`;
   const query = `SELECT * FROM products ${_where != "" ? ` ${_where}` : ""} ${
     _orderBy || ""
   } ${_limit};`;
-  return { query, args: Object.values(args) };
+  return { query, args: productsArgs };
+};
+
+export const selectProductsWithVariationQuery = ({
+  args = {},
+  orderBy = null,
+  desc = false,
+  limit = 0,
+}) => {
+  const _productAlias = "p";
+  const _variationAlias = "pv";
+
+  const _orderBy = orderBy
+    ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
+    : false;
+
+  const _limit = ` ${limit > 0 ? `LIMIT ${limit}` : ""}`;
+  const { query: productsQuery, args: productsArgs } =
+    selectProductInternalQuery(`${_productAlias}.`, args);
+
+  const { query: variationsQuery, args: variationsArgs } =
+    selectProductVariationInternalQuery(
+      `${_variationAlias}.`,
+      args,
+      productsQuery
+    );
+
+  let _where = variationsQuery;
+  if (_where != "") _where = ` WHERE ${_where}`;
+  const query = `SELECT * FROM products ${_productAlias} RIGHT JOIN 
+  product_variations ${_variationAlias} 
+  ON ${_productAlias}.product_variations_id = ${_variationAlias}.id 
+  ${_where != "" ? ` ${_where}` : ""} ${_orderBy || ""} ${_limit};`;
+  return { query, args: productsArgs.concat(variationsArgs) };
 };
 
 export const insertProductQuery = (
@@ -131,6 +232,7 @@ export const updateProductQuery = (
 export default products = () => {
   return [
     `DROP TABLE IF EXISTS products`,
+    `DROP TABLE IF EXISTS product_variations`,
     `CREATE TABLE IF NOT EXISTS products(
       id INTEGER PRIMARY KEY,
       product_id TEXT UNIQUE,
@@ -144,5 +246,11 @@ export default products = () => {
       product_pricings_id INTEGER,
       product_code  TEXT,
       product_shortkey_color TEXT)`,
+    `CREATE TABLE IF NOT EXISTS product_variations(
+      id INTEGER PRIMARY KEY,
+      product_variation_main_product_id INTTEGER NOT NULL,
+      product_variation_sub_products_id INTEGER,
+      product_variation_type TEXT NOT NULL
+      )`,
   ];
 };

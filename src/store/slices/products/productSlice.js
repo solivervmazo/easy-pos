@@ -27,19 +27,6 @@ import {
   updateCategoryBuilder,
 } from "./actions/categories";
 
-import {
-  fetchProductVariationAction,
-  fetchProductVariationActionBuilder,
-  fetchProductVariationDetailAction,
-  fetchProductVariationDetailBuilder,
-  insertProductVariationAction,
-  insertProductVariationBuilder,
-  // generateProjectIdAction,
-  // generateProjectIdBuilder,
-  updateProductVariationAction,
-  updateProductVariationBuilder,
-} from "./actions/productVariations";
-
 const initialState = {
   screenProductSpinner: SpinnerState.show,
   productForm: undefined,
@@ -51,13 +38,6 @@ const initialState = {
   screenCategorySpinner: SpinnerState.show,
   categoryForm: undefined,
   categoryTable: {
-    state: RequestState.idle,
-    data: undefined,
-  },
-  /**variations */
-  screenVariationsCategory: SpinnerState.show,
-  productVariationForm: undefined,
-  productVariationTable: {
     state: RequestState.idle,
     data: undefined,
   },
@@ -89,17 +69,6 @@ export const productSlice = createSlice({
       state.categoryForm.state = payload.state || FormState.editing;
       if (payload.body) state.categoryForm.body = payload.body;
     },
-    /**varaitions */
-    restartProductVariationFormAction: (state) => {
-      return {
-        ...state,
-        productVariationForm: undefined,
-      };
-    },
-    updateProductVariationFormAction: (state, { payload }) => {
-      state.productVariationForm.state = payload.state || FormState.editing;
-      if (payload.body) state.productVariationForm.body = payload.body;
-    },
   },
   extraReducers: (builder) => {
     /**products */
@@ -114,11 +83,6 @@ export const productSlice = createSlice({
     insertCategoryBuilder(builder);
     // generateProjectIdBuilder(builder);
     updateCategoryBuilder(builder);
-    /**variations */
-    fetchProductVariationActionBuilder(builder);
-    fetchProductVariationDetailBuilder(builder);
-    insertProductVariationBuilder(builder);
-    updateProductVariationBuilder(builder);
   },
 });
 
@@ -167,22 +131,5 @@ export const categoryListSelector = createSelector(
     )
 );
 export const categoryFormSelector = (state) => state.products.categoryForm;
-
-/**variations */
-export const {
-  restartProductVariationFormAction,
-  updateProductVariationFormAction,
-} = productSlice.actions;
-export {
-  fetchProductVariationAction,
-  insertProductVariationAction,
-  fetchProductVariationDetailAction,
-  updateProductVariationAction,
-};
-export const productVariationTableSelector = (state) =>
-  state.products.productVariationTable;
-
-export const productVariationFormSelector = (state) =>
-  state.products.productVariationForm;
 
 export default productSlice.reducer;
