@@ -74,10 +74,14 @@ const AppTable = ({
       .concat(data || [])
       .slice(startSlice, endSlice)
       .filter((row) => {
+        const toSearch =
+          typeof searchValue === "number"
+            ? searchValue
+            : (searchValue || "").toString().trim();
         const src = Object.values(row).some((value) =>
           (typeof value === "number" ? value : value || "")
             .toString()
-            .includes(searchValue)
+            .includes(toSearch)
         );
         return src || false;
       });

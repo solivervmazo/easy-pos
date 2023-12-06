@@ -13,8 +13,9 @@ import {
 } from "../../../../store/slices/products/productSlice";
 import { RequestState } from "../../../../enums";
 import { productCategorySearchValueSelector } from "../../../../store/slices/header/headerSlice";
+import { PRODUCT_CATEGORY_SUB_ALIAS } from "../../constants/index";
 
-const CategoryListTable = ({ featureName }) => {
+const CategoryListTable = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const routes = useStackRoutes();
@@ -23,11 +24,9 @@ const CategoryListTable = ({ featureName }) => {
 
   const searchValue = useSelector((state) =>
     productCategorySearchValueSelector(state, {
-      feature: featureName + "_SEARCH_VALUE",
+      feature: PRODUCT_CATEGORY_SUB_ALIAS,
     })
   );
-
-  // console.log("SEARAWR", searchValue);
 
   const categoryDetailRoute = routes["categories-detail"];
 

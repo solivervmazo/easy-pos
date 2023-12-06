@@ -10,7 +10,10 @@ import MyAppDrawerHeaderRight from "../ui/MyAppDrawerHeaderRight";
 import MyAppDrawerTogglerButton from "../ui/MyAppDrawerTogglerButton";
 import { HeaderMode } from "../../enums";
 import { useDispatch } from "react-redux";
-import { headerChangeSearchValueAction } from "../../store/slices/header/headerSlice";
+import {
+  headerChangeSearchValueAction,
+  headerChangeHeaderMode,
+} from "../../store/slices/header/headerSlice";
 const MyAppDrawerLayout = ({ onLayout }) => {
   const dispatch = useDispatch();
   const [_drawerActiveIndex, setDrawerActiveIndex] = useState(0);
@@ -33,6 +36,7 @@ const MyAppDrawerLayout = ({ onLayout }) => {
   const _titleOnHiddenHandle = (hidden) => {
     const headerMode = hidden ? HeaderMode.search : HeaderMode.drawer;
     setHeaderMode(headerMode);
+    dispatch(headerChangeHeaderMode({ headerMode }));
     if (headerMode == HeaderMode.drawer) {
       dispatch(headerChangeSearchValueAction({ searchValue: "" }));
     }

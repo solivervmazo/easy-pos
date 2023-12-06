@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   createMaterialTopTabNavigator,
   MaterialTopTabBar,
@@ -9,15 +9,47 @@ import ProductsScreen from "../screens/ProductsScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
 import { Icon } from "../../../ui";
 import { appColors, appFonts, appSizes } from "../../../themes";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
+import { useSelector } from "react-redux";
+import { productTabsHeaderModeSelector } from "../../../store/slices/header/headerSlice";
+import { PRODUCT_FEATURE_ALIAS, TABS_HEIGHT } from "../constants";
+import { HeaderMode } from "../../../enums";
 
 const Tabs = createMaterialTopTabNavigator();
 
 const AppTabsBar = (props) => {
-  const remainingTabsWidth =
+  const tabsHeaderMode = useSelector((state) =>
+    productTabsHeaderModeSelector(state, { feature: PRODUCT_FEATURE_ALIAS })
+  );
+  const _tabsHeightShared = useSharedValue(TABS_HEIGHT);
+  const _remainingTabsWidth =
     (props.layout.width - 60) / (props.state.routes.length - 1);
+
+  const _tabsHidden = () => tabsHeaderMode == HeaderMode.search;
+
+  const _animateHeight = () => {
+    _tabsHeightShared.value = withSequence(
+      withTiming(_tabsHidden() ? 0 : TABS_HEIGHT, {
+        duration: 200,
+      })
+    );
+  };
+
+  const _animatedTabsStyle = useAnimatedStyle(() => ({
+    height: _tabsHeightShared.value,
+  }));
+
+  useEffect(() => {
+    _animateHeight();
+  }, [tabsHeaderMode]);
+
   return (
-    <Animated.View>
+    <Animated.View style={[_animatedTabsStyle]}>
       <MaterialTopTabBar
         {...props}
         renderTabBarItem={(props) => {
@@ -25,11 +57,12 @@ const AppTabsBar = (props) => {
             <TabBarItem
               {...props}
               defaultTabWidth={
-                props.route.name === "products" ? 60 : remainingTabsWidth
+                props.route.name === "products" ? 60 : _remainingTabsWidth
               }
-              style={{
-                height: 50,
-              }}
+              {...(_tabsHidden() ? { onPress: () => {} } : {})}
+              // style={{
+              //   height: TABS_HEIGHT,
+              // }}
             />
           );
         }}

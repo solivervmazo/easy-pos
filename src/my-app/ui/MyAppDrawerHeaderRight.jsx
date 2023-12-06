@@ -6,6 +6,7 @@ import MyAppDrawerSearchInput from "./MyAppDrawerSearchInput";
 import { useDispatch, useSelector } from "react-redux";
 import {
   headerChangeSearchValueAction,
+  searchInputPlaceholderSelector,
   searchValueSelector,
 } from "../../store/slices/header/headerSlice";
 const MyAppDrawerHeaderRight = ({
@@ -16,6 +17,8 @@ const MyAppDrawerHeaderRight = ({
 }) => {
   const dispatch = useDispatch();
   const searchValue = useSelector(searchValueSelector);
+  const searchInputPlaceholder = useSelector(searchInputPlaceholderSelector);
+
   const _onSearchValueChange = (value) => {
     dispatch(headerChangeSearchValueAction({ searchValue: value }));
   };
@@ -36,6 +39,7 @@ const MyAppDrawerHeaderRight = ({
     <View style={styles.container}>
       {showInput ? (
         <MyAppDrawerSearchInput
+          placeholder={searchInputPlaceholder}
           searchValue={searchValue}
           onChange={({ searchValue }) => _onSearchValueChange(searchValue)}
         />

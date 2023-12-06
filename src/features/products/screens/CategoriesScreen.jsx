@@ -6,8 +6,10 @@ import { SpinnerState } from "../../../enums";
 import CategoryListTable from "../ui/categories/CategoryListTable";
 import { useFocusEffect } from "expo-router";
 import { headerChangeCurrentFeatureAction } from "../../../store/slices/header/headerSlice";
-
-const FEATURE_ALIAS = "PRODUCT_CATEGORY";
+import {
+  PRODUCT_FEATURE_ALIAS,
+  PRODUCT_CATEGORY_SUB_ALIAS,
+} from "../constants";
 
 const CategoriesScreen = () => {
   const dispatch = useDispatch();
@@ -17,7 +19,13 @@ const CategoriesScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(headerChangeCurrentFeatureAction({ feature: FEATURE_ALIAS }));
+      dispatch(
+        headerChangeCurrentFeatureAction({
+          feature: PRODUCT_FEATURE_ALIAS,
+          subFeature: PRODUCT_CATEGORY_SUB_ALIAS,
+          placeholder: "Search in product categories",
+        })
+      );
       return () => {};
     })
   );
@@ -25,7 +33,7 @@ const CategoriesScreen = () => {
   return (
     <>
       {screenCategorySpinner === SpinnerState.show && <AppSpinner />}
-      <CategoryListTable featureName={FEATURE_ALIAS} />
+      <CategoryListTable />
     </>
   );
 };

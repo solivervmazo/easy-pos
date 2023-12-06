@@ -5,6 +5,7 @@ import { TextInput } from "react-native-gesture-handler";
 
 const MyAppDrawerSearchInput = ({
   searchValue,
+  placeholder,
   onChange = ({ searchValue }) => searchValue,
 }) => {
   _onChangeHandle = (searchValue) => {
@@ -16,7 +17,7 @@ const MyAppDrawerSearchInput = ({
       value={searchValue}
       autoFocus={true}
       style={styles.input}
-      placeholder="Search in product categories"
+      placeholder={placeholder}
       placeholderTextColor={appColors.themeColorSecondary}
       onChange={(e) => _onChangeHandle(e.nativeEvent.text)}
     />

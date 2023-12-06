@@ -1,10 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HeaderMode } from "../../../enums";
 
+const HEADER_MODE_SUFFIX = "HeaderMode";
+const SEARCH_VALUE_SUFFIX = "SearchValue";
+
 const initialState = {
   headerMode: HeaderMode.drawer,
   headerCurrentFeature: "app",
+  headerCurrentSubFeature: "app",
   searchValue: "",
+  searchInputPlaceholder: "Start typing...",
   // PRODUCT_CATEGORY_SEARCH_VALUE: "",
 };
 
@@ -12,15 +17,19 @@ export const headerSlice = createSlice({
   name: "header",
   initialState,
   reducers: {
-    headerChangeHeaderMode: (state, { payload }) => {
+    headerChangeHeaderMode: (state, { payload: { headerMode } }) => {
+      const headerModeToChange =
+        state.headerCurrentFeature + HEADER_MODE_SUFFIX;
       return {
         ...state,
-        headerMode: payload,
+        headerMode: headerMode,
+        [headerModeToChange]: headerMode,
       };
     },
     headerChangeSearchValueAction: (state, { payload }) => {
       const searchValue = payload?.searchValue || "";
-      const searchValueToChange = state.headerCurrentFeature + "_SEARCH_VALUE";
+      const searchValueToChange =
+        state.headerCurrentSubFeature + SEARCH_VALUE_SUFFIX;
       return {
         ...state,
         searchValue: searchValue,
@@ -28,13 +37,22 @@ export const headerSlice = createSlice({
       };
     },
     headerChangeCurrentFeatureAction: (state, { payload }) => {
-      const currentFeatrue = payload.feature;
-      const setSearchValueToChange = currentFeatrue + "_SEARCH_VALUE";
+      const currentHeaderFeature = payload.feature;
+      const currentSubFeatrue = payload.subFeature;
+      const searchInputPlaceholder = payload.placeholder;
+      const setSearchValueToChange = currentSubFeatrue + SEARCH_VALUE_SUFFIX;
+      const setHeaderModeToChange = currentHeaderFeature + HEADER_MODE_SUFFIX;
       return {
         ...state,
-        headerCurrentFeature: currentFeatrue,
+        headerCurrentFeature: currentHeaderFeature,
+        headerCurrentSubFeature: currentSubFeatrue,
+        headerMode: HeaderMode.drawer,
         [setSearchValueToChange]: "",
+        [setHeaderModeToChange]: HeaderMode.drawer,
         searchValue: "",
+        ...(payload.placeholder
+          ? { searchInputPlaceholder: searchInputPlaceholder }
+          : {}),
       };
     },
   },
@@ -49,7 +67,15 @@ export const {
 } = headerSlice.actions;
 
 export const searchValueSelector = (state) => state.header.searchValue;
-export const productCategorySearchValueSelector = (state, { feature }) =>
-  state.header[feature];
+export const searchInputPlaceholderSelector = (state) =>
+  state.header.searchInputPlaceholder;
+export const productCategorySearchValueSelector = (state, { feature }) => {
+  const searchValueToSelect = feature + SEARCH_VALUE_SUFFIX;
+  return state.header[searchValueToSelect];
+};
+export const productTabsHeaderModeSelector = (state, { feature }) => {
+  const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
+  return state.header[headerModeToSelect];
+};
 
 export default headerSlice.reducer;
