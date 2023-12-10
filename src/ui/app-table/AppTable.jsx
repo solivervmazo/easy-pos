@@ -83,13 +83,15 @@ const AppTable = ({
       .filter((row) => {
         const toSearch =
           typeof searchValue === "number"
-            ? searchValue
-            : (searchValue || "").toString().trim();
-        const src = Object.values(row).some((value) =>
-          (typeof value === "number" ? value : value || "")
+            ? searchValue.toString()
+            : (searchValue || "").toString();
+        const src = Object.values(row).some((value) => {
+          return (typeof value === "number" ? value : value || "")
             .toString()
-            .includes(toSearch)
-        );
+            .toLowerCase()
+            .trim()
+            .includes(toSearch.trim().toLowerCase());
+        });
         return src || false;
       });
     setFilteredData(slicedData || []);
