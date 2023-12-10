@@ -20,6 +20,7 @@ const AppTable = ({
   noDataContainerStyle = {},
   noDataLableStyle = {},
   onRowToggle = ({ toggled }) => {},
+  searchStrategy = ({ data, searchValue }) => null,
   itemsLength = 0,
   itemsPerPage = 10,
   hasHeader = true,
@@ -77,23 +78,32 @@ const AppTable = ({
   const _paginateData = () => {
     const startSlice = itemsPerPage * (_currentPage - 1);
     const endSlice = itemsPerPage * _currentPage;
-    const slicedData = []
-      .concat(data || [])
-      .slice(startSlice, endSlice)
-      .filter((row) => {
-        const toSearch =
-          typeof searchValue === "number"
-            ? searchValue.toString()
-            : (searchValue || "").toString();
-        const src = Object.values(row).some((value) => {
-          return (typeof value === "number" ? value : value || "")
-            .toString()
-            .toLowerCase()
-            .trim()
-            .includes(toSearch.trim().toLowerCase());
-        });
-        return src || false;
-      });
+    let slicedData = [];
+    const strategizedData = searchStrategy({ data: data || [], searchValue });
+    if (strategizedData !== null) {
+      slicedData = slicedData
+        .concat(strategizedData)
+        .slice(startSlice, endSlice);
+    } else {
+      slicedData = slicedData
+        .concat(data || [])
+        .filter((row) => {
+          const toSearch =
+            typeof searchValue === "number"
+              ? searchValue.toString()
+              : (searchValue || "").toString();
+          const src = Object.values(row).some((value) => {
+            return (typeof value === "number" ? value : value || "")
+              .toString()
+              .toLowerCase()
+              .trim()
+              .includes(toSearch.trim().toLowerCase());
+          });
+          return src || false;
+        })
+        .slice(startSlice, endSlice);
+    }
+
     setFilteredData(slicedData || []);
   };
 
