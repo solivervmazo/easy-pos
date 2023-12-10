@@ -1,7 +1,3 @@
-import { RequestState } from "../enums";
-import { generateStringId } from "../utils/";
-import * as SQLlite from "expo-sqlite";
-const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 // TODO make class
 export const categoryTransform = (body) => {
   if (!body) return null;
@@ -141,7 +137,7 @@ export const updateCategoryQuery = (
   return { query, args: Object.values(_args) };
 };
 
-export const updateCategoryTreeQuery = ({
+export const updateCategoryTreeQuery2 = ({
   categoryRootIdLookup,
   categoryRootIdValue,
   categoryLevelReduce,
@@ -167,6 +163,33 @@ export const updateCategoryTreeQuery = ({
   };
 };
 
+export const updateCategoryTreeQuery = ({
+  categoryId,
+  categoryRootId,
+  categoryLevelReduce,
+}) => {
+  let query = `
+  WITH RECURSIVE
+  category_tree(cid) AS (
+    VALUES(?)
+    UNION
+    SELECT id FROM categories, category_tree
+     WHERE categories.category_parent_id=category_tree.cid
+  )
+  UPDATE categories SET
+    category_root_id = ?,
+    category_level = category_level - (?)
+  WHERE 
+    categories.id IN category_tree 
+    AND categories.id != ?
+  `;
+
+  return {
+    query,
+    args: [categoryId, categoryRootId, categoryLevelReduce, categoryId],
+  };
+};
+
 export default categories = () => {
   return [
     `DROP TABLE IF EXISTS categories`,
@@ -182,89 +205,4 @@ export default categories = () => {
       category_root_id INTEGER DEFAULT 0
       )`,
   ];
-};
-
-export const requestCategoryDetail = async (db, { id }) => {
-  if (id) {
-    const database = db || SQLlite.openDatabase(db_name);
-    const { query, args } = selectCategoriesQuery({
-      args: { id },
-      limit: 1,
-    });
-    let rows = [];
-    await database.transactionAsync(async (tx) => {
-      rows = await tx.executeSqlAsync(query, args);
-    });
-    if (rows?.rows && rows.rows.length > 0) {
-      return {
-        state: RequestState.fulfilled,
-        body: rows?.rows[0],
-      };
-    }
-  }
-  return {
-    state: RequestState.error,
-    message: "Unable to find category",
-  };
-};
-
-export const requestGenerateCategoryId = async (db, random = false) => {
-  const { query, args } = selectCategoriesQuery({
-    orderBy: "id",
-    desc: true,
-    limit: 1,
-  });
-  let rows = [];
-  await db.transactionAsync(async (tx) => {
-    rows = await tx.executeSqlAsync(query, args);
-  });
-
-  if (rows?.rows) {
-    const latestCategoryId = rows?.rows?.[0]?.id || 0;
-    return {
-      state: RequestState.fulfilled,
-      body: generateStringId(latestCategoryId, random),
-    };
-  }
-  return {
-    state: RequestState.error,
-    message: "Unable to create category id",
-  };
-};
-
-export const requestUpdateCategoryTree = async (
-  db,
-  {
-    categoryRootIdLookup,
-    categoryRootIdValue,
-    categoryLevelReduce,
-    selfLookup = false,
-  }
-) => {
-  const database = db || SQLlite.openDatabase(db_name);
-  const { query, args } = updateCategoryTreeQuery({
-    categoryRootIdLookup,
-    categoryRootIdValue,
-    categoryLevelReduce,
-    selfLookup,
-  });
-  let rows = null;
-  try {
-    await database.transactionAsync(async (tx) => {
-      rows = await tx.executeSqlAsync(query, args);
-    });
-  } catch (error) {
-    console.error(error);
-    return {
-      state: RequestState.error,
-      message: "Unable to update category tree",
-    };
-  }
-
-  if (rows?.rows && rows.rows.length > 0) {
-    return {
-      state: RequestState.fulfilled,
-      body: true,
-    };
-  }
 };

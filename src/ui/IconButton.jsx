@@ -38,7 +38,12 @@ const IconButton = ({
       {Icon.Icons(icon, {
         size,
         color,
-        iconStyle,
+        iconStyle: {
+          ...iconStyle,
+          ...(disabled
+            ? { backgroundColor: appColors.lightTextSecondary }
+            : {}),
+        },
       })}
       {_renderLabel()}
     </TouchableOpacity>

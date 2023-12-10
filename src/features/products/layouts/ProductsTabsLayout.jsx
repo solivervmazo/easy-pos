@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { productTabsHeaderModeSelector } from "../../../store/slices/header/headerSlice";
 import { PRODUCT_FEATURE_ALIAS, TABS_HEIGHT } from "../constants";
 import { HeaderMode } from "../../../enums";
+import VariationScreen from "../screens/VariationScreen";
 
 const Tabs = createMaterialTopTabNavigator();
 
@@ -129,6 +130,7 @@ const ProductsTabsLayout = () => {
         }}
         component={ProductsScreen}
       />
+      <Tabs.Screen name="variations" component={VariationScreen} />
       <Tabs.Screen name="categories" component={CategoriesScreen} />
     </Tabs.Navigator>
   );

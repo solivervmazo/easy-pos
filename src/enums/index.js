@@ -1,5 +1,7 @@
+import { RequestState } from "../context-manager";
+
 export { LoadState } from "./LoadState";
 export { FormState } from "./FormState";
-export { RequestState } from "./RequestState";
+export { RequestState };
 export { SpinnerState } from "./SpinnerState";
 export { HeaderMode } from "./HeaderMode";

@@ -1,11 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  requestCategoryDetail,
   selectCategoriesQuery,
   categoryTransform,
 } from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
 import { RequestState, SpinnerState } from "../../../../enums";
+import {
+  requestProductCategoryList,
+  requestProductCategoryDetail,
+} from "../../../../context/products/categories";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -14,17 +17,16 @@ export const fetchCategoryAction = createAsyncThunk(
   async (payload = {}) => {
     const db = SQLlite.openDatabase(db_name);
     const { orderBy = "id", desc = true } = payload;
-    const { query, args } = selectCategoriesQuery({ orderBy, desc });
-    let sqlRows = {};
-    await db.transactionAsync(async (ctx) => {
-      sqlRows = await ctx.executeSqlAsync(query, args);
+    const productCategoryList = await requestProductCategoryList(db, {
+      db,
+      orderBy,
+      desc,
     });
-
-    const tableRows = sqlRows?.rows || [];
+    const tableRows = productCategoryList?.body || [];
     await Promise.all(
       tableRows.map(async (row, index) => {
         if (row.category_parent_id) {
-          const requestCategoryParent = await requestCategoryDetail(db, {
+          const requestCategoryParent = await requestProductCategoryDetail(db, {
             id: row.category_parent_id,
           });
           if (requestCategoryParent.state === RequestState.fulfilled) {

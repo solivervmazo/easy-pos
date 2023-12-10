@@ -1,6 +1,6 @@
 import * as yup from "yup";
-import { requestCategoryDetail } from "../../../db/categories";
 import { RequestState } from "../../../enums";
+import { requestProductCategoryDetail } from "../../../context/products/categories";
 export default categoryFormSchema = yup.object().shape({
   categoryId: yup.string(),
   categoryName: yup
@@ -13,7 +13,9 @@ export default categoryFormSchema = yup.object().shape({
     .nullable()
     .test(async (value, ctx) => {
       if (!value?.id) return true;
-      const request = await requestCategoryDetail(false, { id: value?.id });
+      const request = await requestProductCategoryDetail(false, {
+        id: value?.id,
+      });
       if (request?.state === RequestState.fulfilled) return true;
 
       return ctx.createError({ message: "Category parent is invalid" });

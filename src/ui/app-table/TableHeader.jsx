@@ -4,10 +4,13 @@ import { appColors, appSizes } from "../../themes";
 import IconButton from "../IconButton";
 import ChipButton from "../ChipButton";
 const TableHeader = ({
-  calendarIcon = "Calendar", // set null to disable
-  filterIcon = "Filters", // set null to disable
-  refreshIcon = "Refresh", // set null to disable
-  searchIcon = "Search", // set null to disable
+  calendarIcon = "Calendar", // set null to remove
+  filterIcon = "Filters", // set null to remove
+  refreshIcon = "Refresh", // set null to remove
+  searchIcon = "Search", // set null to remove
+  disableRefresh = false,
+  disableFilter = false,
+  disableDaterangePicker = false,
   onDateFilterPress = () => undefined,
   onFilterPress = () => {},
   onRefreshPress = () => {},
@@ -38,6 +41,7 @@ const TableHeader = ({
       <View style={[styles.mainActionsContainer]}>
         {refreshIcon && (
           <IconButton
+            disabled={disableRefresh}
             icon={refreshIcon}
             size={appSizes.Icon.large}
             onPress={onRefreshHandle}
@@ -50,6 +54,7 @@ const TableHeader = ({
       <View style={styles.subActionsContainer}>
         {calendarIcon && (
           <ChipButton
+            disabled={disableDaterangePicker}
             onPress={onShowDateFilterHandle}
             buttonRight={() => (
               <IconButton
@@ -66,6 +71,7 @@ const TableHeader = ({
         )}
         {filterIcon && (
           <IconButton
+            disabled={disableFilter}
             icon={filterIcon}
             size={appSizes.Icon.large}
             onPress={onFilterHandle}

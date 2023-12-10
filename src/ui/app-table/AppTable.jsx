@@ -57,11 +57,18 @@ const AppTable = ({
   };
 
   const _renderNoData = () => {
-    const _rendered = renderNoData();
+    const _check =
+      typeof renderNoData == "string" ? renderNoData : renderNoData();
+    const _rendered =
+      typeof renderNoData == "function" && !_check ? "No Data" : _check;
     return (
       <View style={[styles.noDataContainer, noDataContainerStyle]}>
-        {_rendered || (
-          <Text style={[styles.noDataLable, noDataLableStyle]}>No data</Text>
+        {typeof _rendered == "string" ? (
+          <Text style={[styles.noDataLable, noDataLableStyle]}>
+            {_rendered}
+          </Text>
+        ) : (
+          _rendered
         )}
       </View>
     );

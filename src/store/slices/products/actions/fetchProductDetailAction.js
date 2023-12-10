@@ -1,12 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  selectProductsQuery,
-  insertProductQuery,
-} from "../../../../db/products";
 import * as SQLlite from "expo-sqlite";
 import { generateProductId } from "../../../helpers/generateProductId";
-import { FormState } from "../../../../enums";
-
+import { FormState, RequestState } from "../../../../enums";
+import { requestProductDetail } from "../../../../context/products/products";
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const fetchProductDetailAction = createAsyncThunk(
@@ -22,27 +18,22 @@ export const fetchProductDetailAction = createAsyncThunk(
         },
       };
     } else {
-      const { query, args } = selectProductsQuery({
-        args: { id: payload.id },
-        limit: 1,
-      });
-      let rows = [];
-      await db.transactionAsync(async (tx) => {
-        rows = await tx.executeSqlAsync(query, args);
-      });
-      return { state: FormState.idle, body: rows?.rows[0] };
+      const makeRequestProductDetail = await requestProductDetail(
+        db,
+        payload.id
+      );
+      if (makeRequestProductDetail.state === RequestState.fulfilled) {
+        return { state: FormState.idle, body: makeRequestProductDetail.body };
+      } else {
+        throw Error(makeRequestProductDetail.message);
+      }
     }
   }
 );
 
 export const fetchProductDetailBuilder = (builder) => {
   builder
-    .addCase(fetchProductDetailAction.pending, (state) => {
-      // return {
-      //   ...state,
-      //   formLoading: true,
-      // };
-    })
+    .addCase(fetchProductDetailAction.pending, (state) => {})
     .addCase(fetchProductDetailAction.fulfilled, (state, { payload }) => {
       if (!payload.body?.id) {
         state.productForm = {
@@ -75,29 +66,8 @@ export const fetchProductDetailBuilder = (builder) => {
           },
         };
       }
-      // return {
-      //   ...state,
-      //   formLoading: false,
-      //   productDetail: {
-      //     ...state.prductDetail,
-      //     id: action.payload?.id,
-      //     productId: action.payload?.product_id,
-      //     productName: action.payload?.product_name,
-      //     productDescription: action.payload?.product_description,
-      //     productBarcode: action.payload?.product_barcode,
-      //     productSku: action.payload?.product_sku,
-      //     productPrice: action.payload?.product_price,
-      //     productCode: action.payload?.product_code,
-      //     productShortkeyColor: action.payload?.product_shortkey_color,
-      //   },
-      // };
     })
     .addCase(fetchProductDetailAction.rejected, (state, action) => {
       console.log(action.error.message);
-      // return {
-      //   ...state,
-      //   formLoading: false,
-      //   error: action.error.message,
-      // };
     });
 };

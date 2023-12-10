@@ -1,12 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   insertCategoryQuery,
-  requestCategoryDetail,
   categoryTransform,
 } from "../../../../db/categories";
 import * as SQLlite from "expo-sqlite";
 import FormState from "../../../../enums/FormState";
 import { RequestState } from "../../../../enums";
+import {
+  requestInsertProductCategory,
+  requestProductCategoryDetail,
+} from "../../../../context/products/categories";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -14,28 +17,26 @@ export const insertCategoryAction = createAsyncThunk(
   "products/insertCategory",
   async (payload) => {
     const db = SQLlite.openDatabase(db_name);
-    const { query, args } = insertCategoryQuery(payload);
     let response = null;
-    await db.transactionAsync(async (tx) => {
-      const result = await tx.executeSqlAsync(query, args);
-      const makeRequestCategoryDetail = await requestCategoryDetail(db, {
-        id: result.insertId,
+    await db.transactionAsync(async (ctx) => {
+      const insertedProductCategory = await requestInsertProductCategory(ctx, {
+        payload,
       });
-      if (makeRequestCategoryDetail.state === RequestState.fulfilled) {
-        const insertedCategory = makeRequestCategoryDetail.body;
+      if (insertedProductCategory.state === RequestState.fulfilled) {
+        const insertedCategory = insertedProductCategory.body;
         if (insertedCategory.category_parent_id) {
-          const makeRequestCategoryParentDetail = await requestCategoryDetail(
-            db,
-            {
+          const makeRequestCategoryParentDetail =
+            await requestProductCategoryDetail(db, {
               id: insertedCategory.category_parent_id,
-            }
-          );
+            });
           if (makeRequestCategoryParentDetail.state == RequestState.fulfilled) {
             insertedCategory["category_parent"] =
               makeRequestCategoryParentDetail.body;
           }
         }
         response = insertedCategory;
+      } else {
+        throw Error(insertedProductCategory.error);
       }
     });
     return response;

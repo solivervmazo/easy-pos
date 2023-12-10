@@ -1,6 +1,20 @@
-const response = async (db, query, args = null) => {
-  if (!db || !query) return false;
-  return await db.transactionAsync((tx) => tx.executeSqlAsync(query, args));
+import * as SQLlite from "expo-sqlite";
+import { RequestState } from "../enums";
+
+export const productTransform = (body) => {
+  if (!body) return null;
+  return {
+    id: body.id,
+    productId: body.product_id,
+    productName: body.product_name,
+    productDescription: body.product_description,
+    productBarcode: body.product_barcode,
+    productSku: body.product_sku,
+    categoryId: body.category_id,
+    productCode: body.product_code,
+    productPrice: body.product_price,
+    productShortkeyColor: body.product_shortkey_color,
+  };
 };
 
 const selectProductInternalQuery = (
@@ -253,4 +267,33 @@ export default products = () => {
       product_variation_type TEXT NOT NULL
       )`,
   ];
+};
+
+export const requestProductDetail = async (db, ctx, { id }) => {
+  if (id) {
+    const { query, args } = selectProductsQuery({
+      args: { id },
+      limit: 1,
+    });
+    let rows = [];
+    const execSqlFn = (ctx, query, args) => ctx.executeSqlAsync(query, args);
+    if (ctx) {
+      rows = await execSqlFn(ctx, query, args);
+    } else {
+      const sqlDb = db || SQLlite.openDatabase(db_name);
+      await sqlDb.transactionAsync(async (ctx) => {
+        rows = await execSqlFn(ctx, query, args);
+      });
+    }
+    if (rows?.rows && rows.rows.length > 0) {
+      return {
+        state: RequestState.fulfilled,
+        body: rows?.rows[0],
+      };
+    }
+  }
+  return {
+    state: RequestState.error,
+    message: "Unable to find product",
+  };
 };

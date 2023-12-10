@@ -2,9 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   selectProductsQuery,
   insertProductQuery,
+  productTransform,
 } from "../../../../db/products";
 import * as SQLlite from "expo-sqlite";
 import FormState from "../../../../enums/FormState";
+import { categoryTransform } from "../../../../db/categories";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -37,16 +39,10 @@ export const insertProductBuilder = (builder) => {
     .addCase(insertProductAction.fulfilled, (state, action) => {
       const productList = Object.assign([], state.productTable?.data || []);
       productList.unshift({
-        id: action.payload.id,
-        productId: action.payload.product_id,
-        productName: action.payload.product_name,
-        productDescription: action.payload.product_description,
-        productBarcode: action.payload.product_barcode,
-        productSku: action.payload.product_sku,
-        categoryId: action.payload.category_id,
-        productCode: action.payload.product_code,
-        productPrice: action.payload.product_price,
-        productShortkeyColor: action.payload.product_shortkey_color,
+        ...productTransform(action.payload),
+        productCategoryDetail: categoryTransform(
+          action.payload.product_category_detail
+        ),
       });
       return {
         ...state,
