@@ -32,15 +32,12 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
   const [_currentPage, setCurrentPage] = useState(1);
   const [_filteredData, setFilteredData] = useState([]);
 
-  const _onRowToggle = useCallback(
-    (toggled: boolean, key: number) => {
-      !toggled && key == _rowToggledKey
-        ? setRowToggledKey(undefined)
-        : setRowToggledKey(key);
-      if (onRowToggle) onRowToggle({ toggled: toggled });
-    },
-    [_rowToggledKey]
-  );
+  const _onRowToggle = (toggled: boolean, key: number) => {
+    !toggled && key == _rowToggledKey
+      ? setRowToggledKey(undefined)
+      : setRowToggledKey(key);
+    if (onRowToggle) onRowToggle({ toggled: toggled });
+  };
 
   const _onPageChangeHandle = (page: number) => {
     setCurrentPage(page);
