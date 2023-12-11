@@ -13,6 +13,7 @@ const TableHeader = (props: AppTableHeaderProps) => {
     disableFilter = false,
     disableDaterangePicker = false,
     dateFilterLabel = "All",
+    searchMode = false,
     onDateFilterPress,
     onFilterPress,
     onRefreshPress,
@@ -28,7 +29,7 @@ const TableHeader = (props: AppTableHeaderProps) => {
   };
 
   const _onFilterHandle = () => {
-    onRefreshPress && onFilterPress();
+    onFilterPress && onFilterPress();
   };
 
   const _renderHeaderActions = () => {
@@ -47,9 +48,11 @@ const TableHeader = (props: AppTableHeaderProps) => {
             onPress={_onRefreshHandle}
           />
         )}
-        <View style={[styles.mainActionsContainer, actionsContainerStyle]}>
-          {_renderHeaderActions()}
-        </View>
+        {!searchMode && (
+          <View style={[styles.mainActionsContainer, actionsContainerStyle]}>
+            {_renderHeaderActions()}
+          </View>
+        )}
       </View>
       <View style={styles.subActionsContainer}>
         {calendarIcon && (

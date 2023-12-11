@@ -27,7 +27,7 @@ const CategoriesScreen = () => {
         })
       );
       return () => {};
-    })
+    }, [])
   );
 
   return (

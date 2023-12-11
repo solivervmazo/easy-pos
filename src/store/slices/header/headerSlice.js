@@ -20,10 +20,13 @@ export const headerSlice = createSlice({
     headerChangeHeaderMode: (state, { payload: { headerMode } }) => {
       const headerModeToChange =
         state.headerCurrentFeature + HEADER_MODE_SUFFIX;
+      const subHeaderModeToChange =
+        state.headerCurrentSubFeature + HEADER_MODE_SUFFIX;
       return {
         ...state,
         headerMode: headerMode,
         [headerModeToChange]: headerMode,
+        [subHeaderModeToChange]: headerMode,
       };
     },
     headerChangeSearchValueAction: (state, { payload }) => {
@@ -42,6 +45,7 @@ export const headerSlice = createSlice({
       const searchInputPlaceholder = payload.placeholder;
       const setSearchValueToChange = currentSubFeatrue + SEARCH_VALUE_SUFFIX;
       const setHeaderModeToChange = currentHeaderFeature + HEADER_MODE_SUFFIX;
+      const setSubHeaderModeToChange = currentSubFeatrue + HEADER_MODE_SUFFIX;
       return {
         ...state,
         headerCurrentFeature: currentHeaderFeature,
@@ -49,6 +53,7 @@ export const headerSlice = createSlice({
         headerMode: HeaderMode.drawer,
         [setSearchValueToChange]: "",
         [setHeaderModeToChange]: HeaderMode.drawer,
+        [setSubHeaderModeToChange]: HeaderMode.drawer,
         searchValue: "",
         ...(payload.placeholder
           ? { searchInputPlaceholder: searchInputPlaceholder }
@@ -73,6 +78,21 @@ export const searchInputPlaceholderSelector = (state) =>
 export const productTabsHeaderModeSelector = (state, { feature }) => {
   const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
   return state.header[headerModeToSelect];
+};
+
+export const productProductTabHeaderModeSelector = (state, { feature }) => {
+  const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
+  return state.header[headerModeToSelect];
+};
+
+export const productCategoryTabHeaderModeSelector = (state, { feature }) => {
+  const headerModeToSelect = feature + HEADER_MODE_SUFFIX;
+  return state.header[headerModeToSelect];
+};
+
+export const productProductSearchValueSelector = (state, { feature }) => {
+  const searchValueToSelect = feature + SEARCH_VALUE_SUFFIX;
+  return state.header[searchValueToSelect];
 };
 
 export const productCategorySearchValueSelector = (state, { feature }) => {

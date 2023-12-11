@@ -5,7 +5,8 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
 import { appColors, appFonts, appSizes, appStyles } from "../../themes";
-import { AppTableProps } from "./types/app-table.types";
+import { AppTableProps, RowItem } from "./types/app-table.types";
+import { isKeyValuePair, makeRowData } from "./utils";
 
 const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
   const {
@@ -28,14 +29,17 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
     headerOptions,
   } = props;
 
-  const [_rowToggledKey, setRowToggledKey] = useState(undefined);
   const [_currentPage, setCurrentPage] = useState(1);
   const [_filteredData, setFilteredData] = useState([]);
 
-  const _onRowToggle = (toggled: boolean, key: number) => {
-    !toggled && key == _rowToggledKey
-      ? setRowToggledKey(undefined)
-      : setRowToggledKey(key);
+  const _onRowToggle = (toggled: boolean, key: string) => {
+    setFilteredData(
+      _filteredData.map((row: RowItem) =>
+        row.itemKey === key
+          ? { ...row, toggled: toggled }
+          : { ...row, toggled: false }
+      )
+    );
     if (onRowToggle) onRowToggle({ toggled: toggled });
   };
 
@@ -75,20 +79,29 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
   const _paginateData = () => {
     const startSlice = itemsPerPage * (_currentPage - 1);
     const endSlice = itemsPerPage * _currentPage;
+    const tableData = []
+      .concat(data || [])
+      .map((row, index) => makeRowData(row, index, itemKey));
     let slicedData = [];
     if (searchStrategy) {
       slicedData = slicedData
-        .concat(searchStrategy({ data: data || [], searchValue }))
+        .concat(
+          searchStrategy({
+            data: tableData.flatMap((row) => row.item),
+            searchValue,
+          })
+        )
         .slice(startSlice, endSlice);
     } else {
       slicedData = slicedData
-        .concat(data || [])
-        .filter((row) => {
+        .concat(tableData)
+        .filter((row: RowItem) => {
           const toSearch =
             typeof searchValue === "number"
               ? searchValue
               : (searchValue || "").toString();
-          const src = Object.values(row).some((value) => {
+
+          const src = Object.values(row.item).some((value) => {
             return (typeof value === "number" ? value : value || "")
               .toString()
               .toLowerCase()
@@ -99,7 +112,6 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
         })
         .slice(startSlice, endSlice);
     }
-
     setFilteredData(slicedData || []);
   };
 
@@ -116,24 +128,32 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={tableContainerStyle}
           data={_filteredData}
-          renderItem={({ item }) => (
-            <TableRow
-              toggleKey={item[itemKey]}
-              toggled={_rowToggledKey == item[itemKey]}
-              onToggle={({ toggled, toggledKey }) =>
-                _onRowToggle(toggled, item[itemKey])
-              }
-              actionsCount={actionsCount}
-              contentStyle={{ flexDirection: "row" }}
-              actions={({ actionSize }) => _renderActions({ actionSize, item })}
-              content={() =>
-                _renderItem({ item, toggled: _rowToggledKey == item[itemKey] })
-              }
-              key={`app-table-lists-row-${item[itemKey]}`}
-            />
-          )}
+          renderItem={(item: { item: RowItem }) => {
+            const { item: rowItem } = item;
+            return (
+              <TableRow
+                toggleKey={rowItem.itemKey}
+                toggled={rowItem.toggled}
+                onToggle={({ toggled, toggledKey }) =>
+                  _onRowToggle(toggled, rowItem.itemKey)
+                }
+                actionsCount={actionsCount}
+                contentStyle={{ flexDirection: "row" }}
+                actions={({ actionSize }) =>
+                  _renderActions({ actionSize, item: rowItem.item })
+                }
+                content={() =>
+                  _renderItem({
+                    item: rowItem.item,
+                    toggled: rowItem.toggled,
+                  })
+                }
+                key={`app-table-lists-row-${rowItem.itemKey}`}
+              />
+            );
+          }}
           keyExtractor={(item) =>
-            `app-table-lists-flatlist-row-${item[itemKey]}`
+            `app-table-lists-flatlist-row-${item.itemKey}`
           }
           ItemSeparatorComponent={() => itemSeparatorComponent()}
         />

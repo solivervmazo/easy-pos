@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   createMaterialTopTabNavigator,
   MaterialTopTabBar,
 } from "@react-navigation/material-top-tabs";
 import { TabBarItem } from "react-native-tab-view/src/TabBarItem";
 import { TabBarIndicator } from "react-native-tab-view/src/TabBarIndicator";
-import ProductsScreen from "../screens/ProductsScreen";
-import CategoriesScreen from "../screens/CategoriesScreen";
 import { Icon } from "../../../ui";
 import { appColors, appFonts, appSizes } from "../../../themes";
 import Animated, {
@@ -20,6 +18,9 @@ import { productTabsHeaderModeSelector } from "../../../store/slices/header/head
 import { PRODUCT_FEATURE_ALIAS, TABS_HEIGHT } from "../constants";
 import { HeaderMode } from "../../../enums";
 import VariationScreen from "../screens/VariationScreen";
+
+import ProductsScreen from "../screens/ProductsScreen";
+import CategoriesScreen from "../screens/CategoriesScreen";
 
 const Tabs = createMaterialTopTabNavigator();
 
@@ -61,9 +62,6 @@ const AppTabsBar = (props) => {
                 props.route.name === "products" ? 60 : _remainingTabsWidth
               }
               {...(_tabsHidden() ? { onPress: () => {} } : {})}
-              // style={{
-              //   height: TABS_HEIGHT,
-              // }}
             />
           );
         }}
@@ -77,6 +75,7 @@ const ProductsTabsLayout = () => {
     <Tabs.Navigator
       tabBar={(props) => <AppTabsBar {...props} />}
       screenOptions={{
+        lazy: true,
         tabBarStyle: {
           backgroundColor: appColors.themeColor,
           height: 48,

@@ -17,6 +17,18 @@ export type Obj = {
 export type Item = Obj | string | number;
 
 /**
+ * Represents row item data that is created from @typedef {Item}.
+ * @typedef { index: number; itemKey: number | string; selected: boolean; toggled: boolean; item: Obj;} RowItem
+ */
+export type RowItem = {
+  index: number;
+  itemKey: string;
+  selected: boolean;
+  toggled: boolean;
+  item: Obj;
+};
+
+/**
  * Callback function to render individual items in the table.
  * @callback RenderItemCallback
  * @param {{ item: Item; toggled: boolean }} props - The properties for rendering an item.
@@ -114,6 +126,11 @@ export type AppTableHeaderProps = {
    * Disables the date range picker button if set to true. Defaults to false.
    */
   disableDaterangePicker?: boolean;
+
+  /**
+   * Hides other actions in the header excepts filters. Defaults to false.
+   */
+  searchMode?: boolean;
 
   /**
    * Callback event when the date filter button is pressed.

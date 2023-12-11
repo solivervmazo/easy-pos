@@ -11,11 +11,28 @@ import {
   productTableSelector,
   restartProductFormAction,
 } from "../../../store/slices/products/productSlice";
-import { RequestState } from "../../../enums";
+import { HeaderMode, RequestState } from "../../../enums";
+import {
+  productProductSearchValueSelector,
+  productProductTabHeaderModeSelector,
+} from "../../../store/slices/header/headerSlice";
+import { PRODUCT_PRODUCT_SUB_ALIAS } from "../constants";
 
 const ProductListTable = () => {
   const dispatch = useDispatch();
   const productTable = useSelector(productTableSelector);
+
+  const searchValue = useSelector((state) =>
+    productProductSearchValueSelector(state, {
+      feature: PRODUCT_PRODUCT_SUB_ALIAS,
+    })
+  );
+
+  const currentTabHeaderMode = useSelector((state) =>
+    productProductTabHeaderModeSelector(state, {
+      feature: PRODUCT_PRODUCT_SUB_ALIAS,
+    })
+  );
 
   const router = useRouter();
   const routes = useStackRoutes();
@@ -40,6 +57,7 @@ const ProductListTable = () => {
   );
   return (
     <AppTable
+      searchValue={searchValue}
       itemsLength={productTable?.data?.length}
       itemKey={"id"}
       data={productTable?.data}
@@ -83,6 +101,7 @@ const ProductListTable = () => {
         paddingVertical: 5,
       }}
       headerOptions={{
+        searchMode: currentTabHeaderMode == HeaderMode.search,
         calendarIcon: "",
         renderHeaderActions: () => (
           <ChipButton

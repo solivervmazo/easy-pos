@@ -11,8 +11,11 @@ import {
   categoryTableSelector,
   restartCategoryFormAction,
 } from "../../../../store/slices/products/productSlice";
-import { RequestState } from "../../../../enums";
-import { productCategorySearchValueSelector } from "../../../../store/slices/header/headerSlice";
+import { HeaderMode, RequestState } from "../../../../enums";
+import {
+  productCategorySearchValueSelector,
+  productCategoryTabHeaderModeSelector,
+} from "../../../../store/slices/header/headerSlice";
 import { PRODUCT_CATEGORY_SUB_ALIAS } from "../../constants/index";
 
 const CategoryListTable = () => {
@@ -24,6 +27,12 @@ const CategoryListTable = () => {
 
   const searchValue = useSelector((state) =>
     productCategorySearchValueSelector(state, {
+      feature: PRODUCT_CATEGORY_SUB_ALIAS,
+    })
+  );
+
+  const currentTabHeaderMode = useSelector((state) =>
+    productCategoryTabHeaderModeSelector(state, {
       feature: PRODUCT_CATEGORY_SUB_ALIAS,
     })
   );
@@ -87,6 +96,7 @@ const CategoryListTable = () => {
         paddingVertical: 5,
       }}
       headerOptions={{
+        searchMode: currentTabHeaderMode == HeaderMode.search,
         calendarIcon: "",
         renderHeaderActions: () => (
           <ChipButton

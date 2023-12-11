@@ -12,7 +12,6 @@ import DrawerHeader from "../../ui/app-drawer/DrawerHeader";
 import { appColors } from "../../themes";
 
 const TITLE_WIDTH = 200;
-const HIDDEN_OFFSET = 30;
 const MyAppDrawerHeaderTitle = ({
   toggle: headerMode,
   titleText,
@@ -23,6 +22,7 @@ const MyAppDrawerHeaderTitle = ({
   const sharedDrawerAnimatingSearchMode = useSharedValue(headerMode);
 
   const _animateHeaderForSearching = () => {
+    runOnJS(_onChangeHandle)(sharedDrawerAnimatingSearchMode.value);
     titleWidth.value = withSequence(
       withTiming(
         !sharedDrawerAnimatingSearchMode.value ? 200 : 0,
@@ -43,15 +43,6 @@ const MyAppDrawerHeaderTitle = ({
   const animatedStyle = useAnimatedStyle(() => ({
     width: titleWidth.value,
   }));
-
-  useAnimatedReaction(
-    () => {
-      return titleWidth.value;
-    },
-    (currentValue, _) => {
-      runOnJS(_onChangeHandle)(currentValue < HIDDEN_OFFSET);
-    }
-  );
 
   useEffect(() => {
     _animateHeaderForSearching();

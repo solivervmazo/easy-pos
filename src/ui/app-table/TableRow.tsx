@@ -5,6 +5,7 @@ import { Octicons } from "@expo/vector-icons";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -13,6 +14,7 @@ import Animated, {
 const AnimatedIcon = Animated.createAnimatedComponent(Octicons);
 const ACTION_TOGGLER_WIDTH = 42;
 const ACTION_BUTTON_WIDTH = 42;
+const ANIMATION_SPEED = 200;
 const ACTION_ICON_SIZE = appSizes.Icon.medium;
 
 const TableRow = React.memo(
@@ -21,7 +23,7 @@ const TableRow = React.memo(
     actions(args: { actionSize: number }): React.ReactNode;
     toggleKey: string;
     actionsCount: number;
-    toggled: boolean;
+    toggled?: boolean;
     containerStyle?: {} & StyleProp<ViewStyle>;
     contentStyle?: {} & StyleProp<ViewStyle>;
     actionContainerStyle?: {} & StyleProp<ViewStyle>;
@@ -40,10 +42,10 @@ const TableRow = React.memo(
       actionContentStyle = {},
       onToggle = ({ toggled, toggledKey }) => {},
     } = props;
-    const sharedTogglerMode = useSharedValue(false);
+    const [_toggleMode, setToggleMode] = useState(toggled);
+    const sharedToggleMode = useSharedValue(false);
     const sharedTogglerIconDegree = useSharedValue("0deg");
     const sharedTogglerContentWidth = useSharedValue(ACTION_TOGGLER_WIDTH);
-
     const animatedTogglerIconStyles = useAnimatedStyle(() => ({
       transform: [{ rotate: sharedTogglerIconDegree.value }],
     }));
@@ -52,35 +54,51 @@ const TableRow = React.memo(
       width: sharedTogglerContentWidth.value,
     }));
 
-    const _animateRowToggling = (toggled: boolean) => {
-      sharedTogglerIconDegree.value = withSequence(
-        withTiming(!toggled ? "0deg" : "-180deg", {
-          duration: 400,
-        })
-      );
-      sharedTogglerContentWidth.value = withSequence(
-        withTiming(
-          !toggled
-            ? ACTION_TOGGLER_WIDTH
-            : ACTION_BUTTON_WIDTH * actionsCount + ACTION_TOGGLER_WIDTH,
-          {
-            duration: 400,
-          },
-          () => (sharedTogglerMode.value = toggled)
-        )
+    const _animateRowTogglingOff = (runCallback: boolean = false) => {
+      sharedTogglerIconDegree.value = withTiming("0deg", {
+        duration: ANIMATION_SPEED,
+      });
+      sharedTogglerContentWidth.value = withTiming(
+        ACTION_TOGGLER_WIDTH,
+        {
+          duration: ANIMATION_SPEED,
+        },
+        () => {
+          sharedToggleMode.value = false;
+          if (runCallback) {
+            runOnJS(onToggle)({ toggled: false, toggledKey: toggleKey });
+          }
+        }
       );
     };
 
-    const toggleRowAction = (_toggled: boolean) => {
-      onToggle({ toggled: _toggled, toggledKey: toggleKey });
+    const _animateRowToggling = () => {
+      if (sharedToggleMode.value) {
+        _animateRowTogglingOff(true);
+      } else {
+        runOnJS(onToggle)({ toggled: true, toggledKey: toggleKey });
+        sharedTogglerIconDegree.value = withTiming("-180deg", {
+          duration: ANIMATION_SPEED,
+        });
+        sharedTogglerContentWidth.value = withTiming(
+          ACTION_BUTTON_WIDTH * actionsCount + ACTION_TOGGLER_WIDTH,
+          {
+            duration: ANIMATION_SPEED,
+          },
+          () => {
+            sharedToggleMode.value = true;
+          }
+        );
+      }
     };
 
     useEffect(() => {
-      if (toggled != sharedTogglerMode.value) {
-        _animateRowToggling(toggled);
-      }
+      if (!toggled) _animateRowTogglingOff();
     }, [toggled]);
 
+    const _toggleRowHandle = useCallback(() => {
+      _animateRowToggling();
+    }, []);
     return (
       <View style={[styles.itemContainer, containerStyle]}>
         <View style={[styles.itemContent, contentStyle]}>
@@ -96,7 +114,7 @@ const TableRow = React.memo(
           >
             <TouchableOpacity
               style={styles.itemActionToggleButton}
-              onPress={() => toggleRowAction(!toggled)}
+              onPress={() => _toggleRowHandle()}
             >
               <AnimatedIcon
                 name={"chevron-right"}
@@ -143,6 +161,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 9,
+  },
+  animatedTogglerIcon: {
+    transform: [{ rotate: "0deg" }],
   },
 });
 

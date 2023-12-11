@@ -45,7 +45,7 @@ export const fetchProductActionBuilder = (builder) => {
       return {
         ...state,
         productTable: {
-          state: RequestState.fulfilled, //No use
+          state: RequestState.fulfilled,
           data: action.payload?.map((product) => ({
             ...productTransform(product),
             productCategoryDetail: categoryTransform(
