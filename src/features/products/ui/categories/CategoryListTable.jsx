@@ -57,7 +57,7 @@ const CategoryListTable = () => {
       itemsLength={categoryTable?.data?.length}
       itemKey={"id"}
       data={categoryTable?.data}
-      renderItem={({ item, toggled }) => (
+      renderItem={({ item }) => (
         <CategoryRow
           item={item}
           key={`category-screen-category-lists-${item.id}`}

@@ -1,65 +1,57 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { forwardRef, useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { StyleSheet, View, Text } from "react-native";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
 import { appColors, appFonts, appSizes, appStyles } from "../../themes";
+import { AppTableProps } from "./types/app-table.types";
 
-const AppTable = ({
-  data,
-  itemKey,
-  searchValue = "",
-  renderItem = ({ item, toggled }) => null,
-  renderNoData = () => undefined,
-  renderActions = ({ actionSize, item }) => {},
-  itemSeparatorComponent = () => null,
-  actionsCount = 0,
-  keyExtractor = (item) => {},
-  tableContainerStyle = {},
-  noDataContainerStyle = {},
-  noDataLableStyle = {},
-  onRowToggle = ({ toggled }) => {},
-  searchStrategy = ({ data, searchValue }) => null,
-  itemsLength = 0,
-  itemsPerPage = 10,
-  hasHeader = true,
-  headerOptions = {
-    calendarIcon: "Calendar", // set null to disable
-    filterIcon: "Filters", // set null to disable
-    refreshIcon: "Refresh", // set null to disable
-    onDateFilterPress: () => undefined,
-    onFilterPress: () => {},
-    onRefreshPress: () => {},
-    renderHeaderActions: () => undefined,
-    dateFilterLabel: "All",
-    actionsContainerStyle: {},
-  },
-}) => {
-  const [rowToggled, setRowToggled] = useState(false);
+const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
+  const {
+    data,
+    itemKey,
+    searchValue = "",
+    itemsLength = 0,
+    itemsPerPage = 10,
+    hasHeader = true,
+    actionsCount = 0,
+    tableContainerStyle,
+    noDataContainerStyle,
+    noDataLableStyle,
+    onRowToggle,
+    searchStrategy,
+    renderItem,
+    renderNoData,
+    renderActions,
+    itemSeparatorComponent,
+    headerOptions,
+  } = props;
+
   const [_rowToggledKey, setRowToggledKey] = useState(undefined);
   const [_currentPage, setCurrentPage] = useState(1);
   const [_filteredData, setFilteredData] = useState([]);
 
   const _onRowToggle = useCallback(
-    (_toggled, key) => {
-      if (_toggled == false) {
-        if (key === _rowToggledKey) setRowToggledKey(undefined);
-      } else {
-        setRowToggledKey(key);
-      }
-      if (onRowToggle) onRowToggle({ toggled: _toggled });
+    (toggled: boolean, key: number) => {
+      !toggled && key == _rowToggledKey
+        ? setRowToggledKey(undefined)
+        : setRowToggledKey(key);
+      if (onRowToggle) onRowToggle({ toggled: toggled });
     },
     [_rowToggledKey]
   );
 
-  const _onPageChangeHandle = (page) => {
+  const _onPageChangeHandle = (page: number) => {
     setCurrentPage(page);
   };
 
   const _renderNoData = () => {
-    const _check =
-      typeof renderNoData == "string" ? renderNoData : renderNoData();
+    const _check = renderNoData
+      ? typeof renderNoData == "string"
+        ? renderNoData
+        : renderNoData()
+      : null;
     const _rendered =
       typeof renderNoData == "function" && !_check ? "No Data" : _check;
     return (
@@ -75,14 +67,21 @@ const AppTable = ({
     );
   };
 
+  const _renderItem = ({ item, toggled }) => {
+    return renderItem ? renderItem({ item, toggled }) : null;
+  };
+
+  const _renderActions = ({ actionSize, item }) => {
+    return renderActions ? renderActions({ actionSize, item }) : null;
+  };
+
   const _paginateData = () => {
     const startSlice = itemsPerPage * (_currentPage - 1);
     const endSlice = itemsPerPage * _currentPage;
     let slicedData = [];
-    const strategizedData = searchStrategy({ data: data || [], searchValue });
-    if (strategizedData !== null) {
+    if (searchStrategy) {
       slicedData = slicedData
-        .concat(strategizedData)
+        .concat(searchStrategy({ data: data || [], searchValue }))
         .slice(startSlice, endSlice);
     } else {
       slicedData = slicedData
@@ -90,7 +89,7 @@ const AppTable = ({
         .filter((row) => {
           const toSearch =
             typeof searchValue === "number"
-              ? searchValue.toString()
+              ? searchValue
               : (searchValue || "").toString();
           const src = Object.values(row).some((value) => {
             return (typeof value === "number" ? value : value || "")
@@ -118,7 +117,7 @@ const AppTable = ({
       {itemsLength > 0 && (
         <FlatList
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ ...tableContainerStyle }}
+          contentContainerStyle={tableContainerStyle}
           data={_filteredData}
           renderItem={({ item }) => (
             <TableRow
@@ -129,9 +128,9 @@ const AppTable = ({
               }
               actionsCount={actionsCount}
               contentStyle={{ flexDirection: "row" }}
-              actions={({ actionSize }) => renderActions({ actionSize, item })}
+              actions={({ actionSize }) => _renderActions({ actionSize, item })}
               content={() =>
-                renderItem({ item, toggled: _rowToggledKey == item[itemKey] })
+                _renderItem({ item, toggled: _rowToggledKey == item[itemKey] })
               }
               key={`app-table-lists-row-${item[itemKey]}`}
             />
@@ -150,7 +149,7 @@ const AppTable = ({
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   noDataContainer: { alignItems: "center", justifyContent: "center", flex: 1 },

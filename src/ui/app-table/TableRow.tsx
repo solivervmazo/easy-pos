@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Animated, StyleSheet } from "react-native";
+import { View, Animated, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { appColors, appSizes } from "../../themes";
 import { Octicons } from "@expo/vector-icons";
 
@@ -9,18 +9,30 @@ const ACTION_TOGGLER_WIDTH = 42;
 const ACTION_BUTTON_WIDTH = 42;
 const ACTION_ICON_SIZE = appSizes.Icon.medium;
 
-const TableRow = ({
-  content = () => {},
-  actions = ({ actionSize }) => {},
-  toggleKey,
-  actionsCount = 0,
-  toggled = false,
-  containerStyle = {},
-  contentStyle = {},
-  actionContainerStyle = {},
-  actionContentStyle = {},
-  onToggle = ({ toggled, toggledKey }) => {},
+const TableRow = (props: {
+  content(): React.ReactNode;
+  actions(args: { actionSize: number }): React.ReactNode;
+  toggleKey: string;
+  actionsCount: number;
+  toggled: boolean;
+  containerStyle?: {} & StyleProp<ViewStyle>;
+  contentStyle?: {} & StyleProp<ViewStyle>;
+  actionContainerStyle?: {} & StyleProp<ViewStyle>;
+  actionContentStyle?: {} & StyleProp<ViewStyle>;
+  onToggle(args: { toggled: boolean; toggledKey: string }): void;
 }) => {
+  const {
+    content = undefined,
+    actions = undefined,
+    toggleKey,
+    actionsCount = 0,
+    toggled = false,
+    containerStyle = {},
+    contentStyle = {},
+    actionContainerStyle = {},
+    actionContentStyle = {},
+    onToggle = ({ toggled, toggledKey }) => {},
+  } = props;
   const rowActionContainerWidth = useRef(
     new Animated.Value(ACTION_TOGGLER_WIDTH)
   ).current;
@@ -45,24 +57,26 @@ const TableRow = ({
         duration: 100,
         useNativeDriver: false,
       }),
-    ]).start(onToggle({ toggled: _toggled, toggledKey: toggleKey }));
-  });
+    ]).start(() => onToggle({ toggled: _toggled, toggledKey: toggleKey }));
+  }, []);
 
-  const toggleRowAction = useCallback((_toggled) => {
+  const toggleRowAction = useCallback((_toggled: boolean) => {
     _animateToggle(!toggled);
-  });
+  }, []);
 
   useEffect(
     useCallback(() => {
       _animateToggle(toggled);
-    }),
+    }, []),
 
     [toggled]
   );
 
   return (
     <View style={[styles.itemContainer, containerStyle]}>
-      <View style={[styles.itemContent, contentStyle]}>{content()}</View>
+      <View style={[styles.itemContent, contentStyle]}>
+        {content && content()}
+      </View>
       {actionsCount > 0 && (
         <Animated.View
           style={[
@@ -87,7 +101,7 @@ const TableRow = ({
             />
           </TouchableOpacity>
           <View style={[styles.itemActionContent, actionContentStyle]}>
-            {actions({ actionSize: ACTION_ICON_SIZE })}
+            {actions && actions({ actionSize: ACTION_ICON_SIZE })}
           </View>
         </Animated.View>
       )}

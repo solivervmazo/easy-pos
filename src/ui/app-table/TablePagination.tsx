@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import {
   appColors,
   appConstants,
@@ -15,12 +15,13 @@ import Icon from "../core/Icon";
 const BTN_WIDTH = 40;
 const BTN_GAP = 2;
 
-const Btn = ({
-  selected,
-  renderItem = () => {},
-  containerStyle = {},
-  onPress,
+const Btn = (props: {
+  selected: boolean;
+  renderItem(): React.ReactNode;
+  containerStyle?: {} | StyleProp<ViewStyle>;
+  onPress(): void;
 }) => {
+  const { selected, renderItem, containerStyle = {}, onPress } = props;
   const BTN_WIDTH = 40;
   return (
     <TouchableOpacity
@@ -78,12 +79,18 @@ const BtnAction = ({ icon, disabled = true, onPress }) => {
   );
 };
 
-const TablePagination = ({
-  currentPage = 0,
-  itemsLength = 0,
-  itemsPerPage = 10,
-  onChange = ({ page }) => {},
+const TablePagination = (props: {
+  currentPage: number;
+  itemsLength: number;
+  itemsPerPage: number;
+  onChange(args: { page: number }): void;
 }) => {
+  const {
+    currentPage = 0,
+    itemsLength = 0,
+    itemsPerPage = 10,
+    onChange = ({ page }) => {},
+  } = props;
   const [_numberOfPages, setNumberOfPages] = useState(1);
   const [_currentPage, setCurrentPage] = useState(currentPage);
   const _flatListRef = useRef();
@@ -97,27 +104,25 @@ const TablePagination = ({
   };
 
   useEffect(() => {
-    // _scrollPaginationToCenter();
     _calculateCumberOfPages();
   }, [itemsLength, _currentPage]);
 
-  const _scrollPaginationToCenter = () => {
-    _flatListRef.current?.scrollToIndex({
-      animated: true,
-      index: (_currentPage || 1) - 1,
-    });
-  };
-
-  const _onChange = (page) => {
+  const _onChange = (page: number) => {
     setCurrentPage(page);
     onChange({ page });
   };
 
-  const _pageControlPressHandle = ({ reduce, start, end }) => {
+  const _pageControlPressHandle = (args: {
+    reduce?: number;
+    start?: boolean;
+    end?: boolean;
+  }) => {
+    const { reduce, start, end } = args;
     _onChange(start ? 1 : end ? _numberOfPages : _currentPage + reduce);
   };
 
-  const _pagePressHandle = ({ page = 1 }) => {
+  const _pagePressHandle = (args: { page: number }) => {
+    const { page = 1 } = args;
     _onChange(page);
   };
 

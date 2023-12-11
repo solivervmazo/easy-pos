@@ -1,39 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { appColors, appSizes } from "../../themes";
 import IconButton from "../IconButton";
 import ChipButton from "../ChipButton";
-const TableHeader = ({
-  calendarIcon = "Calendar", // set null to remove
-  filterIcon = "Filters", // set null to remove
-  refreshIcon = "Refresh", // set null to remove
-  searchIcon = "Search", // set null to remove
-  disableRefresh = false,
-  disableFilter = false,
-  disableDaterangePicker = false,
-  onDateFilterPress = () => undefined,
-  onFilterPress = () => {},
-  onRefreshPress = () => {},
-  renderHeaderActions = () => undefined,
-  dateFilterLabel = "All",
-  actionsContainerStyle = {},
-}) => {
-  const onShowDateFilterHandle = () => {
-    // router.push({ pathname: "items/filterDate" });
-    onDateFilterPress();
+import { AppTableHeaderProps } from "./types/app-table.types";
+const TableHeader = (props: AppTableHeaderProps) => {
+  const {
+    calendarIcon = "Calendar",
+    filterIcon = "Filters",
+    refreshIcon = "Refresh",
+    disableRefresh = false,
+    disableFilter = false,
+    disableDaterangePicker = false,
+    dateFilterLabel = "All",
+    onDateFilterPress,
+    onFilterPress,
+    onRefreshPress,
+    renderHeaderActions,
+    actionsContainerStyle = {},
+  } = props;
+  const _onShowDateFilterHandle = () => {
+    onDateFilterPress && onDateFilterPress();
   };
 
-  const onRefreshHandle = () => {
-    onRefreshPress();
+  const _onRefreshHandle = () => {
+    onRefreshPress && onRefreshPress();
   };
 
-  const onFilterHandle = () => {
-    onFilterPress();
+  const _onFilterHandle = () => {
+    onRefreshPress && onFilterPress();
   };
 
   const _renderHeaderActions = () => {
-    const _rendered = renderHeaderActions();
-    return _rendered || null;
+    const rendered = renderHeaderActions();
+    return rendered || null;
   };
 
   return (
@@ -44,7 +44,7 @@ const TableHeader = ({
             disabled={disableRefresh}
             icon={refreshIcon}
             size={appSizes.Icon.large}
-            onPress={onRefreshHandle}
+            onPress={_onRefreshHandle}
           />
         )}
         <View style={[styles.mainActionsContainer, actionsContainerStyle]}>
@@ -55,10 +55,11 @@ const TableHeader = ({
         {calendarIcon && (
           <ChipButton
             disabled={disableDaterangePicker}
-            onPress={onShowDateFilterHandle}
+            onPress={_onShowDateFilterHandle}
             buttonRight={() => (
               <IconButton
                 disabled
+                onPress={() => {}}
                 icon={"Calendar"}
                 size={appSizes.Icon.medium}
                 containerStyle={[styles.dateRangeFilterIconContainer]}
@@ -74,7 +75,7 @@ const TableHeader = ({
             disabled={disableFilter}
             icon={filterIcon}
             size={appSizes.Icon.large}
-            onPress={onFilterHandle}
+            onPress={_onFilterHandle}
           />
         )}
       </View>
