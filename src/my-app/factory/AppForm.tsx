@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { ChipButton, SectionHeader } from "../../ui";
+import { ChipButton, SectionHeader, Spacer } from "../../ui";
 import {
   appColors,
   appConstants,
@@ -21,6 +21,11 @@ import { ScrollView } from "react-native-gesture-handler";
 type SectionProps = {
   title?: string;
   children?: React.ReactNode;
+};
+
+// Props for Gap within the form
+type GapProps = {
+  size: number;
 };
 
 // Props for input fields within the form
@@ -109,10 +114,12 @@ type MyFormProps = {
 // Factory function for creating form components
 export const createFormFactory = () => {
   // Helper function to check if a child is a form section
-  const isSection = (
+  const isSectionOrGap = (
     child: React.ReactNode
   ): child is React.ReactElement<SectionProps> => {
-    const valid = React.isValidElement(child) && child.type === Section;
+    const valid =
+      React.isValidElement(child) &&
+      (child.type === Section || child.type === Gap);
     !valid &&
       console.warn("React element found that is not a section of app form");
     return valid;
@@ -223,6 +230,7 @@ export const createFormFactory = () => {
   // Main Form Component
   const MyComponent: React.FC<MyFormProps> & {
     Section: React.FC<SectionProps>;
+    Gap: React.FC<GapProps>;
   } = ({
     children,
     detailId,
@@ -330,7 +338,7 @@ export const createFormFactory = () => {
     }, [state, dispatch]);
 
     const formSections = React.Children.map(children, (section) => {
-      if (isSection(section)) {
+      if (isSectionOrGap(section)) {
         return React.cloneElement(section, {
           ...section.props,
           children: React.Children.map(section.props.children, (child) =>
@@ -405,7 +413,12 @@ export const createFormFactory = () => {
     );
   };
 
+  const Gap: React.FC<GapProps> = ({ size }) => {
+    return <Spacer size={size} horizontal={false} />;
+  };
+
   MyComponent.Section = Section;
+  MyComponent.Gap = Gap;
 
   return MyComponent;
 };

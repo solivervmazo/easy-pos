@@ -5,6 +5,7 @@ import {
   AppSelectInput,
   AppSpinner,
   ChipButton,
+  IconButton,
   Spacer,
 } from "../../../ui";
 import { appColors } from "../../../themes";
@@ -135,6 +136,37 @@ const ProductDetailScreen = () => {
                 label={`Camera`}
               />
             )}
+          />
+        </ProductFormComponent.Section>
+        <ProductFormComponent.Gap size={25} />
+        <ProductFormComponent.Section title="Pricing and Discount">
+          <AppFormInput
+            inputName={"productPrice"}
+            icon="Tags"
+            label="Default Price"
+            enabled={true}
+            inputMode="numeric"
+            required={true}
+            renderAction={() => (
+              <ChipButton
+                buttonRight={() => (
+                  <IconButton
+                    icon={"Down"}
+                    color={appColors.lightText}
+                    plain={true}
+                    disabled={true}
+                    size={appSizes.Icon.small}
+                  />
+                )}
+                containerStyle={styles.inputActionButtonContainer}
+                label={`Select`}
+              />
+            )}
+          />
+          <ChipButton
+            plain={true}
+            label={"Add Rule-Coming Soon"}
+            containerStyle={styles.addRuleButtonContainer}
           />
         </ProductFormComponent.Section>
       </ProductFormComponent>
