@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   AppFormInput,
   AppSelectInput,
   AppSpinner,
   ChipButton,
   IconButton,
-  Spacer,
+  Icon,
 } from "../../../ui";
 import { appColors } from "../../../themes";
 import ProductDetailCategoryAndVariationSection from "../ui/ProductDetailCategoryAndVariationSection";
@@ -41,6 +41,12 @@ const ProductDetailScreen = () => {
   const openSelectParentCategoryHandle = () => {
     router.push(
       routes["products-detail"].modals["detail-select-category"].path
+    );
+  };
+
+  const openSelectShortkeyColorHandle = () => {
+    router.push(
+      routes["products-detail"].modals["detail-select-shortkey-color"].path
     );
   };
   return (
@@ -167,6 +173,47 @@ const ProductDetailScreen = () => {
             plain={true}
             label={"Add Rule-Coming Soon"}
             containerStyle={styles.addRuleButtonContainer}
+          />
+        </ProductFormComponent.Section>
+        <ProductFormComponent.Gap size={25} />
+        <ProductFormComponent.Section title="Shortkeys">
+          <AppFormInput
+            inputName={"productCode"}
+            icon="Shortkeys"
+            label="Product Code"
+            enabled={true}
+            renderAction={() => (
+              <ChipButton
+                onPress={openSelectShortkeyColorHandle}
+                buttonRight={() => (
+                  <View
+                    style={{
+                      height: appSizes.Icon.large,
+                      width: appSizes.Icon.large,
+                      borderWidth: 0.5,
+                      borderColor: appColors.lightBgSecondary,
+                      overflow: "hidden",
+                      backgroundColor:
+                        productForm?.body?.productShortkeyColor ||
+                        appColors.lightBgTertiary,
+                    }}
+                  >
+                    {!productForm?.body?.productShortkeyColor && (
+                      <Icon.Slash
+                        color={appColors.darkTextTertiary}
+                        size={appSizes.Icon.large}
+                      />
+                    )}
+                  </View>
+                )}
+                containerStyle={styles.inputActionButtonContainer}
+                label={`${
+                  productForm?.body?.productShortkeyColor
+                    ? productForm?.body?.productShortkeyColor
+                    : "Select color"
+                }`}
+              />
+            )}
           />
         </ProductFormComponent.Section>
       </ProductFormComponent>
