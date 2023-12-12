@@ -135,7 +135,7 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
                 toggleKey={rowItem.itemKey}
                 toggled={rowItem.toggled}
                 onToggle={({ toggled, toggledKey }) =>
-                  _onRowToggle(toggled, rowItem.itemKey)
+                  _onRowToggle(toggled, toggledKey)
                 }
                 actionsCount={actionsCount}
                 contentStyle={{ flexDirection: "row" }}
