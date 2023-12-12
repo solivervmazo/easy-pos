@@ -6,7 +6,7 @@ import {
   RequestProductCategoryDetailMiddleware,
   RequestProductCategoryListMiddleware,
   RequestProductCategoryNewId,
-  UpdateProductCategoryMiddleware,
+  RequestUpdateProductCategoryMiddleware,
 } from "./middlewares/productCategoriesMiddleware";
 import * as SQLlite from "expo-sqlite";
 
@@ -14,7 +14,7 @@ const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const requestProductCategoryList = async (
   db,
-  { orderBy = "id", desc = true }
+  { orderBy = "id", desc = true } = {}
 ) => {
   let categories = {};
   const sqlDb = db || SQLlite.openDatabase(db_name);
@@ -112,7 +112,7 @@ export const requestUpdateProductCategory = async (ctx, { payload }) => {
     [
       "updatedCategory",
       ({ oldCategory }) => {
-        return new UpdateProductCategoryMiddleware(false, ctx, {
+        return new RequestUpdateProductCategoryMiddleware(false, ctx, {
           payload,
           oldCategory,
         });

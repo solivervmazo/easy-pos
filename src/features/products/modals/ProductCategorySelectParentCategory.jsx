@@ -6,37 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   categoryFormSelector,
   updateCategoryFormAction,
-  categoryTableSelector,
   categoryListSelector,
 } from "../../../store/slices/products/productSlice";
-
-const CATS = [
-  {
-    id: 1,
-    categoryId: "1000192",
-    categoryName: "Food",
-  },
-  {
-    id: 2,
-    categoryId: "1002292",
-    categoryName: "Add ons",
-  },
-  {
-    id: 3,
-    categoryId: "1000132",
-    categoryName: "Beverages",
-  },
-  {
-    id: 4,
-    categoryId: "1001192",
-    categoryName: "Hidden charges",
-  },
-];
 
 const ScreenHeader = () => (
   <Stack.Screen
     options={{
-      title: "Prent Category",
+      title: "Parent Category",
       headerShown: true,
       presentation: "modal",
       animation: "slide_from_bottom",
@@ -107,5 +83,3 @@ const ProductCategorySelectParentCategory = () => {
 };
 
 export default ProductCategorySelectParentCategory;
-
-const styles = StyleSheet.create({});

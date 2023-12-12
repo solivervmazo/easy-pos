@@ -32,6 +32,7 @@ const _layout = () => {
           );
         new Array(10).fill({}).map((item, index) => {
           const { query, args } = insertProductQuery({
+            productCategory: { id: index == 8 ? 1 : 0 },
             productId:
               (Math.floor(Math.random() * 999) + 1000).toString() +
               index.toString(),

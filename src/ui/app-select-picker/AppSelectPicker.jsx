@@ -120,7 +120,7 @@ const AppSelectPicker = ({
 
   useEffect(() => {
     _$reset(value);
-  }, []);
+  }, [items, value]);
 
   const _renderClearButton = () => {
     const _rendered = renderClearButton({ onClear: _onClearHandle });

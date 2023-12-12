@@ -27,7 +27,7 @@ const ProductDetailPricingAndDiscountSection = ({
         <AppFormInput
           value={productPrice?.toString()}
           control={formControl}
-          name={"productPrice"}
+          inputName={"productPrice"}
           errors={formErrors?.productPrice}
           onChange={(value) => onFormChange({ productPrice: value })}
           icon="Tags"

@@ -1,8 +1,15 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { SectionHeader, ChipButton, AppFormInput } from "../../../ui";
+import {
+  SectionHeader,
+  ChipButton,
+  AppFormInput,
+  AppSelectInput,
+} from "../../../ui";
 import { appColors, appSizes } from "../../../themes";
 import { commonStyles } from "../styles";
+import { useRouter } from "expo-router/src/hooks";
+import { useStackRoutes } from "../../../routes";
 
 const ProductDetailGeneralInfoSection = ({
   formControl,
@@ -10,13 +17,22 @@ const ProductDetailGeneralInfoSection = ({
   productId,
   productName,
   productDescription,
+  productCategory,
   productBarcode,
   productSku,
   onFormChange,
   onGenerateId = () => {},
 }) => {
-  const _onGenerateIdHandle = () => {
+  const router = useRouter();
+  const routes = useStackRoutes();
+  const onGenerateIdHandle = () => {
     onGenerateId();
+  };
+
+  const openSelectParentCategoryHandle = () => {
+    router.push(
+      routes["products-detail"].modals["detail-select-category"].path
+    );
   };
 
   return (
@@ -30,7 +46,7 @@ const ProductDetailGeneralInfoSection = ({
       <View style={[styles.sectionContent]}>
         <AppFormInput
           control={formControl}
-          name={"productId"}
+          inputName={"productId"}
           errors={formErrors?.productId}
           value={productId}
           onChange={(value) => onFormChange({ productId: value })}
@@ -40,7 +56,7 @@ const ProductDetailGeneralInfoSection = ({
           inputMode="numeric"
           renderAction={() => (
             <ChipButton
-              onPress={_onGenerateIdHandle}
+              onPress={onGenerateIdHandle}
               containerStyle={styles.inputActionButtonContainer}
               label={`Generate`}
             />
@@ -49,7 +65,7 @@ const ProductDetailGeneralInfoSection = ({
         />
         <AppFormInput
           control={formControl}
-          name={"productName"}
+          inputName={"productName"}
           errors={formErrors.productName}
           value={productName}
           onChange={(value) => onFormChange({ productName: value })}
@@ -60,7 +76,7 @@ const ProductDetailGeneralInfoSection = ({
         />
         <AppFormInput
           control={formControl}
-          name={"productDescription"}
+          inputName={"productDescription"}
           value={productDescription}
           onChange={(value) => onFormChange({ productDescription: value })}
           label="Description"
@@ -68,9 +84,26 @@ const ProductDetailGeneralInfoSection = ({
           multiline={true}
           labelContainerStyle={styles.inputLabelContainer}
         />
+        <AppSelectInput
+          control={formControl}
+          icon="Tag"
+          value={productCategory}
+          valueKey={"categoryName"}
+          name={"productCategory"}
+          placeholder="Select Category"
+          renderTextValue={(value, text) =>
+            text && value ? `${text}(${value.categoryId})` : ""
+          }
+          errors={formErrors?.productCategory}
+          onChange={(value) => onFormChange({ productCategory: value })}
+          label="Category"
+          enabled={true}
+          labelContainerStyle={styles.inputLabelContainer}
+          onSelectPress={openSelectParentCategoryHandle}
+        />
         <AppFormInput
           control={formControl}
-          name={"productBarcode"}
+          inputName={"productBarcode"}
           value={productBarcode}
           onChange={(value) => onFormChange({ productBarcode: value })}
           icon="Barcode"
@@ -87,7 +120,7 @@ const ProductDetailGeneralInfoSection = ({
         />
         <AppFormInput
           control={formControl}
-          name={"productSku"}
+          inputName={"productSku"}
           value={productSku}
           onChange={(value) => onFormChange({ productSku: value })}
           label="SKU"

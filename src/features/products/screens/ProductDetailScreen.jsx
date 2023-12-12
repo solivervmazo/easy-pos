@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { AppSpinner, ChipButton, Spacer } from "../../../ui";
-import { appColors, appConstants, appSizes, appSpacing } from "../../../themes";
-import { ScrollView } from "react-native-gesture-handler";
-import ProductDetailGeneralInfoSection from "../ui/ProductDetailGeneralInfoSection";
+import React from "react";
+import { StyleSheet } from "react-native";
+import {
+  AppFormInput,
+  AppSelectInput,
+  AppSpinner,
+  ChipButton,
+  Spacer,
+} from "../../../ui";
+import { appColors } from "../../../themes";
 import ProductDetailCategoryAndVariationSection from "../ui/ProductDetailCategoryAndVariationSection";
 import ProductDetailPricingAndDiscountSection from "../ui/ProductDetailPricingAndDiscountSection";
 import ProductDetailShortkeySection from "../ui/ProductDetailShortkeySection";
-import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import productFormSchema from "../validator/productFormSchema";
 import {
@@ -17,188 +21,131 @@ import {
   generateProjectIdAction,
   updateProductAction,
 } from "../../../store/slices/products/productSlice";
-import { useDrawerRoutes } from "../../../routes";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { useDrawerRoutes, useStackRoutes } from "../../../routes";
 import FormState from "../../../enums/FormState";
-import { addQueueAction } from "../../../store/slices/toast/toastSlice";
 import TabsScreenHeader from "../ui/TabsScreenHeader";
+import { createFormFactory } from "../../../my-app";
+const ProductFormComponent = createFormFactory();
 
 const ProductDetailScreen = () => {
+  const router = useRouter();
+  const routes = useStackRoutes();
+  const drawerRoutes = useDrawerRoutes();
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
-
   const productForm = useSelector((state) => state.products.productForm);
-  const [_isNew, setIsNew] = useState(true);
-  const [_tableLoading, setTableLoading] = useState(!productForm);
-
-  const router = useRouter();
-  const drawerRoutes = useDrawerRoutes();
-
-  const {
-    control: formControl,
-    handleSubmit,
-    formState: { errors: formErrors },
-    setValue,
-  } = useForm({
-    reValidateMode: "onChange",
-    resolver: yupResolver(productFormSchema),
-    defaultValues: productForm?.body,
-  });
-
-  const _generateIdHandle = () => {
+  const generateNewId = () => {
     dispatch(generateProjectIdAction({ random: true }));
   };
-
-  const _saveFormHandle = () => {
-    if (productForm?.state === FormState.editing) {
-      dispatch(
-        updateProductFormAction({
-          state: FormState.confirming,
-        })
-      );
-    } else if (productForm?.state === FormState.confirming) {
-      if (_isNew) {
-        dispatch(insertProductAction(productForm.body));
-      } else {
-        dispatch(updateProductAction(productForm.body));
-      }
-    }
-  };
-
-  const _errorFormHandle = () => {
-    dispatch(
-      addQueueAction({
-        message: "Fields are required",
-        options: {
-          type: "danger",
-        },
-        offset: appConstants.TOAST_ON_STACK_OFFSET,
-      })
+  const openSelectParentCategoryHandle = () => {
+    router.push(
+      routes["products-detail"].modals["detail-select-category"].path
     );
   };
-
-  const _navigateDoneEditingHandle = ({ redirect = true }) => {
-    redirect &&
-      router.push({
-        pathname: drawerRoutes["units-products"].path,
-      });
-    dispatch(
-      addQueueAction({
-        message: `Successfully ${_isNew ? "saved new" : "updated"} product.`,
-        options: {
-          type: "success",
-        },
-      })
-    );
-  };
-
-  const _onFormChangeHandle = ({ ...args }) => {
-    dispatch(
-      updateProductFormAction({
-        body: { ...productForm.body, ...args },
-      })
-    );
-  };
-
-  useEffect(() => {
-    if (productForm?.state == FormState.sumbmitted) {
-      _navigateDoneEditingHandle({ redirect: true });
-    } else {
-      if (!productForm) {
-        const searchId =
-          id === undefined || id === "undefined" ? undefined : id;
-        setIsNew(!searchId);
-        dispatch(fetchProductDetailAction({ id: searchId }));
-      } else if (productForm?.state === FormState.idle) {
-        if (productForm.body) {
-          Object.keys(productForm.body).forEach((attr) =>
-            setValue(attr, productForm.body[attr], { shouldDirty: true })
-          );
-        }
-      }
-    }
-  }, [productForm, dispatch]);
-
   return (
     <>
       <TabsScreenHeader
         renderTitle={(titleComposer) =>
-          titleComposer("Product", productForm?.body?.productId, _isNew)
+          titleComposer(
+            "Product",
+            productForm?.body?.productId,
+            productForm?.body?.id
+          )
         }
       />
       {(!productForm || productForm?.state === FormState.pending) && (
         <AppSpinner />
       )}
-      <View style={[styles.container]}>
-        <ScrollView
-          contentContainerStyle={{}}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* General information */}
-          <ProductDetailGeneralInfoSection
-            {...productForm?.body}
-            formControl={formControl}
-            formErrors={formErrors}
-            onFormChange={_onFormChangeHandle}
-            onGenerateId={_generateIdHandle}
+      <ProductFormComponent
+        detailId={id}
+        validatorSchema={productFormSchema}
+        state={productForm}
+        updateFormAction={updateProductFormAction}
+        redirectPath={drawerRoutes["units-products"].path}
+        requestDetailAction={fetchProductDetailAction}
+        requestUpdateAction={updateProductAction}
+        requestInsertAction={insertProductAction}
+        submitSuccessMessage="product"
+      >
+        <ProductFormComponent.Section title="General Information">
+          <AppFormInput
+            validate={true}
+            inputName="productId"
+            icon="Items"
+            label="Product ID"
+            enabled={true}
+            inputMode="numeric"
+            renderAction={() => (
+              <ChipButton
+                onPress={generateNewId}
+                containerStyle={styles.inputActionButtonContainer}
+                label={`Generate`}
+              />
+            )}
+            required={true}
           />
-          {/* Category and variations */}
-          <Spacer size={25} horizontal={false} />
-          {/* <ItemDetailCategoryAndVariationSection /> */}
-          {/* Pricing and discounts */}
-          <Spacer size={25} horizontal={false} />
-          <ProductDetailPricingAndDiscountSection
-            {...productForm?.body}
-            formControl={formControl}
-            formErrors={formErrors}
-            onFormChange={_onFormChangeHandle}
+          <AppFormInput
+            validate={true}
+            inputName="productName"
+            label="Product Name"
+            enabled={true}
+            required={true}
           />
-          {/* Shortkeys */}
-          <Spacer size={25} horizontal={false} />
-          <ProductDetailShortkeySection
-            {...productForm?.body}
-            formControl={formControl}
-            formErrors={formErrors}
-            onFormChange={_onFormChangeHandle}
+          <AppFormInput
+            inputName={"productDescription"}
+            label="Description"
+            enabled={true}
+            multiline={true}
           />
-        </ScrollView>
-        <View style={[styles.formFooterContainer]}>
-          <ChipButton
-            disabled={productForm?.state === FormState.idle}
-            onPress={handleSubmit(_saveFormHandle, _errorFormHandle)}
-            containerStyle={styles.saveButtonContainer}
-            labelStyle={styles.saveButtonLabel}
-            label={
-              productForm?.state === FormState.confirming
-                ? "Tap again to confirm"
-                : _isNew
-                ? "Create"
-                : "Update"
+          <AppSelectInput
+            inputName={"productCategory"}
+            icon="Tag"
+            valueKey={"categoryName"}
+            placeholder="Select Category"
+            renderTextValue={(value, text) =>
+              text && value ? `${text}(${value.categoryId})` : ""
             }
+            label="Category"
+            enabled={true}
+            onSelectPress={openSelectParentCategoryHandle}
           />
-        </View>
-      </View>
+          <AppFormInput
+            inputName={"productBarcode"}
+            icon="Barcode"
+            label="Barcode"
+            enabled={true}
+            multiline={true}
+            inputMode="numeric"
+            renderAction={() => (
+              <ChipButton
+                containerStyle={styles.inputActionButtonContainer}
+                label={`Camera`}
+              />
+            )}
+          />
+          <AppFormInput
+            inputName={"productSku"}
+            label="SKU"
+            enabled={true}
+            multiline={true}
+            inputMode="numeric"
+            renderAction={() => (
+              <ChipButton
+                containerStyle={styles.inputActionButtonContainer}
+                label={`Camera`}
+              />
+            )}
+          />
+        </ProductFormComponent.Section>
+      </ProductFormComponent>
     </>
   );
 };
 
+export default ProductDetailScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    gap: 10,
-    paddingHorizontal: appSpacing.screenPaddingLeft,
-    paddingVertical: 10,
-  },
-  formFooterContainer: {},
-  saveButtonContainer: {
-    flex: 0,
-    backgroundColor: appColors.lightSuccess,
-    paddingVertical: 15,
-  },
-  saveButtonLabel: {
-    fontSize: appSizes.Text.regular,
+  inputActionButtonContainer: {
+    backgroundColor: appColors.lightPrimary,
   },
 });
-
-export default ProductDetailScreen;

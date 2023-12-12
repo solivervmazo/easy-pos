@@ -13,13 +13,11 @@ export const updateCategoryAction = createAsyncThunk(
     const db = SQLlite.openDatabase(db_name);
     let response = null;
     await db.transactionAsync(async (ctx) => {
-      const requestUpdateProductCategory = await requestUpdateProductCategory(
-        ctx,
-        {
+      const makeRequestUpdateProductCategory =
+        await requestUpdateProductCategory(ctx, {
           payload,
-        }
-      );
-      response = requestUpdateProductCategory.body;
+        });
+      response = makeRequestUpdateProductCategory.body;
       if (response.state === RequestState.error) throw Error(response.error);
     });
     return response;

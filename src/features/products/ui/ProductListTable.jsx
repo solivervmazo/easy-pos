@@ -21,7 +21,6 @@ import { PRODUCT_PRODUCT_SUB_ALIAS } from "../constants";
 const ProductListTable = () => {
   const dispatch = useDispatch();
   const productTable = useSelector(productTableSelector);
-
   const searchValue = useSelector((state) =>
     productProductSearchValueSelector(state, {
       feature: PRODUCT_PRODUCT_SUB_ALIAS,

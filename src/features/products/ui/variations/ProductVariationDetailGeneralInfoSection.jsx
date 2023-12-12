@@ -24,7 +24,7 @@ const ProductVariationDetailGeneralInfoSection = ({
       <View style={[styles.sectionContent]}>
         <AppFormInput
           control={formControl}
-          name={"productVariationId"}
+          inputName={"productVariationId"}
           errors={formErrors?.productVariationId}
           value={productVariationId}
           icon="Variant"

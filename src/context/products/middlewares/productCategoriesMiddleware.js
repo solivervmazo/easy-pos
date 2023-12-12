@@ -63,7 +63,7 @@ export class InsertProductCategoryMiddleware extends ContextMiddleware {
   };
 }
 
-export class UpdateProductCategoryMiddleware extends ContextMiddleware {
+export class RequestUpdateProductCategoryMiddleware extends ContextMiddleware {
   constructor(db, ctx, { payload, oldCategory }) {
     super();
     this.db = db;

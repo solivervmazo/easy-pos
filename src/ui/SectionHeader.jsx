@@ -25,7 +25,7 @@ const SectionHeader = ({
   titleColor,
   size = appSizes.Text.regular,
   titleSize,
-  btnText,
+  btnText = "",
   btnTextColor = appColors.themeColor,
   onLink = () => {},
   containerStyle = {},

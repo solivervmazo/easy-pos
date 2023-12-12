@@ -35,7 +35,7 @@ const ProductDetailShortkeySection = ({
           icon="Shortkeys"
           value={productCode?.toString()}
           control={formControl}
-          name={"productCode"}
+          inputName={"productCode"}
           errors={formErrors?.productCode}
           onChange={(value) => onFormChange({ productCode: value })}
           label="Product Code"

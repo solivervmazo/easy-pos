@@ -4,6 +4,7 @@ import * as SQLlite from "expo-sqlite";
 import { RequestState, SpinnerState } from "../../../../enums";
 import { categoryTransform } from "../../../../db/categories";
 import { requestProductCategoryDetail } from "../../../../context/products/categories";
+import { requestProductList } from "../../../../context/products/products";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -12,26 +13,12 @@ export const fetchProductAction = createAsyncThunk(
   async (payload = {}) => {
     const db = SQLlite.openDatabase(db_name);
     const { orderBy = "id", desc = true } = payload;
-    const { query, args } = selectProductsQuery({ orderBy, desc });
-    let sqlRes = {};
-    await db.transactionAsync(async (tx) => {
-      sqlRes = await tx.executeSqlAsync(query, args);
+    const productList = await requestProductList(db, {
+      db,
+      orderBy,
+      desc,
     });
-    const tableRows = sqlRes?.rows || [];
-    await Promise.all(
-      tableRows.map(async (row, index) => {
-        if (row.category_id) {
-          const requestProductCategoryDetail =
-            await requestProductCategoryDetail(db, {
-              id: row.category_id,
-            });
-          if (requestProductCategoryDetail.state === RequestState.fulfilled) {
-            tableRows[index]["product_category_detail"] =
-              requestProductCategoryDetail.body;
-          }
-        }
-      })
-    );
+    const tableRows = productList?.body || [];
     return tableRows;
   }
 );
@@ -48,9 +35,7 @@ export const fetchProductActionBuilder = (builder) => {
           state: RequestState.fulfilled,
           data: action.payload?.map((product) => ({
             ...productTransform(product),
-            productCategoryDetail: categoryTransform(
-              product.product_category_detail
-            ),
+            productCategory: categoryTransform(product.product_category),
           })),
         },
         screenProductSpinner: SpinnerState.hidden,

@@ -35,7 +35,7 @@ const CategoryDetailShortkeySection = ({
           icon="Shortkeys"
           value={categoryCode?.toString()}
           control={formControl}
-          name={"categoryCode"}
+          inputName={"categoryCode"}
           errors={formErrors?.categoryCode}
           onChange={(value) => onFormChange({ categoryCode: value })}
           label="Category Code"

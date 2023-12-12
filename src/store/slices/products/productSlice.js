@@ -118,17 +118,19 @@ export const categoryTableSelector = (state) => state.products.categoryTable;
 
 export const categoryListSelector = createSelector(
   [
-    categoryTableSelector,
+    (state, { table }) => table || categoryTableSelector(state),
     (state, { categoryLookup }) => categoryLookup,
     (state, { rootLookup }) => rootLookup,
   ],
   (table, categoryLookup, rootLookup) =>
-    table.data.filter(
-      (row) =>
-        row.id != categoryLookup &&
-        row.categoryRootId != categoryLookup &&
-        (row.categoryRootId != rootLookup || row.categoryRootId == 0)
-    )
+    []
+      .concat(table.data ?? [])
+      .filter(
+        (row) =>
+          row.id != categoryLookup &&
+          row.categoryRootId != categoryLookup &&
+          (row.categoryRootId != rootLookup || row.categoryRootId == 0)
+      )
 );
 export const categoryFormSelector = (state) => state.products.categoryForm;
 

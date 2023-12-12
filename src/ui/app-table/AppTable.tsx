@@ -5,8 +5,8 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
 import { appColors, appFonts, appSizes, appStyles } from "../../themes";
-import { AppTableProps, RowItem } from "./types/app-table.types";
-import { isKeyValuePair, makeRowData } from "./utils";
+import { AppTableProps, Item, RowItem } from "./types/app-table.types";
+import { isValueFunction, isValueString, makeRowData } from "./utils";
 
 const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
   const {
@@ -29,12 +29,13 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
     headerOptions,
   } = props;
 
-  const [_currentPage, setCurrentPage] = useState(1);
-  const [_filteredData, setFilteredData] = useState([]);
+  const [currentPageState, setCurrentPage] = useState<number>(1);
+  const [filteredDataState, setFilteredData] = useState<RowItem[]>([]);
 
-  const _onRowToggle = (toggled: boolean, key: string) => {
+  // Callback to handle row toggling
+  const rowToggleHandle = (toggled: boolean, key: string): void => {
     setFilteredData(
-      _filteredData.map((row: RowItem) =>
+      filteredDataState.map((row: RowItem) =>
         row.itemKey === key
           ? { ...row, toggled: toggled }
           : { ...row, toggled: false }
@@ -43,47 +44,76 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
     if (onRowToggle) onRowToggle({ toggled: toggled });
   };
 
-  const _onPageChangeHandle = (page: number) => {
+  // Callback to handle page change
+  const onPageChangeHandle = (page: number): void => {
     setCurrentPage(page);
   };
 
-  const _renderNoData = () => {
-    const _check = renderNoData
-      ? typeof renderNoData == "string"
+  // Function to render content when no data is available
+  const RenderNoData = (): React.ReactNode => {
+    const prerender = renderNoData
+      ? isValueString(renderNoData)
         ? renderNoData
-        : renderNoData()
+        : isValueFunction(renderNoData)
+        ? renderNoData()
+        : null
       : null;
-    const _rendered =
-      typeof renderNoData == "function" && !_check ? "No Data" : _check;
+    const rendered =
+      isValueFunction(renderNoData) && !prerender ? "No Data" : prerender;
     return (
       <View style={[styles.noDataContainer, noDataContainerStyle]}>
-        {typeof _rendered == "string" ? (
-          <Text style={[styles.noDataLable, noDataLableStyle]}>
-            {_rendered}
-          </Text>
+        {typeof rendered == "string" ? (
+          <Text style={[styles.noDataLable, noDataLableStyle]}>{rendered}</Text>
         ) : (
-          _rendered
+          rendered
         )}
       </View>
     );
   };
 
-  const _renderItem = ({ item, toggled }) => {
+  // Function to render the content of each table row
+  const RenderItem = ({
+    item,
+    toggled,
+  }: {
+    item: Item;
+    toggled: boolean;
+  }): React.ReactNode => {
     return renderItem ? renderItem({ item, toggled }) : null;
   };
 
-  const _renderActions = ({ actionSize, item }) => {
+  // Function to render actions for each table row
+  const RenderActions = ({
+    actionSize,
+    item,
+  }: {
+    actionSize: number;
+    item: Item;
+  }): React.ReactNode => {
     return renderActions ? renderActions({ actionSize, item }) : null;
   };
 
-  const _paginateData = () => {
-    const startSlice = itemsPerPage * (_currentPage - 1);
-    const endSlice = itemsPerPage * _currentPage;
-    const tableData = []
-      .concat(data || [])
-      .map((row, index) => makeRowData(row, index, itemKey));
+  /**
+   * Paginate and filter the data based on the current page and search value.
+   * @function
+   * @name paginateData
+   */
+  const paginateData = (): void => {
+    // Calculate the start and end indices for slicing the data
+    const startSlice = itemsPerPage * (currentPageState - 1);
+    const endSlice = itemsPerPage * currentPageState;
+
+    // Create an array of table data with unique item keys
+    const tableData = (data || []).map<RowItem>((row, index) =>
+      makeRowData(row, index, itemKey)
+    );
+
+    // Initialize an array to store the sliced and filtered data
     let slicedData = [];
+
+    // Check if a custom search strategy is provided
     if (searchStrategy) {
+      // Use the custom search strategy to filter the data
       slicedData = slicedData
         .concat(
           searchStrategy({
@@ -93,6 +123,7 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
         )
         .slice(startSlice, endSlice);
     } else {
+      // Use the default search strategy (case-insensitive substring match)
       slicedData = slicedData
         .concat(tableData)
         .filter((row: RowItem) => {
@@ -101,6 +132,7 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
               ? searchValue
               : (searchValue || "").toString();
 
+          // Check if any value in the row item includes the search value
           const src = Object.values(row.item).some((value) => {
             return (typeof value === "number" ? value : value || "")
               .toString()
@@ -108,26 +140,30 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
               .trim()
               .includes(toSearch.trim().toLowerCase());
           });
+
+          // Include the row if any value matches the search value
           return src || false;
         })
         .slice(startSlice, endSlice);
     }
+
+    // Set the filtered data state with the sliced and filtered data
     setFilteredData(slicedData || []);
   };
 
   useEffect(() => {
-    _paginateData();
-  }, [_currentPage, data, searchValue]);
+    paginateData();
+  }, [currentPageState, data, searchValue]);
 
   return (
     <View style={{ flex: 1 }}>
       {hasHeader && <TableHeader {...headerOptions} />}
-      {itemsLength == 0 && _renderNoData()}
+      {itemsLength == 0 && <RenderNoData />}
       {itemsLength > 0 && (
         <FlatList
           showsVerticalScrollIndicator={false}
           contentContainerStyle={tableContainerStyle}
-          data={_filteredData}
+          data={filteredDataState}
           renderItem={(item: { item: RowItem }) => {
             const { item: rowItem } = item;
             return (
@@ -135,19 +171,16 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
                 toggleKey={rowItem.itemKey}
                 toggled={rowItem.toggled}
                 onToggle={({ toggled, toggledKey }) =>
-                  _onRowToggle(toggled, toggledKey)
+                  rowToggleHandle(toggled, toggledKey)
                 }
                 actionsCount={actionsCount}
                 contentStyle={{ flexDirection: "row" }}
-                actions={({ actionSize }) =>
-                  _renderActions({ actionSize, item: rowItem.item })
-                }
-                content={() =>
-                  _renderItem({
-                    item: rowItem.item,
-                    toggled: rowItem.toggled,
-                  })
-                }
+                actions={({ actionSize }) => (
+                  <RenderActions actionSize={actionSize} item={rowItem.item} />
+                )}
+                content={() => (
+                  <RenderItem item={rowItem.item} toggled={rowItem.toggled} />
+                )}
                 key={`app-table-lists-row-${rowItem.itemKey}`}
               />
             );
@@ -155,13 +188,15 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
           keyExtractor={(item) =>
             `app-table-lists-flatlist-row-${item.itemKey}`
           }
-          ItemSeparatorComponent={() => itemSeparatorComponent()}
+          ItemSeparatorComponent={() =>
+            itemSeparatorComponent ? itemSeparatorComponent() : null
+          }
         />
       )}
       <TablePagination
-        currentPage={_currentPage}
-        onChange={({ page }) => _onPageChangeHandle(page)}
-        itemsLength={_filteredData.length}
+        currentPage={currentPageState}
+        onChange={({ page }) => onPageChangeHandle(page)}
+        itemsLength={filteredDataState.length}
         itemsPerPage={itemsPerPage}
       />
     </View>

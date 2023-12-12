@@ -44,7 +44,7 @@ const CategoryDetailGeneralInfoSection = ({
       <View style={[styles.sectionContent]}>
         <AppFormInput
           control={formControl}
-          name={"categoryId"}
+          inputName={"categoryId"}
           errors={formErrors?.categoryId}
           value={categoryId}
           icon="Category"
