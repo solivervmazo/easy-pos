@@ -9,9 +9,6 @@ import {
   Icon,
 } from "../../../ui";
 import { appColors } from "../../../themes";
-import ProductDetailCategoryAndVariationSection from "../ui/ProductDetailCategoryAndVariationSection";
-import ProductDetailPricingAndDiscountSection from "../ui/ProductDetailPricingAndDiscountSection";
-import ProductDetailShortkeySection from "../ui/ProductDetailShortkeySection";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import productFormSchema from "../validator/productFormSchema";
@@ -26,19 +23,25 @@ import { useDrawerRoutes, useStackRoutes } from "../../../routes";
 import FormState from "../../../enums/FormState";
 import TabsScreenHeader from "../ui/TabsScreenHeader";
 import { createFormFactory } from "../../../my-app";
+import { commonStyles } from "../styles";
+
 const ProductFormComponent = createFormFactory();
 
-const ProductDetailScreen = () => {
+const ProductFormScreen = () => {
   const router = useRouter();
   const routes = useStackRoutes();
   const drawerRoutes = useDrawerRoutes();
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
   const productForm = useSelector((state) => state.products.productForm);
+  const { productShortkeyColor } = productForm?.body ?? {
+    productShortkeyColor: undefined,
+  };
+
   const generateNewId = () => {
     dispatch(generateProjectIdAction({ random: true }));
   };
-  const openSelectParentCategoryHandle = () => {
+  const openSelectCategoryHandle = () => {
     router.push(
       routes["products-detail"].modals["detail-select-category"].path
     );
@@ -56,7 +59,7 @@ const ProductDetailScreen = () => {
           titleComposer(
             "Product",
             productForm?.body?.productId,
-            productForm?.body?.id
+            !productForm?.body?.id
           )
         }
       />
@@ -114,7 +117,7 @@ const ProductDetailScreen = () => {
             }
             label="Category"
             enabled={true}
-            onSelectPress={openSelectParentCategoryHandle}
+            onSelectPress={openSelectCategoryHandle}
           />
           <AppFormInput
             inputName={"productBarcode"}
@@ -187,18 +190,15 @@ const ProductDetailScreen = () => {
                 onPress={openSelectShortkeyColorHandle}
                 buttonRight={() => (
                   <View
-                    style={{
-                      height: appSizes.Icon.large,
-                      width: appSizes.Icon.large,
-                      borderWidth: 0.5,
-                      borderColor: appColors.lightBgSecondary,
-                      overflow: "hidden",
-                      backgroundColor:
-                        productForm?.body?.productShortkeyColor ||
-                        appColors.lightBgTertiary,
-                    }}
+                    style={[
+                      styles.shortkeyBtn,
+                      {
+                        backgroundColor:
+                          productShortkeyColor || appColors.lightBgTertiary,
+                      },
+                    ]}
                   >
-                    {!productForm?.body?.productShortkeyColor && (
+                    {!productShortkeyColor && (
                       <Icon.Slash
                         color={appColors.darkTextTertiary}
                         size={appSizes.Icon.large}
@@ -208,9 +208,7 @@ const ProductDetailScreen = () => {
                 )}
                 containerStyle={styles.inputActionButtonContainer}
                 label={`${
-                  productForm?.body?.productShortkeyColor
-                    ? productForm?.body?.productShortkeyColor
-                    : "Select color"
+                  productShortkeyColor ? productShortkeyColor : "Select color"
                 }`}
               />
             )}
@@ -221,10 +219,8 @@ const ProductDetailScreen = () => {
   );
 };
 
-export default ProductDetailScreen;
+export default ProductFormScreen;
 
 const styles = StyleSheet.create({
-  inputActionButtonContainer: {
-    backgroundColor: appColors.lightPrimary,
-  },
+  ...commonStyles,
 });

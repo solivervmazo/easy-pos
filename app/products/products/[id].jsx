@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import ProductDetailScreen from "../../../src/features/products/screens/ProductDetailScreen";
+import ProductFormScreen from "../../../src/features/products/screens/ProductFormScreen";
 
 const ProductDetail = () => {
-  return <ProductDetailScreen />;
+  return <ProductFormScreen />;
 };
 
 export default ProductDetail;

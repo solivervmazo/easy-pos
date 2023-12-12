@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import CategoryDetailScreen from "../../../src/features/products/screens/CategoryDetailScreen";
+import CategoryFormScreen from "../../../src/features/products/screens/CategoryFormScreen";
 
 const CategoryDetail = () => {
-  return <CategoryDetailScreen />;
+  return <CategoryFormScreen />;
 };
 
 export default CategoryDetail;
