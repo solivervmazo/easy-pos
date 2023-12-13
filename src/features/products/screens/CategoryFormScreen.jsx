@@ -24,6 +24,7 @@ import TabsScreenHeader from "../ui/TabsScreenHeader";
 import categoryFormSchema from "../validator/categoryFormSchema";
 import { createFormFactory } from "../../../my-app";
 import { commonStyles } from "../styles";
+import { t } from "../../../locale/localization";
 
 const CategoryFormComponent = createFormFactory();
 
@@ -54,7 +55,7 @@ const CategoryFormScreen = () => {
       <TabsScreenHeader
         renderTitle={(titleComposer) =>
           titleComposer(
-            "Category",
+            t("category", "capitalize"),
             categoryForm?.body?.categorId,
             !categoryForm?.body?.id
           )
@@ -72,14 +73,16 @@ const CategoryFormScreen = () => {
         requestDetailAction={fetchCategoryDetailAction}
         requestUpdateAction={updateCategoryAction}
         requestInsertAction={insertCategoryAction}
-        submitSuccessMessage="product category"
+        submitSuccessMessage={t("product category")}
       >
-        <CategoryFormComponent.Section title="General Information">
+        <CategoryFormComponent.Section
+          title={t("general information", "capitalize")}
+        >
           <AppFormInput
             validate={true}
             inputName="categoryId"
             icon="Category"
-            label="Category ID"
+            label={`${t("category", "phrase")} ${t("id", "ucase")}`}
             enabled={false}
             inputMode="numeric"
             required={true}
@@ -87,14 +90,14 @@ const CategoryFormScreen = () => {
           <AppTextInput
             validate={true}
             inputName="categoryName"
-            label="Category Name"
+            label={t("category name", "phrase")}
             enabled={true}
             required={true}
             labelStyle={styles.inputLabel}
           />
           <AppTextInput
             inputName={"categoryDescription"}
-            label="Description"
+            label={t("description", "phrase")}
             enabled={true}
             multiline={true}
             labelStyle={styles.inputLabel}
@@ -103,21 +106,21 @@ const CategoryFormScreen = () => {
             validate={true}
             inputName="categoryParent"
             icon="Tag"
-            placeholder="Select Parent Category"
+            placeholder={t("select parent category", "phrase")}
             renderTextValue={(value, text) =>
               text && value ? `${text}(${value.categoryId})` : ""
             }
-            label="Parent Category"
+            label={t("parent category", "phrase")}
             enabled={true}
             onSelectPress={openSelectParentCategoryHandle}
           />
         </CategoryFormComponent.Section>
         <CategoryFormComponent.Gap size={25} />
-        <CategoryFormComponent.Section title="Shortkeys">
+        <CategoryFormComponent.Section title={t("shortkeys", "capitalize")}>
           <AppFormInput
             inputName="categoryCode"
             icon="Shortkeys"
-            label="Category Code"
+            label={t("category code", "phrase")}
             enabled={true}
             renderAction={() => (
               <ChipButton
@@ -142,7 +145,9 @@ const CategoryFormScreen = () => {
                 )}
                 containerStyle={styles.inputActionButtonContainer}
                 label={`${
-                  categoryShortkeyColor ? categoryShortkeyColor : "Select color"
+                  categoryShortkeyColor
+                    ? categoryShortkeyColor
+                    : t("select color", "phrase")
                 }`}
               />
             )}

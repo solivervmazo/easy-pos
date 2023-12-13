@@ -10,6 +10,7 @@ import {
   PRODUCT_FEATURE_ALIAS,
   PRODUCT_CATEGORY_SUB_ALIAS,
 } from "../constants";
+import { t } from "../../../locale/localization";
 
 const CategoriesScreen = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const CategoriesScreen = () => {
         headerChangeCurrentFeatureAction({
           feature: PRODUCT_FEATURE_ALIAS,
           subFeature: PRODUCT_CATEGORY_SUB_ALIAS,
-          placeholder: "Search in product categories",
+          placeholder: t("search in product category", "phrase", 2),
         })
       );
       return () => {};

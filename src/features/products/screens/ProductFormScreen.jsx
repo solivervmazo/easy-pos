@@ -24,6 +24,7 @@ import FormState from "../../../enums/FormState";
 import TabsScreenHeader from "../ui/TabsScreenHeader";
 import { createFormFactory } from "../../../my-app";
 import { commonStyles } from "../styles";
+import { t } from "../../../locale/localization";
 
 const ProductFormComponent = createFormFactory();
 
@@ -57,7 +58,7 @@ const ProductFormScreen = () => {
       <TabsScreenHeader
         renderTitle={(titleComposer) =>
           titleComposer(
-            "Product",
+            t("product", "phrase"),
             productForm?.body?.productId,
             !productForm?.body?.id
           )
@@ -75,21 +76,23 @@ const ProductFormScreen = () => {
         requestDetailAction={fetchProductDetailAction}
         requestUpdateAction={updateProductAction}
         requestInsertAction={insertProductAction}
-        submitSuccessMessage="product"
+        submitSuccessMessage={t("product")}
       >
-        <ProductFormComponent.Section title="General Information">
+        <ProductFormComponent.Section
+          title={t("general information", "capitalize")}
+        >
           <AppFormInput
             validate={true}
             inputName="productId"
             icon="Items"
-            label="Product ID"
+            label={`${t("product", "phrase")} ${t("id", "ucase")}`}
             enabled={true}
             inputMode="numeric"
             renderAction={() => (
               <ChipButton
                 onPress={generateNewId}
                 containerStyle={styles.inputActionButtonContainer}
-                label={`Generate`}
+                label={t("generate", "phrase")}
               />
             )}
             required={true}
@@ -97,13 +100,13 @@ const ProductFormScreen = () => {
           <AppFormInput
             validate={true}
             inputName="productName"
-            label="Product Name"
+            label={t("product name", "phrase")}
             enabled={true}
             required={true}
           />
           <AppFormInput
             inputName={"productDescription"}
-            label="Description"
+            label={t("description", "phrase")}
             enabled={true}
             multiline={true}
           />
@@ -111,48 +114,50 @@ const ProductFormScreen = () => {
             inputName={"productCategory"}
             icon="Tag"
             valueKey={"categoryName"}
-            placeholder="Select Category"
+            placeholder={t("select category", "phrase")}
             renderTextValue={(value, text) =>
               text && value ? `${text}(${value.categoryId})` : ""
             }
-            label="Category"
+            label={t("category", "phrase")}
             enabled={true}
             onSelectPress={openSelectCategoryHandle}
           />
           <AppFormInput
             inputName={"productBarcode"}
             icon="Barcode"
-            label="Barcode"
+            label={t("barcode", "phrase")}
             enabled={true}
             multiline={true}
             inputMode="numeric"
             renderAction={() => (
               <ChipButton
                 containerStyle={styles.inputActionButtonContainer}
-                label={`Camera`}
+                label={t("camera", "phrase")}
               />
             )}
           />
           <AppFormInput
             inputName={"productSku"}
-            label="SKU"
+            label={t("sku", "ucase")}
             enabled={true}
             multiline={true}
             inputMode="numeric"
             renderAction={() => (
               <ChipButton
                 containerStyle={styles.inputActionButtonContainer}
-                label={`Camera`}
+                label={t("camera", "phrase")}
               />
             )}
           />
         </ProductFormComponent.Section>
         <ProductFormComponent.Gap size={25} />
-        <ProductFormComponent.Section title="Pricing and Discount">
+        <ProductFormComponent.Section
+          title={t("pricing and discount", "phrase")}
+        >
           <AppFormInput
             inputName={"productPrice"}
             icon="Tags"
-            label="Default Price"
+            label={t("default price", "phrase")}
             enabled={true}
             inputMode="numeric"
             required={true}
@@ -168,22 +173,22 @@ const ProductFormScreen = () => {
                   />
                 )}
                 containerStyle={styles.inputActionButtonContainer}
-                label={`Select`}
+                label={t("select", "phrase")}
               />
             )}
           />
           <ChipButton
             plain={true}
-            label={"Add Rule-Coming Soon"}
+            label={t("add rule-coming soon", "phrase")}
             containerStyle={styles.addRuleButtonContainer}
           />
         </ProductFormComponent.Section>
         <ProductFormComponent.Gap size={25} />
-        <ProductFormComponent.Section title="Shortkeys">
+        <ProductFormComponent.Section title={t("shortkeys", "capitalize")}>
           <AppFormInput
             inputName={"productCode"}
             icon="Shortkeys"
-            label="Product Code"
+            label={t("product code", "phrase")}
             enabled={true}
             renderAction={() => (
               <ChipButton
@@ -208,7 +213,9 @@ const ProductFormScreen = () => {
                 )}
                 containerStyle={styles.inputActionButtonContainer}
                 label={`${
-                  productShortkeyColor ? productShortkeyColor : "Select color"
+                  productShortkeyColor
+                    ? productShortkeyColor
+                    : t("select color", "phrase")
                 }`}
               />
             )}

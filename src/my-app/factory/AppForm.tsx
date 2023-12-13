@@ -16,6 +16,7 @@ import { addQueueAction } from "../../store/slices/toast/toastSlice";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
+import { t } from "../../locale/localization";
 
 // Props for sections within the form
 type SectionProps = {
@@ -292,7 +293,7 @@ export const createFormFactory = () => {
     const onErrorHandle = () => {
       dispatch(
         addQueueAction({
-          message: validationErrorMessage ?? "Fields are required",
+          message: validationErrorMessage ?? t("fields are required", "phrase"),
           options: {
             type: "danger",
           },
@@ -308,9 +309,9 @@ export const createFormFactory = () => {
         });
       dispatch(
         addQueueAction({
-          message: `Successfully ${isNew ? "saved new" : "updated"} ${
-            submitSuccessMessage ?? ""
-          }.`,
+          message: `${t("successfully", "phrase")} ${
+            isNew ? t("saved new") : t("updated")
+          } ${submitSuccessMessage ?? ""}.`,
           options: {
             type: "success",
           },
@@ -370,10 +371,10 @@ export const createFormFactory = () => {
             labelStyle={styles.saveButtonLabel}
             label={
               state?.state === FormState.confirming
-                ? "Tap again to confirm"
+                ? t("tap again to confirm", "phrase")
                 : isNew
-                ? "Create"
-                : "Update"
+                ? t("create", "phrase")
+                : t("update", "phrase")
             }
           />
         </View>
