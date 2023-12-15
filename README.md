@@ -17,13 +17,14 @@
 
 ```
 ├───app
-│   ├───*modules
+│   ├───*grouped feature
+│   ├───*features
+│   │  ├───*feature routes
 │   ├───(drawer)
 │   │   ├───(*drawer route)
 │   │   │   ├───*drawer sub routes
 |   |   |   |   ├───_layout.jsx
 |   |   |   |   ├───index.jsx
-|   |   |   |   ├───*stack routes
 │   │   ├───_layout.jsx
 │   ├───_layout.jsx
 │   ├───index.jsx
@@ -31,17 +32,28 @@
 │   ├───fonts
 │   └───imgs
 ├───src
-│   ├───components
-│   │   ├───*modules
-│   │   │   ├───ui
-│   │   │   ├───shared
+│   ├───context-manager
+│   ├───enums
+│   ├───features
+│   │   ├───*feature
+│   │   │   ├───constants/
+│   │   │   ├───context/
+│   │   │   ├───db/
+│   │   │   ├───api/
+│   │   │   ├───layouts/
+│   │   │   ├───modals/
+│   │   │   ├───screens/
+│   │   │   ├───store/
+│   │   │   ├───styles/
+│   │   │   ├───ui/
+│   │   │   ├───validator/
 │   │   │   ├───index.jsx
+│   ├───my-app
+│   ├───locale
 │   ├───routes
 │   │   ├───index.jsx
 │   │   ├───routes.jsx
-│   ├───screens  - TBR!!
-│   │   ├───index.jsx
-│   │   ├───*ScreenComponents
+│   ├───store
 │   ├───themes
 │   │   ├───index.jsx
 │   │   ├───*app related stylesheet
@@ -56,14 +68,14 @@
 - /app
     App is strictly for ui/ux flow and navigation structure.
     And other preloading ui/ux functions like Splascreens and Fonts
-    ***Note:*** *Use ScreensComponents from **src/screens/** in each _layout.jsx .*
+    ***Note:*** *Use \*LayoutComponents from **features/\*feature/layouts/** in each _layout.jsx .*
 
-- /app/*modules
+- /app/*features
     Uses Stack Navigation otherwise (drawer)
-    ***Note:*** *Use ScreensComponents from **src/features/\*modules/** in each _layout.jsx .*
+    ***Note:*** *Use ScreensComponents from **src/features/\*features/** in each _layout.jsx .*
 
 - /app/(drawer)/(*drawer route)
-    Completely unrelated to modules, you can set drawer routes in *src/routes/routes.jsx*.
+    Completely unrelated to features, you can set drawer routes in *src/routes/routes.jsx*.
     *Use **_layout.jsx** to define your Drawer.Screen*
     ***Note:*** *Use ScreensComponents from **src/screens/** in each _layout.jsx .*
 
@@ -75,23 +87,30 @@
     Static assets
 
 - /src
-    Should avoid composing components in and utils/helpers in ***/app*** unless necessary. Everything should be inside the ***/app/\***
+    main soruce folder
 
-- /src/components
-    Modular components.
+- /src/my-app/
+    Worked like feature excepts that most of its component is shared across the features
+    ***/factory/*** - components factory, components that is repetitive accross the features like Forms, Modals, etc
+    
+- /src/features
+    Grouped features/sub features
 
-- /src/features/*modules
-    ***/index.js*** - Use imports for shareable components
-    ***/screens/\*.jsx*** - Use direct import when used
+- /src/features/*feature
+    ***/constants/*** - constants
+    ***/context*** - uses context-manager and middlewares to get data from either SQLite or Api 
+    ***/db/*** - Sql queries and functions
+    ***/api/*** - Api 
     ***/layouts/\*.jsx*** - To be strictly used in _layout.jsx, use direct import when used
-    ***/ui/\*.jsx*** *- 1st layer components inside for module-specific. non shareable*
-    ***/shared/\*.jsx*** *- 2nd layer components inside for module-specific, import in index.jsx*
+    ***/modals/*** - Screen components that serves as modals  
+    ***/screens/\*.jsx*** - Use direct import when used
+    ***/store/*** - Redux state management
+    ***/styles/*** - Common styles inside the grouped feature  
+    ***/ui/\*.jsx*** *- 1st layer components inside for feature-specific. non shareable*
+    ***/shared/\*.jsx*** *- 2nd layer components inside for feature-specific, import in index.jsx*
 
 - /src/routes
     Define your routes drawer and stack routes
-
-- /src/screens - TBR!!
-    ***Screens should only be used in _layouts.jsx***
 
 - /src/themes
     Styling

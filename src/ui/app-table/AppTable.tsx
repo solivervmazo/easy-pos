@@ -29,19 +29,22 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
     headerOptions,
   } = props;
 
+  const [toggledKeyState, setToggledKey] = useState<string>("");
   const [currentPageState, setCurrentPage] = useState<number>(1);
   const [filteredDataState, setFilteredData] = useState<RowItem[]>([]);
 
   // Callback to handle row toggling
-  const rowToggleHandle = (toggled: boolean, key: string): void => {
-    setFilteredData(
-      filteredDataState.map((row: RowItem) =>
-        row.itemKey === key
-          ? { ...row, toggled: toggled }
-          : { ...row, toggled: false }
-      )
-    );
-    if (onRowToggle) onRowToggle({ toggled: toggled });
+  const rowToggleHandle = (
+    item: RowItem,
+    toggled: boolean,
+    key: string
+  ): void => {
+    if (toggledKeyState === key && !toggled) {
+      setToggledKey("");
+    } else {
+      setToggledKey(key);
+    }
+    if (onRowToggle) onRowToggle({ toggled: item.item });
   };
 
   // Callback to handle page change
@@ -104,9 +107,12 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
     const endSlice = itemsPerPage * currentPageState;
 
     // Create an array of table data with unique item keys
-    const tableData = (data || []).map<RowItem>((row, index) =>
-      makeRowData(row, index, itemKey)
-    );
+    const tableData = (data || [])
+      .map<RowItem>((row, index) => makeRowData(row, index, itemKey))
+      .map<RowItem>((row) => ({
+        ...row,
+        toggled: row.itemKey == toggledKeyState,
+      }));
 
     // Initialize an array to store the sliced and filtered data
     let slicedData = [];
@@ -146,12 +152,11 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
         })
         .slice(startSlice, endSlice);
     }
-
-    // Set the filtered data state with the sliced and filtered data
-    setFilteredData(slicedData || []);
+    setFilteredData(slicedData);
   };
 
   useEffect(() => {
+    // Set the filtered data state with the sliced and filtered data
     paginateData();
   }, [currentPageState, data, searchValue]);
 
@@ -169,9 +174,10 @@ const AppTable = forwardRef<unknown, AppTableProps>((props, _) => {
             return (
               <TableRow
                 toggleKey={rowItem.itemKey}
-                toggled={rowItem.toggled}
+                // toggled={rowItem.toggled}
+                toggled={rowItem.itemKey == toggledKeyState}
                 onToggle={({ toggled, toggledKey }) =>
-                  rowToggleHandle(toggled, toggledKey)
+                  rowToggleHandle(rowItem, toggled, toggledKey)
                 }
                 actionsCount={actionsCount}
                 contentStyle={{ flexDirection: "row" }}

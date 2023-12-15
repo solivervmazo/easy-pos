@@ -10,35 +10,37 @@ import MyAppDrawerHeaderRight from "../ui/MyAppDrawerHeaderRight";
 import MyAppDrawerTogglerButton from "../ui/MyAppDrawerTogglerButton";
 import { HeaderMode } from "../../enums";
 import { useDispatch } from "react-redux";
-import {
-  headerChangeSearchValueAction,
-  headerChangeHeaderMode,
-} from "../../store/slices/header/headerSlice";
+import { appStore } from "../store/";
 const MyAppDrawerLayout = ({ onLayout }) => {
   const dispatch = useDispatch();
-  const [_drawerActiveIndex, setDrawerActiveIndex] = useState(0);
-  const [_headerIsSearchMode, setHeaderIsSearchMode] = useState(false);
+  const [drawerActiveIndexState, setDrawerActiveIndex] = useState(0);
+  const [headerIsSearchModeState, setHeaderIsSearchMode] = useState(false);
   const routes = useDrawerRoutes();
 
-  const [_headerMode, setHeaderMode] = useState(HeaderMode.drawer);
+  const [headerModeState, setHeaderMode] = useState(HeaderMode.drawer);
 
-  const _toggleHeaderMode = () => {
-    setHeaderIsSearchMode(!_headerIsSearchMode);
+  const onToggleHeaderMode = () => {
+    setHeaderIsSearchMode(!headerIsSearchModeState);
   };
 
-  const _toggleDrawerModeOnNavigated = (currentDrawerIndex) => {
+  const onToggleDrawerModeOnNavigated = (currentDrawerIndex) => {
     setDrawerActiveIndex(currentDrawerIndex || 0);
     setHeaderIsSearchMode(
-      _drawerActiveIndex != currentDrawerIndex && _headerIsSearchMode == true
+      drawerActiveIndexState != currentDrawerIndex &&
+        headerIsSearchModeState == true
     );
   };
 
-  const _titleOnHiddenHandle = (hidden) => {
+  const onTitleHiddenHandle = (hidden) => {
     const headerMode = hidden ? HeaderMode.search : HeaderMode.drawer;
     setHeaderMode(headerMode);
-    dispatch(headerChangeHeaderMode({ headerMode }));
+    // dispatch(appStore.header.actions.changeHeaderMode({ headerMode }));
     if (headerMode == HeaderMode.drawer) {
-      dispatch(headerChangeSearchValueAction({ searchValue: "" }));
+      // dispatch(
+      //   appStore.header.actions.changeSearchValueAction({
+      //     searchValue: "",
+      //   })
+      // );
     }
   };
 
@@ -48,7 +50,7 @@ const MyAppDrawerLayout = ({ onLayout }) => {
       <Drawer
         screenListeners={{
           state: (state) => {
-            _toggleDrawerModeOnNavigated(state.data?.state.index || 0);
+            onToggleDrawerModeOnNavigated(state.data?.state.index || 0);
           },
         }}
         defaultStatus={"closed"}
@@ -88,10 +90,10 @@ const MyAppDrawerLayout = ({ onLayout }) => {
           },
           headerLeft: () => (
             <MyAppDrawerHeaderLeft
-              toggle={_headerIsSearchMode}
+              toggle={headerIsSearchModeState}
               onBack={
-                _headerMode == HeaderMode.search
-                  ? _toggleHeaderMode
+                headerModeState == HeaderMode.search
+                  ? onToggleHeaderMode
                   : navigation.toggleDrawer
               }
             />
@@ -100,16 +102,16 @@ const MyAppDrawerLayout = ({ onLayout }) => {
             return (
               <MyAppDrawerHeaderTitle
                 titleText={children}
-                toggle={_headerIsSearchMode}
-                onHidden={({ hidden }) => _titleOnHiddenHandle(hidden)}
+                toggle={headerIsSearchModeState}
+                onHidden={({ hidden }) => onTitleHiddenHandle(hidden)}
               />
             );
           },
           headerRight: ({ tintColor }) => (
             <MyAppDrawerHeaderRight
-              showInput={_headerMode == HeaderMode.search}
+              showInput={headerModeState == HeaderMode.search}
               tintColor={tintColor}
-              onShowInput={_toggleHeaderMode}
+              onShowInput={onToggleHeaderMode}
             />
           ),
         })}

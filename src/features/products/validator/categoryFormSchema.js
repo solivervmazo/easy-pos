@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { RequestState } from "../../../enums";
-import { requestProductCategoryDetail } from "../../../context/products/categories";
+import { requestProductCategoryDetail } from "../context/categories";
 export default categoryFormSchema = yup.object().shape({
   categoryId: yup.string(),
   categoryName: yup

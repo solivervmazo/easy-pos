@@ -4,8 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { store } from "../src/store/store";
 import * as SQLlite from "expo-sqlite";
-import products, { insertProductQuery } from "../src/db/products";
-import categories, { insertCategoryQuery } from "../src/db/categories";
+import { dbProductCategories, dbProducts } from "../src/features/products/";
 import { ToastProvider } from "react-native-toast-notifications";
 import MyAppLayout from "../src/my-app/layouts/MyAppLayout";
 const db_name = "easy-pos";
@@ -25,13 +24,14 @@ const _layout = () => {
   useEffect(() => {
     db.transaction(
       (tx) => {
-        products()
-          .concat(categories())
+        dbProducts
+          .dbSchema()
+          .concat(dbProductCategories.dbSchema())
           .forEach((stmnt) =>
             tx.executeSql(stmnt, null, null, (_, error) => console.log(error))
           );
         new Array(10).fill({}).map((item, index) => {
-          const { query, args } = insertProductQuery({
+          const { query, args } = dbProducts.insertQuery({
             productCategory: { id: index == 8 ? 1 : 0 },
             productId:
               (Math.floor(Math.random() * 999) + 1000).toString() +
@@ -52,7 +52,7 @@ const _layout = () => {
         });
 
         new Array(10).fill({}).map((item, index) => {
-          const { query, args } = insertCategoryQuery({
+          const { query, args } = dbProductCategories.insertQuery({
             categoryId:
               (Math.floor(Math.random() * 999) + 1000).toString() +
               index.toString(),

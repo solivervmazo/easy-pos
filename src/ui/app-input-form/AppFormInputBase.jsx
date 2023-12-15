@@ -87,13 +87,22 @@ const AppFormInputBase = (
     setInputBorderColor(colorValue);
   };
 
-  const _calculateValue = (_value) => {
+  const _calculateValue = (value) => {
     let calculatedValue = undefined;
-    if (typeof _value === "string") calculatedValue = _value.toString();
-    else if (typeof _value === "object" && !Array.isArray(_value)) {
+    if (typeof value === "string") calculatedValue = value.toString();
+    else if (typeof value === "object" && !Array.isArray(value)) {
       calculatedValue = valueKey
-        ? _value[valueKey]
-        : undefined; /**Missing valueKey typeof value is object */
+        ? value[valueKey]
+        : (() => {
+            /**Missing valueKey typeof value is object */
+            if (typeof renderTextValue(value, value) === "string") {
+              return value;
+            } else {
+              console.warn(
+                "Input value is object and valueKey is not provided, either provide valueKey or renderTextValue"
+              );
+            }
+          })();
     } else {
       /**value of AppFormInput is not valid should either string | object */
     }

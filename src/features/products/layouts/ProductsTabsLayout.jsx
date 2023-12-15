@@ -1,24 +1,23 @@
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   createMaterialTopTabNavigator,
   MaterialTopTabBar,
 } from "@react-navigation/material-top-tabs";
 import { TabBarItem } from "react-native-tab-view/src/TabBarItem";
 import { TabBarIndicator } from "react-native-tab-view/src/TabBarIndicator";
-import { Icon } from "../../../ui";
-import { appColors, appFonts, appSizes } from "../../../themes";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useSelector } from "react-redux";
-import { productTabsHeaderModeSelector } from "../../../store/slices/header/headerSlice";
 import { PRODUCT_FEATURE_ALIAS, TABS_HEIGHT } from "../constants";
 import { HeaderMode } from "../../../enums";
+import { appStore } from "../../../my-app";
+import { Icon } from "../../../ui";
+import { appColors, appFonts, appSizes } from "../../../themes";
 import VariationScreen from "../screens/VariationScreen";
-
 import ProductsScreen from "../screens/ProductsScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
 
@@ -26,7 +25,9 @@ const Tabs = createMaterialTopTabNavigator();
 
 const AppTabsBar = (props) => {
   const tabsHeaderMode = useSelector((state) =>
-    productTabsHeaderModeSelector(state, { feature: PRODUCT_FEATURE_ALIAS })
+    appStore.header.selectors.products.tabsHeaderModeSelector(state, {
+      feature: PRODUCT_FEATURE_ALIAS,
+    })
   );
   const _tabsHeightShared = useSharedValue(TABS_HEIGHT);
   const _remainingTabsWidth =

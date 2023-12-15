@@ -4,11 +4,7 @@ import { appSizes } from "../../themes";
 import { IconButton } from "../../ui";
 import MyAppDrawerSearchInput from "./MyAppDrawerSearchInput";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  headerChangeSearchValueAction,
-  searchInputPlaceholderSelector,
-  searchValueSelector,
-} from "../../store/slices/header/headerSlice";
+import { appStore } from "../store";
 const MyAppDrawerHeaderRight = ({
   onShowInput,
   onClearInput,
@@ -16,24 +12,28 @@ const MyAppDrawerHeaderRight = ({
   tintColor,
 }) => {
   const dispatch = useDispatch();
-  const searchValue = useSelector(searchValueSelector);
-  const searchInputPlaceholder = useSelector(searchInputPlaceholderSelector);
+  const searchValue = useSelector(
+    appStore.header.selectors.searchValueSelector
+  );
+  const searchInputPlaceholder = useSelector(
+    appStore.header.selectors.searchInputPlaceholderSelector
+  );
 
-  const _onSearchValueChange = (value) => {
-    dispatch(headerChangeSearchValueAction({ searchValue: value }));
+  const onSearchValueChangeHandle = (value) => {
+    dispatch(appStore.header.actions.changeSearchValue({ searchValue: value }));
   };
 
-  const _onClearInputHandle = () => {
+  const onClearInputHandle = () => {
     onClearInput ? onClearInput() : () => {};
-    _onSearchValueChange("");
+    onSearchValueChangeHandle("");
   };
 
-  const _onShowInputHandle = () => {
+  const onShowInputHandle = () => {
     onShowInput ? onShowInput() : () => {};
   };
 
-  const _onPressHandle = () => {
-    showInput ? _onClearInputHandle() : _onShowInputHandle();
+  const onPressHandle = () => {
+    showInput ? onClearInputHandle() : onShowInputHandle();
   };
   return (
     <View style={styles.container}>
@@ -41,11 +41,11 @@ const MyAppDrawerHeaderRight = ({
         <MyAppDrawerSearchInput
           placeholder={searchInputPlaceholder}
           searchValue={searchValue}
-          onChange={({ searchValue }) => _onSearchValueChange(searchValue)}
+          onChange={({ searchValue }) => onSearchValueChangeHandle(searchValue)}
         />
       ) : null}
       <IconButton
-        onPress={_onPressHandle}
+        onPress={onPressHandle}
         icon={showInput ? "Close" : "Search"}
         color={tintColor}
         size={appSizes.Icon.large}

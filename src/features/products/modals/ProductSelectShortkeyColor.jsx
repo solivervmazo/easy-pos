@@ -3,10 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { AppColorPicker, AppModal } from "../../../ui";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  productFormSelector,
-  updateProductFormAction,
-} from "../../../store/slices/products/productSlice";
+import { productStore } from "../store";
 
 const ScreenHeader = () => (
   <Stack.Screen
@@ -23,7 +20,7 @@ const ScreenHeader = () => (
 const ProductSelectShortkeyColor = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const productForm = useSelector(productFormSelector);
+  const productForm = useSelector(productStore.products.selectors.formSelector);
   const [_colorValue, setColorValue] = useState(
     productForm?.body.productShortkeyColor
   );
@@ -32,13 +29,13 @@ const ProductSelectShortkeyColor = () => {
     setColorValue(colorValue);
   };
 
-  const _submitColorHandle = () => {
+  const onSubmitColorHandle = () => {
     const updatedProductForm = {
       ...productForm?.body,
       productShortkeyColor: _colorValue || "",
     };
     dispatch(
-      updateProductFormAction({
+      productStore.products.actions.updateForm({
         body: { ...productForm.body, ...updatedProductForm },
       })
     );
@@ -50,7 +47,7 @@ const ProductSelectShortkeyColor = () => {
       <ScreenHeader />
       <View style={{ flex: 1 }}>
         <AppModal
-          onConfirm={_submitColorHandle}
+          onConfirm={onSubmitColorHandle}
           renderContent={() => (
             <AppColorPicker
               colorValue={productForm?.body.productShortkeyColor || undefined}

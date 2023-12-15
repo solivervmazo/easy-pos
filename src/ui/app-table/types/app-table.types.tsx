@@ -55,7 +55,7 @@ export type RenderActionsCallback = {
  * @returns {void}
  */
 export type OnRowToggleCallback = {
-  (props: { toggled: boolean }): void;
+  (props: { toggled: Obj }): void;
 };
 
 /**

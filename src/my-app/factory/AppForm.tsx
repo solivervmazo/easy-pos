@@ -12,7 +12,7 @@ import { FormState } from "../../enums";
 import { useDispatch } from "react-redux";
 import { AnyAction } from "@reduxjs/toolkit";
 import { Control, useForm } from "react-hook-form";
-import { addQueueAction } from "../../store/slices/toast/toastSlice";
+import { appStore } from "../store";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
@@ -292,7 +292,7 @@ export const createFormFactory = () => {
 
     const onErrorHandle = () => {
       dispatch(
-        addQueueAction({
+        appStore.toast.actions.addQueueAction({
           message: validationErrorMessage ?? t("fields are required", "phrase"),
           options: {
             type: "danger",
@@ -308,9 +308,9 @@ export const createFormFactory = () => {
           pathname: redirectPath,
         });
       dispatch(
-        addQueueAction({
+        appStore.toast.actions.addQueueAction({
           message: `${t("successfully", "phrase")} ${
-            isNew ? t("saved new") : t("updated")
+            isNew ? t("saved new", "phrase") : t("updated", "phrase")
           } ${submitSuccessMessage ?? ""}.`,
           options: {
             type: "success",

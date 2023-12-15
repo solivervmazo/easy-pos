@@ -33,12 +33,12 @@ const transformize = (value: string, transform: LetterCase): string => {
     case "lcase":
       return valueToTransform.toLowerCase();
     case "capitalize":
-      return capitalizer(valueToTransform);
-    case "phrase":
       return valueToTransform
         .split(" ")
         .map((word) => capitalizer(word))
         .join(" ");
+    case "phrase":
+      return capitalizer(valueToTransform);
     default:
       return value;
   }
@@ -46,7 +46,7 @@ const transformize = (value: string, transform: LetterCase): string => {
 
 const pluralize = (key: string, quantity: number): string => {
   const language = getLanguage();
-  const translationKey = `${key}${quantity < 1 ? "_plural" : ""}`;
+  const translationKey = `${key}${quantity > 1 ? "_plural" : ""}`;
   return (
     translations[language][translationKey] || translations[language][key] || key
   );

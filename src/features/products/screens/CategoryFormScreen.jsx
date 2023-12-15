@@ -8,23 +8,17 @@ import {
   ChipButton,
   Icon,
 } from "../../../ui";
-import { appColors, appSizes, appSpacing } from "../../../themes";
+import { appColors, appSizes } from "../../../themes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSelector } from "react-redux";
-import {
-  insertCategoryAction,
-  fetchCategoryDetailAction,
-  updateCategoryFormAction,
-  updateCategoryAction,
-  categoryFormSelector,
-} from "../../../store/slices/products/productSlice";
 import { useDrawerRoutes, useStackRoutes } from "../../../routes";
 import FormState from "../../../enums/FormState";
 import TabsScreenHeader from "../ui/TabsScreenHeader";
 import categoryFormSchema from "../validator/categoryFormSchema";
 import { createFormFactory } from "../../../my-app";
-import { commonStyles } from "../styles";
+import { commonStyles } from "../styles/styles";
 import { t } from "../../../locale/localization";
+import { productStore } from "../store";
 
 const CategoryFormComponent = createFormFactory();
 
@@ -33,7 +27,10 @@ const CategoryFormScreen = () => {
   const routes = useStackRoutes();
   const drawerRoutes = useDrawerRoutes();
   const { id } = useLocalSearchParams();
-  const categoryForm = useSelector(categoryFormSelector);
+  const categoryForm = useSelector(
+    productStore.categories.selectors.formSelector
+  );
+
   const { categoryShortkeyColor } = categoryForm?.body ?? {
     categoryShortkeyColor: undefined,
   };
@@ -68,11 +65,11 @@ const CategoryFormScreen = () => {
         detailId={id}
         validatorSchema={categoryFormSchema}
         state={categoryForm}
-        updateFormAction={updateCategoryFormAction}
+        updateFormAction={productStore.categories.actions.updateForm}
         redirectPath={drawerRoutes["units-products"].path}
-        requestDetailAction={fetchCategoryDetailAction}
-        requestUpdateAction={updateCategoryAction}
-        requestInsertAction={insertCategoryAction}
+        requestDetailAction={productStore.categories.actions.fetchDetail}
+        requestUpdateAction={productStore.categories.actions.update}
+        requestInsertAction={productStore.categories.actions.insert}
         submitSuccessMessage={t("product category")}
       >
         <CategoryFormComponent.Section
@@ -105,6 +102,7 @@ const CategoryFormScreen = () => {
           <AppSelectInput
             validate={true}
             inputName="categoryParent"
+            valueKey={"categoryName"}
             icon="Tag"
             placeholder={t("select parent category", "phrase")}
             renderTextValue={(value, text) =>

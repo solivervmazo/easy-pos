@@ -12,18 +12,12 @@ import { appColors } from "../../../themes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import productFormSchema from "../validator/productFormSchema";
-import {
-  insertProductAction,
-  fetchProductDetailAction,
-  updateProductFormAction,
-  generateProjectIdAction,
-  updateProductAction,
-} from "../../../store/slices/products/productSlice";
 import { useDrawerRoutes, useStackRoutes } from "../../../routes";
 import FormState from "../../../enums/FormState";
 import TabsScreenHeader from "../ui/TabsScreenHeader";
 import { createFormFactory } from "../../../my-app";
-import { commonStyles } from "../styles";
+import { commonStyles } from "../styles/styles";
+import { productStore } from "../store";
 import { t } from "../../../locale/localization";
 
 const ProductFormComponent = createFormFactory();
@@ -34,13 +28,15 @@ const ProductFormScreen = () => {
   const drawerRoutes = useDrawerRoutes();
   const dispatch = useDispatch();
   const { id } = useLocalSearchParams();
-  const productForm = useSelector((state) => state.products.productForm);
+  const productForm = useSelector((state) =>
+    productStore.products.selectors.formSelector(state)
+  );
   const { productShortkeyColor } = productForm?.body ?? {
     productShortkeyColor: undefined,
   };
 
   const generateNewId = () => {
-    dispatch(generateProjectIdAction({ random: true }));
+    dispatch(productStore.products.actions.generateId({ random: true }));
   };
   const openSelectCategoryHandle = () => {
     router.push(
@@ -71,11 +67,11 @@ const ProductFormScreen = () => {
         detailId={id}
         validatorSchema={productFormSchema}
         state={productForm}
-        updateFormAction={updateProductFormAction}
+        updateFormAction={productStore.products.actions.updateForm}
         redirectPath={drawerRoutes["units-products"].path}
-        requestDetailAction={fetchProductDetailAction}
-        requestUpdateAction={updateProductAction}
-        requestInsertAction={insertProductAction}
+        requestDetailAction={productStore.products.actions.fetchDetail}
+        requestUpdateAction={productStore.products.actions.update}
+        requestInsertAction={productStore.products.actions.insert}
         submitSuccessMessage={t("product")}
       >
         <ProductFormComponent.Section

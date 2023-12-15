@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { AppModal, AppSelectPicker } from "../../../ui";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  categoryFormSelector,
-  updateCategoryFormAction,
-  categoryListSelector,
-} from "../../../store/slices/products/productSlice";
+import { productStore } from "../store";
 
 const ScreenHeader = () => (
   <Stack.Screen
@@ -24,32 +20,34 @@ const ScreenHeader = () => (
 const ProductCategorySelectParentCategory = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const categoryForm = useSelector(categoryFormSelector);
+  const categoryForm = useSelector(
+    productStore.categories.selectors.formSelector
+  );
   const categoryList = useSelector((state) =>
-    categoryListSelector(state, {
+    productStore.categories.selectors.listSelector(state, {
       rootLookup: categoryForm?.body?.categoryRootId,
       categoryLookup: categoryForm?.body?.id,
     })
   );
 
-  const [_selectedValue, setSelectedValue] = useState(
+  const [selectedValueState, setSelectedValue] = useState(
     categoryForm?.body.categoryParent
   );
 
-  const _changeHandle = (value) => {
+  const onChangeHandle = (value) => {
     setSelectedValue(value);
   };
 
-  const _onClearSelectionHandle = () => {
+  const onClearSelectionHandle = () => {
     setSelectedValue({});
   };
-  const _submitHandle = () => {
+  const onSubmitHandle = () => {
     const updatedCategoryForm = {
       ...categoryForm?.body,
-      categoryParent: _selectedValue,
+      categoryParent: selectedValueState,
     };
     dispatch(
-      updateCategoryFormAction({
+      productStore.categories.actions.updateForm({
         body: { ...categoryForm.body, ...updatedCategoryForm },
       })
     );
@@ -61,19 +59,19 @@ const ProductCategorySelectParentCategory = () => {
       <ScreenHeader />
       <View style={{ flex: 1 }}>
         <AppModal
-          onConfirm={_submitHandle}
+          onConfirm={onSubmitHandle}
           renderContent={() => (
             <AppSelectPicker
               items={categoryList}
-              value={_selectedValue}
+              value={selectedValueState}
               itemKey={"id"}
               itemLabel={"categoryName"}
               multiple={false}
               canSearch={true}
               showRecents={true}
               appendType="chip"
-              onSelect={(value) => _changeHandle(value)}
-              onClearSelection={_onClearSelectionHandle}
+              onSelect={(value) => onChangeHandle(value)}
+              onClearSelection={onClearSelectionHandle}
             />
           )}
         />

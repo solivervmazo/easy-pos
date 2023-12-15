@@ -2,16 +2,17 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Stack } from "expo-router";
 import { useToast } from "react-native-toast-notifications";
-import { getQueueAction } from "../../store/slices/toast/toastSlice";
+import { appStore } from "../store";
 import { appColors, appConstants } from "../../themes";
 
 const MyAppLayout = ({ onLayoutRootView }) => {
   const dispatch = useDispatch();
-  const { toastQueue, onQueue } = useSelector((state) => state.toast);
+  const toastQueue = useSelector(appStore.toast.selectors.toastQueue);
+  const onQueue = useSelector(appStore.toast.selectors.onQueue);
   const toast = useToast();
 
   useEffect(() => {
-    dispatch(getQueueAction());
+    dispatch(appStore.toast.actions.getQueueAction());
     if (onQueue && Object.keys(onQueue || {}).length > 0 && toast) {
       toast.hideAll();
       const {
