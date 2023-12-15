@@ -10,10 +10,10 @@ const CategoryRow = ({ item }) => {
     categoryId,
     categoryDescription,
     categoryCode,
-    categories,
+    categoryParent,
     categoryShortkeyColor,
+    categoryChildren,
   } = item;
-
   const _renderCodeOrColor = () => {
     const _shortKeyText = (
       <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
@@ -67,20 +67,30 @@ const CategoryRow = ({ item }) => {
         >
           {categoryName}
         </Text>
-        {categories ? (
+        {categoryParent || categoryChildren ? (
           <View style={[styles.tagsContainer]}>
-            <IconButton icon={"Tags"} disabled={true} />
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              data={item.categories}
-              horizontal
-              renderItem={({ item: category }) => (
-                <Text style={styles.tag}>{category}</Text>
-              )}
-              keyExtractor={(item) => item}
-              ItemSeparatorComponent={() => <Text>{` | `}</Text>}
-              ListFooterComponentStyle
-            />
+            {categoryParent ? (
+              <>
+                <IconButton icon={"Tag"} disabled={true} />
+                <Text style={styles.tag}>{categoryParent.categoryName}</Text>
+              </>
+            ) : null}
+            {categoryChildren ? (
+              <>
+                <IconButton icon={"Tags"} disabled={true} />
+                <FlatList
+                  showsHorizontalScrollIndicator={false}
+                  data={item.categories}
+                  horizontal
+                  renderItem={({ item: category }) => (
+                    <Text style={styles.tag}>{category}</Text>
+                  )}
+                  keyExtractor={(item) => item}
+                  ItemSeparatorComponent={() => <Text>{` | `}</Text>}
+                  ListFooterComponentStyle
+                />
+              </>
+            ) : null}
           </View>
         ) : (
           <Text

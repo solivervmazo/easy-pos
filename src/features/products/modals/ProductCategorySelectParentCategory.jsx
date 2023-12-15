@@ -1,31 +1,14 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Stack } from "expo-router";
+import { View } from "react-native";
+import { Stack, useRouter } from "expo-router";
 import { AppModal, AppSelectPicker } from "../../../ui";
-
-const CATS = [
-  {
-    id: 1,
-    label: "Food",
-  },
-  {
-    id: 2,
-    label: "Drinks",
-  },
-  {
-    id: 3,
-    label: "Pizza",
-  },
-  {
-    id: 4,
-    label: "Extras",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { productStore } from "../store";
 
 const ScreenHeader = () => (
   <Stack.Screen
     options={{
-      title: "Prent Category",
+      title: "Parent Category",
       headerShown: true,
       presentation: "modal",
       animation: "slide_from_bottom",
@@ -35,23 +18,60 @@ const ScreenHeader = () => (
 );
 
 const ProductCategorySelectParentCategory = () => {
-  const [_selected, setSelected] = useState();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const categoryForm = useSelector(
+    productStore.categories.selectors.formSelector
+  );
+  const categoryList = useSelector((state) =>
+    productStore.categories.selectors.listSelector(state, {
+      rootLookup: categoryForm?.body?.categoryRootId,
+      categoryLookup: categoryForm?.body?.id,
+    })
+  );
+
+  const [selectedValueState, setSelectedValue] = useState(
+    categoryForm?.body.categoryParent
+  );
+
+  const onChangeHandle = (value) => {
+    setSelectedValue(value);
+  };
+
+  const onClearSelectionHandle = () => {
+    setSelectedValue({});
+  };
+  const onSubmitHandle = () => {
+    const updatedCategoryForm = {
+      ...categoryForm?.body,
+      categoryParent: selectedValueState,
+    };
+    dispatch(
+      productStore.categories.actions.updateForm({
+        body: { ...categoryForm.body, ...updatedCategoryForm },
+      })
+    );
+    router.canGoBack() && router.back();
+  };
+
   return (
     <>
       <ScreenHeader />
       <View style={{ flex: 1 }}>
         <AppModal
+          onConfirm={onSubmitHandle}
           renderContent={() => (
             <AppSelectPicker
-              items={CATS}
-              value={[2]}
+              items={categoryList}
+              value={selectedValueState}
               itemKey={"id"}
-              itemLabel={"label"}
-              multiple={true}
+              itemLabel={"categoryName"}
+              multiple={false}
               canSearch={true}
               showRecents={true}
               appendType="chip"
-              onSelect={(value) => console.log(value)}
+              onSelect={(value) => onChangeHandle(value)}
+              onClearSelection={onClearSelectionHandle}
             />
           )}
         />
@@ -61,5 +81,3 @@ const ProductCategorySelectParentCategory = () => {
 };
 
 export default ProductCategorySelectParentCategory;
-
-const styles = StyleSheet.create({});

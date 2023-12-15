@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import productSlice from "./slices/products/productSlice";
-import toastSlice from "./slices/toast/toastSlice";
+import productSlice from "../features/products/store";
+import appSlice from "../my-app/store/";
 export const store = configureStore({
   reducer: {
-    toast: toastSlice,
+    app: appSlice,
     products: productSlice,
   },
 });

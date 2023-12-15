@@ -4,50 +4,63 @@ import { appColors, appSizes } from "../../../../themes";
 import CategoryRow from "./CategoryRow";
 import { replaceSlugs, useStackRoutes } from "../../../../routes";
 import { useRouter } from "expo-router";
-
 import { useSelector, useDispatch } from "react-redux";
-import {
-  fetchCategoryAction,
-  categoryTableSelector,
-  restartCategoryFormAction,
-} from "../../../../store/slices/products/productSlice";
-import { RequestState } from "../../../../enums";
+import { HeaderMode, RequestState } from "../../../../enums";
+import { appStore } from "../../../../my-app";
+import { productStore } from "../../store";
 
+import { PRODUCT_CATEGORY_SUB_ALIAS } from "../../constants/index";
 const CategoryListTable = () => {
   const dispatch = useDispatch();
-  const categoryTable = useSelector(categoryTableSelector);
-
   const router = useRouter();
   const routes = useStackRoutes();
 
+  const categoryTable = useSelector(
+    productStore.categories.selectors.tableSelector
+  );
+
+  const searchValue = useSelector((state) =>
+    appStore.header.selectors.products.categorySearchValueSelector(state, {
+      feature: PRODUCT_CATEGORY_SUB_ALIAS,
+    })
+  );
+
+  const currentTabHeaderMode = useSelector((state) =>
+    appStore.header.selectors.products.categoryTabHeaderModeSelector(state, {
+      feature: PRODUCT_CATEGORY_SUB_ALIAS,
+    })
+  );
+
   const categoryDetailRoute = routes["categories-detail"];
 
-  const _navigateDetailHandle = useCallback((id, params = {}) => {
-    dispatch(restartCategoryFormAction());
+  const onNavigateDetailHandle = useCallback((id, params = {}) => {
+    dispatch(productStore.categories.actions.restartForm());
     if (categoryDetailRoute) {
       const _routePath = replaceSlugs(categoryDetailRoute, [id]);
       router.push(_routePath);
     }
   });
 
-  const _refreshTableHandle = () => {
-    dispatch(fetchCategoryAction());
+  const onRefreshTableHandle = () => {
+    dispatch(productStore.categories.actions.fetchTable());
   };
 
   useEffect(
     useCallback(() => {
       if (categoryTable?.state === RequestState.idle) {
-        dispatch(fetchCategoryAction());
+        dispatch(productStore.categories.actions.fetchTable());
       }
     }),
     [categoryTable, dispatch]
   );
+
   return (
     <AppTable
+      searchValue={searchValue}
       itemsLength={categoryTable?.data?.length}
       itemKey={"id"}
       data={categoryTable?.data}
-      renderItem={({ item, toggled }) => (
+      renderItem={({ item }) => (
         <CategoryRow
           item={item}
           key={`category-screen-category-lists-${item.id}`}
@@ -58,7 +71,7 @@ const CategoryListTable = () => {
         return (
           <>
             <IconButton
-              onPress={() => _navigateDetailHandle(item.id)}
+              onPress={() => onNavigateDetailHandle(item.id)}
               icon={"Pencil"}
               containerStyle={{
                 aspectRatio: "1/1",
@@ -77,10 +90,11 @@ const CategoryListTable = () => {
         paddingVertical: 5,
       }}
       headerOptions={{
+        searchMode: currentTabHeaderMode == HeaderMode.search,
         calendarIcon: "",
         renderHeaderActions: () => (
           <ChipButton
-            onPress={_navigateDetailHandle}
+            onPress={onNavigateDetailHandle}
             buttonLeft={() => (
               <IconButton
                 disabled
@@ -97,7 +111,7 @@ const CategoryListTable = () => {
             }}
           />
         ),
-        onRefreshPress: _refreshTableHandle,
+        onRefreshPress: onRefreshTableHandle,
       }}
     />
   );

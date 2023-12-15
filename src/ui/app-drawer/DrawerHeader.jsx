@@ -2,8 +2,19 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { appColors, appFonts, appSizes, appSpacing } from "../../themes/";
 import Constants from "expo-constants";
-const DrawerHeader = ({ title, logo }) => {
+const DrawerHeader = ({
+  title,
+  logo,
+  headerTitleStyle = {},
+  headerContainerStyle = {},
+  renderToggler = () => null,
+}) => {
   const statusBarHeight = Constants.statusBarHeight;
+
+  const _renderToggler = () => {
+    const _rendered = renderToggler();
+    return _rendered;
+  };
   return (
     <View
       style={[
@@ -11,8 +22,10 @@ const DrawerHeader = ({ title, logo }) => {
         {
           paddingTop: statusBarHeight + 2,
         },
+        headerContainerStyle,
       ]}
     >
+      {_renderToggler()}
       <Image
         source={logo}
         style={{
@@ -22,7 +35,14 @@ const DrawerHeader = ({ title, logo }) => {
         }}
         resizeMode="contain"
       />
-      <Text style={[styles.headerTitle]}>{title}</Text>
+
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="clip"
+        style={[styles.headerTitle, headerTitleStyle]}
+      >
+        {title}
+      </Text>
     </View>
   );
 };
@@ -33,6 +53,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     flexDirection: "row",
     alignItems: "center",
+    overflow: "hidden",
   },
   headerTitle: {
     marginStart: 10,

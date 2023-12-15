@@ -4,6 +4,7 @@ import Divider from "./core/Divider";
 import ChipButton from "./ChipButton";
 import { appColors, appSizes, appSpacing } from "../themes";
 import { useRouter } from "expo-router";
+import { ScrollView } from "react-native-gesture-handler";
 
 const AppModal = ({
   renderContent = () => {},
@@ -26,7 +27,9 @@ const AppModal = ({
   };
   return (
     <View style={[styles.container, containerStyle]}>
-      {renderContent()}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {renderContent()}
+      </ScrollView>
       {renderFooter({
         onCancel: onCancel === undefined ? handleDismiss : onCancel,
         onConfirm,

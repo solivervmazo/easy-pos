@@ -1,8 +1,8 @@
 import React from "react";
-import AppDrawerLayout from "../../src/myapp/AppDrawerLayout";
+import MyAppDrawerLayout from "../../src/my-app/layouts/MyAppDrawerLayout";
 
 const _layout = () => {
-  return <AppDrawerLayout />;
+  return <MyAppDrawerLayout />;
 };
 
 export default _layout;

@@ -182,9 +182,19 @@ export const Down = (props) => {
   return icon.antdesign("down", "down");
 };
 
+export const Drawer = (props) => {
+  const icon = new _Icon(props);
+  return icon.octicons("three-bars", "three-bars");
+};
+
 export const Filters = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("filter", "filter");
+};
+
+export const Forward = (props) => {
+  const icon = new _Icon(props);
+  return icon.ionicons("arrow-forward-outline", "arrow-forward-sharp");
 };
 
 export const Gps = (props) => {
@@ -381,6 +391,11 @@ export const Unit = (props) => {
   return icon.feather("sliders", "sliders");
 };
 
+export const Variant = (props) => {
+  const icon = new _Icon(props);
+  return icon.materialicons2("brush-variant", "brush-variant");
+};
+
 export const Wallet = (props) => {
   const icon = new _Icon(props);
   return icon.ionicons("wallet-outline", "wallet");
@@ -405,6 +420,7 @@ const Icon = {
   Bed, //
   Dial, //
   Down,
+  Drawer,
   Car, //
   Calculator,
   Calendar,
@@ -414,6 +430,7 @@ const Icon = {
   Close,
   CursorText,
   Copy,
+  Forward,
   Heart, //
   Home,
   Info,
@@ -454,6 +471,7 @@ const Icon = {
   Tap,
   Tv, //
   Unit,
+  Variant,
   Wallet,
   Warehouse, //
   Wifi, //

@@ -6,18 +6,27 @@ import DrawerHeader from "./DrawerHeader";
 import DrawerAuxSpace from "./DrawerAuxSpace";
 import ItemListHeader from "./ItemListHeader";
 import ItemListItem from "./ItemListItem";
+import Constants from "expo-constants";
+import Spacer from "../core/Spacer";
 
-const AppDrawer = (props) => {
-  const { state, descriptors, navigation } = props;
+const AppDrawer = ({
+  state,
+  descriptors,
+  navigation,
+  renderToggler = () => null,
+}) => {
+  const props = { state, descriptors, navigation };
   const onPress = (path, options) => {
     navigation.navigate(path, options);
   };
 
   return (
     <View style={[styles.container]}>
+      <Spacer horizontal={false} size={10} />
       <DrawerHeader
         title={"Easy POS"}
         logo={require("../../../assets/logo-light.png")}
+        renderToggler={renderToggler}
       />
       <View style={[styles.itemsContainer]}>
         <DrawerContentScrollView
@@ -28,13 +37,12 @@ const AppDrawer = (props) => {
           {state.routes.map((route, index) => {
             const isFocused = state.index === index;
             const { options } = descriptors[route.key];
-
             return options.routeOptions?.head ? (
               <ItemListHeader
                 options={options}
                 key={options.routeOptions.key}
               />
-            ) : (
+            ) : options.routeOptions?.canNavigate ? (
               <ItemListItem
                 key={route.key}
                 isFocused={isFocused}
@@ -47,7 +55,7 @@ const AppDrawer = (props) => {
                     : onPress(route.name);
                 }}
               />
-            );
+            ) : null;
           })}
         </DrawerContentScrollView>
       </View>
@@ -57,7 +65,10 @@ const AppDrawer = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: appColors.lightBackground },
+  container: {
+    flex: 1,
+    backgroundColor: appColors.lightBackground,
+  },
   itemsContainer: {
     flex: 1,
     flexGrow: 1,

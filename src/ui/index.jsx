@@ -38,3 +38,4 @@ export {
   AppColorPicker,
   AppSpinner,
 };
+export { AppTextInput, AppSelectInput } from "./app-input-form";

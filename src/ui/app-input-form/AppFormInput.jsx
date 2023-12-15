@@ -105,7 +105,6 @@ const AppFormInput = ({
   const _onChangeHandle = (_value, validatorHandle = (v) => {}) => {
     let newValue = _value;
     // if (inputMode === "numeric") newValue = _value.replace(/[^0-9]/g, "");
-    // console.log(_value.replace(/[^0-9]/g, ""));
     validatorHandle(newValue);
     onChange(newValue);
   };

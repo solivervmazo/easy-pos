@@ -1,43 +1,82 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   createMaterialTopTabNavigator,
   MaterialTopTabBar,
 } from "@react-navigation/material-top-tabs";
 import { TabBarItem } from "react-native-tab-view/src/TabBarItem";
 import { TabBarIndicator } from "react-native-tab-view/src/TabBarIndicator";
-import ProductsScreen from "../screens/ProductsScreen";
-import CategoriesScreen from "../screens/CategoriesScreen";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
+import { PRODUCT_FEATURE_ALIAS, TABS_HEIGHT } from "../constants";
+import { HeaderMode } from "../../../enums";
+import { appStore } from "../../../my-app";
 import { Icon } from "../../../ui";
 import { appColors, appFonts, appSizes } from "../../../themes";
+import VariationScreen from "../screens/VariationScreen";
+import ProductsScreen from "../screens/ProductsScreen";
+import CategoriesScreen from "../screens/CategoriesScreen";
 
 const Tabs = createMaterialTopTabNavigator();
+
+const AppTabsBar = (props) => {
+  const tabsHeaderMode = useSelector((state) =>
+    appStore.header.selectors.products.tabsHeaderModeSelector(state, {
+      feature: PRODUCT_FEATURE_ALIAS,
+    })
+  );
+  const _tabsHeightShared = useSharedValue(TABS_HEIGHT);
+  const _remainingTabsWidth =
+    (props.layout.width - 60) / (props.state.routes.length - 1);
+
+  const _tabsHidden = () => tabsHeaderMode == HeaderMode.search;
+
+  const _animateHeight = () => {
+    _tabsHeightShared.value = withSequence(
+      withTiming(_tabsHidden() ? 0 : TABS_HEIGHT, {
+        duration: 200,
+      })
+    );
+  };
+
+  const _animatedTabsStyle = useAnimatedStyle(() => ({
+    height: _tabsHeightShared.value,
+  }));
+
+  useEffect(() => {
+    _animateHeight();
+  }, [tabsHeaderMode]);
+
+  return (
+    <Animated.View style={[_animatedTabsStyle]}>
+      <MaterialTopTabBar
+        {...props}
+        renderTabBarItem={(props) => {
+          return (
+            <TabBarItem
+              {...props}
+              defaultTabWidth={
+                props.route.name === "products" ? 60 : _remainingTabsWidth
+              }
+              {...(_tabsHidden() ? { onPress: () => {} } : {})}
+            />
+          );
+        }}
+      />
+    </Animated.View>
+  );
+};
 
 const ProductsTabsLayout = () => {
   return (
     <Tabs.Navigator
-      tabBar={(props) => {
-        const remainingTabsWidth =
-          (props.layout.width - 60) / (props.state.routes.length - 1);
-        return (
-          <MaterialTopTabBar
-            {...props}
-            renderTabBarItem={(props) => {
-              return (
-                <TabBarItem
-                  {...props}
-                  defaultTabWidth={
-                    props.route.name === "products" ? 60 : remainingTabsWidth
-                  }
-                  style={{
-                    height: 50,
-                  }}
-                />
-              );
-            }}
-          />
-        );
-      }}
+      tabBar={(props) => <AppTabsBar {...props} />}
       screenOptions={{
+        lazy: true,
         tabBarStyle: {
           backgroundColor: appColors.themeColor,
           height: 48,
@@ -91,6 +130,7 @@ const ProductsTabsLayout = () => {
         }}
         component={ProductsScreen}
       />
+      <Tabs.Screen name="variations" component={VariationScreen} />
       <Tabs.Screen name="categories" component={CategoriesScreen} />
     </Tabs.Navigator>
   );
