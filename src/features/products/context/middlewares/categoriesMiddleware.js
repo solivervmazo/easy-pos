@@ -1,4 +1,4 @@
-import { dbProductCategories } from "../../db/categories";
+import { dbProductCategories } from "../db/categories";
 import { RequestState } from "../../../../enums";
 import { ContextMiddleware } from "../../../../context-manager";
 import { generateStringId } from "../../../../utils";

@@ -273,10 +273,10 @@ export const createFormFactory = () => {
       } else if (isFormConfirming(state?.state)) {
         if (isNew) {
           isAction(requestInsertAction) &&
-            dispatch(requestInsertAction(state.body));
+            dispatch(requestInsertAction({ args: state.body }));
         } else {
           isAction(requestUpdateAction) &&
-            dispatch(requestUpdateAction(state.body));
+            dispatch(requestUpdateAction({ args: state.body }));
         }
       }
     };
@@ -327,7 +327,7 @@ export const createFormFactory = () => {
           const searchId = hasDetailId(detailId) ? detailId : undefined;
           setIsNew(!searchId);
           isAction(requestDetailAction) &&
-            dispatch(requestDetailAction({ id: searchId }));
+            dispatch(requestDetailAction({ args: { id: searchId } }));
         } else if (isFormIdle(state?.state)) {
           if (isFormHasBody(state?.body)) {
             Object.keys(state.body).forEach((attr) =>

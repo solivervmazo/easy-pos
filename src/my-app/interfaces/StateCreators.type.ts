@@ -7,7 +7,7 @@ import {
 import { FormState, HeaderMode, RequestState, SpinnerState } from "../../enums";
 import { WritableDraft } from "immer/dist/internal";
 import { ToastOptions } from "react-native-toast-notifications";
-export type CreatorState = HeaderCreatorState | ModularCreatorState;
+export type CreatorState = HeaderCreatorState | any;
 
 export type HeaderCreatorState = {
   headerMode: HeaderMode;
@@ -27,22 +27,8 @@ export type ToastCreatorState = {
   onQueue?: {} & ToastQueueItem;
 };
 
-export type ModularCreatorState = {
-  screenSpinner: SpinnerState;
-  form?: {
-    state: FormState;
-    data: any;
-  };
-  table: {
-    state: RequestState;
-    data: any;
-  };
-};
-
 export interface IStateCreators<T> {
-  state: T & {
-    [key: string]: any;
-  };
+  state: T;
   actions: { [key: string]: any };
   creators: { [key: string]: any };
   builder: (builder: ActionReducerMapBuilder<T>) => void;
@@ -52,7 +38,10 @@ export interface IStateCreatorsBuilder<T> {
   createBuilder: (
     builder: ActionReducerMapBuilder<T>,
     action: any,
-    fullfilled: AsyncThunkFulfilledActionCreator<any, any, {}>,
+    fullfilled: <T>(
+      state: CreatorState,
+      action: { payload: T; [key: string]: any }
+    ) => CreatorState | undefined,
     actionState?: {
       pending?: AsyncThunkPendingActionCreator<any, {}>;
       rejected?: AsyncThunkRejectedActionCreator<any, {}>;
@@ -60,20 +49,31 @@ export interface IStateCreatorsBuilder<T> {
   ) => ActionReducerMapBuilder<T>;
 }
 
+export type StateFormProps<T> = {
+  state: FormState;
+  body: T;
+};
+
 export abstract class StateCreatorsBuilder
   implements IStateCreatorsBuilder<CreatorState>
 {
   constructor() {}
-  createBuilder(
+  createBuilder<T>(
     builder: ActionReducerMapBuilder<CreatorState>,
     action: any,
-    fulfilled: any,
+    fulfilled: (
+      state: CreatorState,
+      action: { payload: T }
+    ) => CreatorState | undefined,
     actionState?: {
       pending?: any;
       rejected?: any;
     }
   ) {
-    const { pending, rejected } = actionState;
+    const { pending, rejected } = {
+      pending: actionState?.pending,
+      rejected: actionState?.pending,
+    };
     return builder
       .addCase(
         action.pending,
@@ -96,7 +96,7 @@ export abstract class StateCreatorsBuilder
       .addCase(
         action.rejected,
         (state: WritableDraft<CreatorState>, action: any) => {
-          console.log(action.error.message);
+          console.error(action.error.message);
           if (rejected && typeof rejected == "function") {
             const newState = rejected(state, action);
             if (typeof newState === "object") return newState;

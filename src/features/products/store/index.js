@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { categoryCreators } from "./actions/categories";
-import { productCreators } from "./actions/products";
+import { productCreators } from "./products";
 const initialState = {
   ...productCreators.state,
   ...categoryCreators.state,

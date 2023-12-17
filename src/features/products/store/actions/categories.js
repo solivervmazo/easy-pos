@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as SQLlite from "expo-sqlite";
 import { FormState, RequestState, SpinnerState } from "../../../../enums";
-import { dbProductCategories } from "../../db/categories";
+import { dbProductCategories } from "../../context/db/categories";
 import {
   requestProductCategoryList,
   requestProductCategoryDetail,

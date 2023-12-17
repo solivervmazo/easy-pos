@@ -2,7 +2,7 @@ import { RequestState, makeContextRequests } from "../../../context-manager";
 import {
   ContextErrorResponseMiddleware,
   ContextSourceMiddleware,
-} from "../../../my-app/";
+} from "../../../my-app";
 import {
   InsertProductCategoryMiddleware,
   RequestProductCategoryDetailMiddleware,
@@ -15,7 +15,7 @@ import * as SQLlite from "expo-sqlite";
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
 export const requestProductCategoryList = async (
-  db,
+  ctx: SqlLite,
   { orderBy = "id", desc = true } = {}
 ) => {
   let categories = {};

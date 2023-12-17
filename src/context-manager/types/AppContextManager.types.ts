@@ -18,16 +18,29 @@ export type ContextResponseState = {
  * Represents the state of a response with a successful outcome.
  * It includes the general response state and a `body` property that holds the payload of a successful response.
  */
-export type ContextResponseSucess = ContextResponseState & {
-  body: ContextObj[];
-};
+export type ContextResponseSucess<T = any | ContextObj[] | ContextObj> =
+  ContextResponseState & {
+    body: T;
+  };
 
 /**
  * Represents the state of a response with an error outcome.
  * It includes the general response state, and an optional `error` property that captures an error message.
  */
 export type ContextResponseError = ContextResponseState & {
-  error?: string;
+  error: string;
+};
+
+export type ContextResponse = ContextResponseSucess | ContextResponseError;
+
+export type ContextResponseEither<T = any> = ContextResponseState & {
+  body?: ContextResponseSucess<T>["body"];
+  error?: ContextResponseError["error"];
+};
+
+export type ContextMiddlewareArgs<T, U> = {
+  options: T;
+  args: U;
 };
 
 /**
@@ -50,8 +63,8 @@ export interface ContextPipelineResponse {
  * @param response - The response object collected from the pipeline, with middleware keys as properties.
  * @returns Instatiated Middleware
  */
-export interface ContextMiddlewarePipelineCallback {
-  (response: ContextPipelineResponse["response"]): ContextRequestMiddleware;
+export interface ContextMiddlewarePipelineCallback<T> {
+  (response: ContextPipelineResponse["response"]): ContextRequestMiddleware<T>;
 }
 
 /**
@@ -95,9 +108,9 @@ export interface ContextMiddlewarePipelineNextCallback {
  *   true // or provide a custom callback function that returns boolean or string
  * ];
  */
-export type ContextMiddlewarePipelineTuple = [
+export type ContextMiddlewarePipelineTuple<T> = [
   string,
-  ContextRequestMiddleware | ContextMiddlewarePipelineCallback,
+  ContextRequestMiddleware<T> | ContextMiddlewarePipelineCallback<T>,
   (boolean | string | ContextMiddlewarePipelineNextCallback)?
 ];
 
@@ -118,8 +131,8 @@ export type SqlObjectRequestArgs = {
   ctx?: SQLTransactionAsync;
 };
 
-export interface ContextRequestMiddleware {
-  exec(): Promise<ContextResponseSucess | ContextResponseError>;
+export interface ContextRequestMiddleware<T> {
+  exec(): Promise<ContextResponseSucess<T> | ContextResponseError>;
   //   success: ContextResponseSucess;
   //   error: ContextResponseError;
 }

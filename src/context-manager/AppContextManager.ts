@@ -3,6 +3,8 @@ import type {
   ContextMiddlewarePipelineNextCallback,
   ContextMiddlewarePipelineTuple,
   ContextRequestMiddleware,
+  ContextResponse,
+  ContextResponseEither,
   ContextResponseError,
   ContextResponseSucess,
 } from "./types/AppContextManager.types";
@@ -36,10 +38,31 @@ function nextOrJump(next: string | boolean, key: string): next is string {
  * @param next - The value to check.
  * @returns A boolean indicating whether the next value represents a "call" to a callback function.
  */
-function nextOrCall(
-  next: ContextMiddlewarePipelineTuple[2]
+function nextOrCall<T>(
+  next: ContextMiddlewarePipelineTuple<T>[2]
 ): next is ContextMiddlewarePipelineNextCallback {
   return typeof next === "function";
+}
+
+export function responseIsSuccess<T = any>(
+  response: ContextResponseEither<T>
+): response is ContextResponseSucess<T> {
+  return (
+    (<ContextResponseSucess>response).body &&
+    response.state === RequestState.fulfilled
+  );
+}
+
+export function responseIsError(
+  response: ContextResponse
+): response is ContextResponseError {
+  return response.state === RequestState.fulfilled;
+}
+
+export function makePipelinTuple<T>(
+  ...args: ContextMiddlewarePipelineTuple<T>
+): ContextMiddlewarePipelineTuple<T> {
+  return args;
 }
 
 /**
@@ -78,7 +101,7 @@ function nextOrCall(
  * {"uniqueKey": {"error": "Something went wrong", "state": "ERROR"}}
  */
 export async function makeContextRequests(
-  ...middlewares: [ContextMiddlewarePipelineTuple]
+  ...middlewares: ContextMiddlewarePipelineTuple<any>[]
 ): Promise<{
   [key: string]: ContextResponseSucess | ContextResponseError;
 }> {
@@ -100,14 +123,19 @@ export async function makeContextRequests(
       nextOrBreak(breakOrJumpPipeline) ||
       nextOrJump(breakOrJumpPipeline, key)
     ) {
+      // get type of return
+      type MiddlewareTypeof = typeof middleware;
+
       // Execute the middleware and store the response
       let response: ContextResponseSucess | ContextResponseError;
       if (typeof middleware === "function") {
-        response = await (<ContextMiddlewarePipelineCallback>middleware)(
-          pipelineResponses
-        ).exec();
+        response = await (<ContextMiddlewarePipelineCallback<MiddlewareTypeof>>(
+          middleware
+        ))(pipelineResponses).exec();
       } else {
-        response = await (<ContextRequestMiddleware>middleware).exec();
+        response = await (<ContextRequestMiddleware<MiddlewareTypeof>>(
+          middleware
+        )).exec();
       }
 
       pipelineResponses = {

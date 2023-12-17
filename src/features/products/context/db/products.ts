@@ -1,21 +1,23 @@
-const transform = (body) => {
+import { ProductSqlRawProps, ProductTransformedProps } from "../../types";
+
+const transform = (body: ProductSqlRawProps): ProductTransformedProps => {
   if (!body) return null;
   return {
-    id: body.id,
-    productId: body.product_id,
-    productName: body.product_name,
-    productDescription: body.product_description,
-    productBarcode: body.product_barcode,
-    productSku: body.product_sku,
-    categoryId: body.category_id,
-    productCode: body.product_code,
-    productPrice: body.product_price,
-    productShortkeyColor: body.product_shortkey_color,
+    id: body.id || undefined,
+    productId: body.product_id || "",
+    productName: body.product_name || "",
+    productDescription: body.product_description || "",
+    productBarcode: body.product_barcode || "",
+    productSku: body.product_sku || "",
+    productCategoryId: body.product_category_id || 0,
+    productCode: body.product_code || "",
+    productPrice: body.product_price || 0,
+    productShortkeyColor: body.product_shortkey_color || "",
   };
 };
 
 const selectInternalQuery = (
-  alias,
+  alias: string,
   {
     id = null,
     product_id = null,
@@ -23,7 +25,7 @@ const selectInternalQuery = (
     product_description = null,
     product_barcode = null,
     product_sku = null,
-    category_id = null,
+    product_category_id = null,
     product_code = null,
   }
 ) => {
@@ -40,8 +42,8 @@ const selectInternalQuery = (
     query += ` ${query != "" ? "OR" : ""} ${alias}product_barcode = ? `;
   if (product_sku)
     query += ` ${query != "" ? "OR" : ""} ${alias}product_sku = ? `;
-  if (category_id)
-    query += ` ${query != "" ? "OR" : ""} ${alias}category_id = ? `;
+  if (product_category_id)
+    query += ` ${query != "" ? "OR" : ""} ${alias}product_category_id = ? `;
   if (product_code)
     query += ` ${query != "" ? "OR" : ""} ${alias}product_code = ? `;
 
@@ -54,49 +56,8 @@ const selectInternalQuery = (
       ...(product_description ? [product_description] : []),
       ...(product_barcode ? [product_barcode] : []),
       ...(product_sku ? [product_sku] : []),
-      ...(category_id ? [category_id] : []),
+      ...(product_category_id ? [product_category_id] : []),
       ...(product_code ? [product_code] : []),
-    ],
-  };
-};
-
-selecVariationInternalQuery = (
-  alias,
-  {
-    id = null,
-    product_variation_main_product_id = null,
-    product_variation_sub_products_id = null,
-    product_variation_type = null,
-  },
-  query = ""
-) => {
-  let _query = query;
-
-  if (id) _query += `${_query != "" ? "OR" : ""} ${alias}id = ? `;
-  if (product_variation_main_product_id)
-    _query += ` ${
-      _query != "" ? "OR" : ""
-    } ${alias}product_variation_main_product_id = ? `;
-  if (product_variation_sub_products_id)
-    _query += ` ${
-      _query != "" ? "OR" : ""
-    } ${alias}product_variation_sub_products_id = ? `;
-  if (product_variation_type)
-    _query += ` ${
-      _query != "" ? "OR" : ""
-    } ${alias}product_variation_type = ? `;
-
-  return {
-    query: _query,
-    args: [
-      ...(id ? [id] : []),
-      ...(product_variation_main_product_id
-        ? [product_variation_main_product_id]
-        : []),
-      ...(product_variation_sub_products_id
-        ? [product_variation_sub_products_id]
-        : []),
-      ...(product_variation_type ? [product_variation_type] : []),
     ],
   };
 };
@@ -125,57 +86,14 @@ const selectQuery = ({
   return { query, args: productsArgs };
 };
 
-const selectWithVariationQuery = ({
-  args = {},
-  orderBy = null,
-  desc = false,
-  limit = 0,
-}) => {
-  const _productAlias = "p";
-  const _variationAlias = "pv";
-
-  const _orderBy = orderBy
-    ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
-    : false;
-
-  const _limit = ` ${limit > 0 ? `LIMIT ${limit}` : ""}`;
-  const { query: productsQuery, args: productsArgs } = selectInternalQuery(
-    `${_productAlias}.`,
-    args
-  );
-
-  const { query: variationsQuery, args: variationsArgs } =
-    selecVariationInternalQuery(`${_variationAlias}.`, args, productsQuery);
-
-  let _where = variationsQuery;
-  if (_where != "") _where = ` WHERE ${_where}`;
-  const query = `SELECT * FROM products ${_productAlias} RIGHT JOIN 
-  product_variations ${_variationAlias} 
-  ON ${_productAlias}.product_variations_id = ${_variationAlias}.id 
-  ${_where != "" ? ` ${_where}` : ""} ${_orderBy || ""} ${_limit};`;
-  return { query, args: productsArgs.concat(variationsArgs) };
-};
-
-const insertQuery = (
-  args = {
-    productId: "",
-    productName: "",
-    productDescription: "",
-    productBarcode: "",
-    productSku: "",
-    productCategory: "",
-    productCode: "",
-    productPrice: "",
-    productShortkeyColor: "",
-  }
-) => {
+const insertQuery = (args: ProductTransformedProps) => {
   const _args = {
     product_id: args.productId || "",
     product_name: args.productName || "",
     product_description: args.productDescription || "",
     product_barcode: args.productBarcode || "",
     product_sku: args.productSku || "",
-    category_id: args.productCategory?.id || 0,
+    product_category_id: args.productCategory?.id || 0,
     product_code: args.productCode || "",
     product_price: args.productPrice || 0,
     product_shortkey_color: args.productShortkeyColor || "",
@@ -188,7 +106,7 @@ const insertQuery = (
       product_description,
       product_barcode,
       product_sku,
-      category_id,
+      product_category_id,
       product_code,
       product_price,
       product_shortkey_color
@@ -198,27 +116,14 @@ const insertQuery = (
   return { query, args: Object.values(_args) };
 };
 
-const updateQuery = (
-  args = {
-    id,
-    productId: "",
-    productName: "",
-    productDescription: "",
-    productBarcode: "",
-    productSku: "",
-    categoryId: "",
-    productCode: "",
-    productPrice: "",
-    productShortkeyColor: "",
-  }
-) => {
+const updateQuery = (args: ProductTransformedProps) => {
   const _args = {
     product_id: args.productId || "",
     product_name: args.productName || "",
     product_description: args.productDescription || "",
     product_barcode: args.productBarcode || "",
     product_sku: args.productSku || "",
-    category_id: args.categoryId || 0,
+    product_category_id: args.productCategoryId || 0,
     product_code: args.productCode || "",
     product_price: args.productPrice || 0,
     product_shortkey_color: args.productShortkeyColor || "",
@@ -231,7 +136,7 @@ const updateQuery = (
       product_description = ?,
       product_barcode = ?,
       product_sku = ?,
-      category_id = ?,
+      product_category_id = ?,
       product_code = ?,
       product_price = ?,
       product_shortkey_color = ?
@@ -251,7 +156,7 @@ const dbSchema = () => {
       product_description TEXT NULL,
       product_barcode TEXT,
       product_sku TEXT,
-      category_id INTEGER,
+      product_category_id INTEGER,
       product_price FLOAT,
       product_variations_id INTEGER,
       product_pricings_id INTEGER,

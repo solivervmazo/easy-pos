@@ -1,3 +1,3 @@
-export * from "./db/categories";
-export * from "./db/products";
+export * from "./context/db/categories";
+export * from "./context/db/products";
 export * from "./store";

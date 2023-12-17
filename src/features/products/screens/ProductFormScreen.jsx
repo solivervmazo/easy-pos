@@ -69,7 +69,7 @@ const ProductFormScreen = () => {
         state={productForm}
         updateFormAction={productStore.products.actions.updateForm}
         redirectPath={drawerRoutes["units-products"].path}
-        requestDetailAction={productStore.products.actions.fetchDetail}
+        requestDetailAction={productStore.products.actions.fetchForm}
         requestUpdateAction={productStore.products.actions.update}
         requestInsertAction={productStore.products.actions.insert}
         submitSuccessMessage={t("product")}

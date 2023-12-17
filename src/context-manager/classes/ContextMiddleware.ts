@@ -1,6 +1,7 @@
 import * as SQLlite from "expo-sqlite";
 import type { SQLiteDatabase, ResultSet } from "expo-sqlite";
 import {
+  ContextMiddlewareArgs,
   ContextRequestMiddleware,
   ContextResponseError,
   ContextResponseSucess,
@@ -8,19 +9,20 @@ import {
   SqlTransactionRequestArgs,
 } from "../types/AppContextManager.types";
 import { RequestState } from "../enums/RequestState";
+import { isDbRequestInsert } from "../../types";
 
-abstract class ContextMiddlewareInterface {
+abstract class ContextMiddlewareInterface<T> {
   constructor() {}
 
   requestSqlContext: (
     { query, args }: SqlTransactionRequestArgs,
     db?: SqlObjectRequestArgs["db"],
     ctx?: SqlObjectRequestArgs["ctx"]
-  ) => Promise<ContextResponseSucess | ContextResponseError>;
+  ) => Promise<ContextResponseSucess<T> | ContextResponseError>;
 }
 
-export class ContextMiddleware
-  implements ContextMiddlewareInterface, ContextRequestMiddleware
+export class ContextMiddleware<T>
+  implements ContextMiddlewareInterface<T>, ContextRequestMiddleware<T>
 {
   pipeline: { [key: string]: ContextResponseSucess | ContextResponseError };
 
@@ -32,10 +34,10 @@ export class ContextMiddleware
 
   makeResponse(
     state: RequestState,
-    payload: ContextResponseSucess["body"] | ContextResponseError["error"]
-  ): ContextResponseSucess | ContextResponseError {
+    payload: ContextResponseSucess<T>["body"] | ContextResponseError["error"]
+  ): ContextResponseSucess<T> | ContextResponseError {
     return state === RequestState.fulfilled
-      ? <ContextResponseSucess>{
+      ? <ContextResponseSucess<T>>{
           state,
           body: payload,
         }
@@ -45,11 +47,11 @@ export class ContextMiddleware
         };
   }
 
-  async requestSqlContext(
+  async requestSqlContext<U = T>(
     { query, args }: SqlTransactionRequestArgs,
     db?: SqlObjectRequestArgs["db"],
     ctx?: SqlObjectRequestArgs["ctx"]
-  ): Promise<ContextResponseSucess | ContextResponseError> {
+  ): Promise<ContextResponseSucess<U> | ContextResponseError> {
     try {
       let sqlResult: ResultSet;
       if (ctx) {
@@ -64,10 +66,10 @@ export class ContextMiddleware
           sqlResult = await ctx.executeSqlAsync(query, args);
         });
       }
-      return <ContextResponseSucess>{
+      return <ContextResponseSucess<U>>{
         state: RequestState.fulfilled,
-        body: sqlResult?.insertId
-          ? [{ insertId: sqlResult.insertId }]
+        body: isDbRequestInsert(sqlResult)
+          ? { insertId: sqlResult.insertId }
           : sqlResult.rows,
       };
     } catch (error) {
@@ -78,7 +80,7 @@ export class ContextMiddleware
     }
   }
 
-  exec(): Promise<ContextResponseSucess | ContextResponseError> {
+  exec(): Promise<ContextResponseSucess<T> | ContextResponseError> {
     throw new Error("Method not implemented.");
   }
 }

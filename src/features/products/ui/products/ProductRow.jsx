@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { IconButton } from "../../../../ui";
 import { appColors, appFonts, appSizes, appStyles } from "../../../../themes";
-import { FlatList } from "react-native-gesture-handler";
 
 const ProductRow = ({ item }) => {
   const {
