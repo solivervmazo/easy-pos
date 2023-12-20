@@ -123,7 +123,7 @@ const updateQuery = (args: ProductTransformedProps) => {
     product_description: args.productDescription || "",
     product_barcode: args.productBarcode || "",
     product_sku: args.productSku || "",
-    product_category_id: args.productCategoryId || 0,
+    product_category_id: args.productCategory?.id || 0,
     product_code: args.productCode || "",
     product_price: args.productPrice || 0,
     product_shortkey_color: args.productShortkeyColor || "",

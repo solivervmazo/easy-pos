@@ -18,7 +18,7 @@ import { SQLTransactionAsync } from "expo-sqlite";
 import { DbRequestArgs, ReduxActionRequestArgs } from "../../../types";
 import { ProductSqlRawProps, ProductTransformedProps } from "../types";
 
-export const requestProductList = async (
+export const requestProductTable = async (
   ctx: SQLTransactionAsync,
   {
     orderBy = "id",

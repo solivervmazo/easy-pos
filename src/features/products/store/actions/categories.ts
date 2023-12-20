@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as SQLlite from "expo-sqlite";
 import {
-  requestProductCategoryList,
+  requestProductCategoryTable,
   requestProductCategoryForm,
   requestInsertProductCategory,
   requestUpdateProductCategory,
@@ -29,7 +29,7 @@ export const fetchTable = createAsyncThunk(
     const db = SQLlite.openDatabase(db_name);
     const { orderBy, desc } = payload;
     await db.transactionAsync(async (ctx) => {
-      makeRequestInsertCategory = await requestProductCategoryList(ctx, {
+      makeRequestInsertCategory = await requestProductCategoryTable(ctx, {
         orderBy,
         desc,
       });

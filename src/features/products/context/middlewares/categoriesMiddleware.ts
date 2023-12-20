@@ -12,7 +12,11 @@ import {
 import { generateStringId } from "../../../../utils";
 import { CategorySqlRawProps, CategoryTransformedProps } from "../../types";
 import { SQLTransactionAsync } from "expo-sqlite";
-import { DbInsertResponse, ReduxActionRequestArgs } from "../../../../types";
+import {
+  DbInsertResponse,
+  DbMakeOptionalProps,
+  ReduxActionRequestArgs,
+} from "../../../../types";
 
 const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
 
@@ -52,7 +56,7 @@ const injectParentCategoryInternal = async (
   return category;
 };
 
-export class RequestProductCategoryListMiddleware extends ContextMiddleware<
+export class RequestProductCategoryTableMiddleware extends ContextMiddleware<
   CategorySqlRawProps[]
 > {
   ctx: SQLTransactionAsync;
@@ -60,7 +64,13 @@ export class RequestProductCategoryListMiddleware extends ContextMiddleware<
   desc: boolean;
   constructor(
     ctx: SQLTransactionAsync,
-    { orderBy = "id", desc = true }: ReduxActionRequestArgs<{}>
+    {
+      orderBy,
+      desc,
+    }: ReduxActionRequestArgs<DbMakeOptionalProps<CategoryTransformedProps>> = {
+      orderBy: "id",
+      desc: true,
+    }
   ) {
     super();
     this.ctx = ctx;
@@ -114,7 +124,7 @@ export class RequestProductCategoryDetailMiddleware extends ContextMiddleware<Ca
     if (id) {
       const response = await this.requestSqlContext<CategorySqlRawProps[]>(
         categoryDetailParamsInternal({ id }),
-        undefined,
+        db_name,
         ctx
       );
       if (
@@ -296,5 +306,70 @@ export class RequestProductCategoryNewId extends ContextMiddleware<string> {
       RequestState.error,
       "Unable to generate product category id"
     );
+  };
+}
+
+export class RequestDbProductCategoryListMiddleware extends ContextMiddleware<
+  CategorySqlRawProps[]
+> {
+  ctx: SQLTransactionAsync;
+  orderBy: string;
+  desc: boolean;
+  idLookup: number;
+  categoryRootIdLookup: number;
+  constructor(
+    ctx: SQLTransactionAsync,
+    {
+      orderBy,
+      desc,
+      idLookup,
+      categoryRootIdLookup,
+    }: {
+      idLookup: number;
+      categoryRootIdLookup: number;
+    } & ReduxActionRequestArgs<
+      DbMakeOptionalProps<CategoryTransformedProps>
+    > = {
+      orderBy: "id",
+      desc: true,
+      idLookup: 0,
+      categoryRootIdLookup: 0,
+    }
+  ) {
+    super();
+    this.ctx = ctx;
+    this.orderBy = orderBy;
+    this.desc = desc;
+    this.idLookup = idLookup;
+    this.categoryRootIdLookup = categoryRootIdLookup;
+  }
+  exec = async () => {
+    const { ctx, orderBy, desc, categoryRootIdLookup, idLookup } = this;
+    const { query, args } = dbProductCategories.selectSafetreeQuery({
+      orderBy,
+      desc,
+      categoryRootIdLookup,
+      idLookup,
+    });
+    const makeRequestCategories = await this.requestSqlContext(
+      { query, args },
+      db_name,
+      ctx
+    );
+    if (responseIsSuccess(makeRequestCategories)) {
+      let categoryList = makeRequestCategories?.body || [];
+      for (const [index, row] of categoryList.entries()) {
+        categoryList[index] = await injectParentCategoryInternal(
+          this.requestSqlContext,
+          ctx,
+          row
+        );
+      }
+      return {
+        ...makeRequestCategories,
+        body: categoryList,
+      };
+    }
+    return makeRequestCategories;
   };
 }

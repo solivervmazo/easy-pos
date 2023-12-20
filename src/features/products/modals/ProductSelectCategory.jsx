@@ -3,7 +3,10 @@ import { StyleSheet, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { AppModal, AppSelectPicker } from "../../../ui";
 import { useDispatch, useSelector } from "react-redux";
-import { requestProductCategoryList } from "../context/categories";
+import {
+  requestProductCategoryList,
+  requestProductCategoryTable,
+} from "../context/categories";
 import { dbProductCategories } from "../context/db/categories";
 import { productStore } from "../store";
 

@@ -49,7 +49,7 @@ const AppSelectPicker = ({
   const [_recentSearchValue, setRecentSearchValue] = useState(SEARCH_HIST);
   const [_focused, setFocused] = useState(false);
   const [_selection, setSelection] = useState(null);
-  const [searchResults, setSearchResults] = useState(items);
+  const [searchResults, setSearchResults] = useState(items || []);
 
   const _onChangeHandle = ({ value }) => {
     setFocused(true);

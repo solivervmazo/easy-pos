@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as SQLlite from "expo-sqlite";
 import {
-  requestProductList,
+  requestProductTable,
   requestProductForm,
   requestProductNewId,
   requestInsertProduct,
@@ -33,7 +33,7 @@ export const fetchTable = createAsyncThunk<
     const { orderBy, desc } = payload;
     let makeRequestProductList: ContextResponseEither<ProductSqlRawProps[]>;
     await db.transactionAsync(async (ctx) => {
-      makeRequestProductList = await requestProductList(ctx, {
+      makeRequestProductList = await requestProductTable(ctx, {
         orderBy,
         desc,
       });

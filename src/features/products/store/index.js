@@ -48,6 +48,7 @@ export const productStore = {
       formSelector: (state) => state.products.categoryForm,
       tableSelector: (state) => state.products.categoryTable,
       listSelector: createSelector(
+        //sample only
         [
           (state, { table }) => table || categoryTableSelector(state),
           (state, { categoryLookup }) => categoryLookup,

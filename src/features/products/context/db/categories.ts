@@ -40,14 +40,10 @@ const transformToRaw = (
   return rawBody;
 };
 
-const selectQuery = ({
-  args,
-  orderBy = null,
-  desc = false,
-  limit = 0,
-}: ReduxActionRequestArgs<
-  DbMakeOptionalProps<CategoryTransformedProps>
->): SqlTransactionRequestArgs => {
+const buildSelectQuery = (
+  args: DbMakeOptionalProps<CategoryTransformedProps>,
+  extraWhere: string
+): { query: string; args: (string | number)[] } => {
   const _args = transformToRaw(args ?? {});
   const {
     id = undefined,
@@ -58,31 +54,70 @@ const selectQuery = ({
     category_parent_id = undefined,
     category_level = undefined,
   } = _args;
-  const _orderBy = orderBy
-    ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
-    : false;
-
-  const _limit = ` ${limit > 0 ? `LIMIT ${limit}` : ""}`;
 
   let _where = ``;
+  const preparedArgs: (string | number)[] = [];
 
-  if (id) _where += `id = ? `;
-  if (category_id) _where += ` ${_where != "" ? "OR" : ""} category_id = ? `;
-  if (category_name)
-    _where += ` ${_where != "" ? "OR" : ""} category_name = ? `;
-  if (category_description)
-    _where += ` ${_where != "" ? "OR" : ""} category_description = ? `;
-  if (category_code)
-    _where += ` ${_where != "" ? "OR" : ""} category_code = ? `;
-  if (category_parent_id)
-    _where += ` ${_where != "" ? "OR" : ""} category_parent_id = ? `;
-  if (category_level)
-    _where += ` ${_where != "" ? "OR" : ""} category_level = ? `;
-  if (_where != "") _where = ` WHERE ${_where}`;
-  const query = `SELECT * FROM categories ${_where != "" ? ` ${_where}` : ""} ${
-    _orderBy || ""
-  } ${_limit};`;
-  return { query, args: Object.values(_args) };
+  if (id) {
+    _where += `id = ? `;
+    preparedArgs.push(id);
+  }
+  if (category_id) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_id = ? `;
+    preparedArgs.push(category_id);
+  }
+  if (category_name) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_name = ? `;
+    preparedArgs.push(category_name);
+  }
+  if (category_description) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_description = ? `;
+    preparedArgs.push(category_description);
+  }
+  if (category_code) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_code = ? `;
+    preparedArgs.push(category_code);
+  }
+  if (category_parent_id) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_parent_id = ? `;
+    preparedArgs.push(category_parent_id);
+  }
+  if (category_level) {
+    _where += ` ${_where !== "" ? "OR" : ""} category_level = ? `;
+    preparedArgs.push(category_level);
+  }
+
+  if (_where !== "") {
+    _where = ` WHERE (${_where}) ${
+      extraWhere !== "" ? ` AND ${extraWhere}` : ""
+    }`;
+  } else if (extraWhere !== "") {
+    _where = ` WHERE ${extraWhere}`;
+  }
+
+  return { query: _where, args: preparedArgs };
+};
+
+const selectQuery = ({
+  args,
+  orderBy = null,
+  desc = false,
+  limit = 0,
+}: ReduxActionRequestArgs<
+  DbMakeOptionalProps<CategoryTransformedProps>
+>): SqlTransactionRequestArgs => {
+  const { query, args: preparedArgs } = buildSelectQuery(args, "");
+  const orderByClause = orderBy
+    ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
+    : "";
+  const limitClause = limit > 0 ? ` LIMIT ${limit}` : "";
+
+  const fullQuery = `SELECT * FROM categories ${query} ${orderByClause} ${limitClause};`;
+
+  return {
+    query: fullQuery,
+    args: preparedArgs,
+  };
 };
 
 const insertQuery = (args: CategoryTransformedProps) => {
@@ -172,6 +207,32 @@ const updateTreeQuery = ({
   };
 };
 
+const selectSafetreeQuery = ({
+  args,
+  idLookup,
+  categoryRootIdLookup,
+  orderBy = null,
+  desc = false,
+  limit = 0,
+}: { idLookup: number; categoryRootIdLookup: number } & ReduxActionRequestArgs<
+  DbMakeOptionalProps<CategoryTransformedProps>
+>): SqlTransactionRequestArgs => {
+  const { query, args: preparedArgs } = buildSelectQuery(
+    args,
+    ` category_root_id != ? AND id != ?`
+  );
+  const orderByClause = orderBy
+    ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
+    : "";
+  const limitClause = limit > 0 ? ` LIMIT ${limit}` : "";
+
+  const fullQuery = `SELECT * FROM categories ${query} ${orderByClause} ${limitClause};`;
+  return {
+    query: fullQuery,
+    args: [...preparedArgs, categoryRootIdLookup || -1, idLookup || -1],
+  };
+};
+
 const dbSchema = () => {
   return [
     `DROP TABLE IF EXISTS categories`,
@@ -199,6 +260,8 @@ class DbProductCategories {
   static updateQuery = updateQuery;
 
   static updateTreeQuery = updateTreeQuery;
+
+  static selectSafetreeQuery = selectSafetreeQuery;
 
   static dbSchema = dbSchema;
 }

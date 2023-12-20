@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Icon, IconButton } from "../../../../ui";
 import { appColors, appFonts, appSizes, appStyles } from "../../../../themes";
 import { FlatList } from "react-native-gesture-handler";
+import { t } from "../../../../locale/localization";
 
 const CategoryRow = ({ item }) => {
   const {
@@ -17,12 +18,12 @@ const CategoryRow = ({ item }) => {
   const _renderCodeOrColor = () => {
     const _shortKeyText = (
       <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
-        {`Shortkey Color`}
+        {t(`shortkey color`, "phrase")}
       </Text>
     );
     const _renderNone = (
       <Text style={[styles.itemLabels, styles.itemLabelsNoTest]}>
-        {`No shortkey`}
+        {t(`no shortkey`, "phrase")}
       </Text>
     );
     const _renderCode = () => (
@@ -99,7 +100,7 @@ const CategoryRow = ({ item }) => {
               !categoryDescription ? styles.itemLabelsNoTest : {},
             ]}
           >
-            {categoryDescription || `No additional information`}
+            {categoryDescription || t(`No additional information`, "phrase")}
           </Text>
         )}
       </View>

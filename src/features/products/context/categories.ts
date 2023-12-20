@@ -9,23 +9,32 @@ import {
   ContextErrorResponseMiddleware,
   ContextSourceMiddleware,
 } from "../../../my-app";
-import { DbRequestArgs, ReduxActionRequestArgs } from "../../../types";
+import {
+  DbMakeOptionalProps,
+  DbRequestArgs,
+  ReduxActionRequestArgs,
+} from "../../../types";
 import { CategorySqlRawProps, CategoryTransformedProps } from "../types";
 import {
   InsertProductCategoryMiddleware,
   RequestProductCategoryDetailMiddleware,
-  RequestProductCategoryListMiddleware,
+  RequestDbProductCategoryListMiddleware,
+  RequestProductCategoryTableMiddleware,
   RequestProductCategoryNewId,
   RequestUpdateProductCategoryMiddleware,
 } from "./middlewares/categoriesMiddleware";
 import { SQLTransactionAsync } from "expo-sqlite";
 
-export const requestProductCategoryList = async (
+export const requestProductCategoryTable = async (
   ctx: SQLTransactionAsync,
   {
+    args,
     orderBy,
     desc,
-  }: ReduxActionRequestArgs<CategoryTransformedProps, DbRequestArgs> = {
+  }: ReduxActionRequestArgs<
+    DbMakeOptionalProps<CategoryTransformedProps>,
+    DbRequestArgs
+  > = {
     orderBy: "id",
     desc: true,
   }
@@ -35,7 +44,8 @@ export const requestProductCategoryList = async (
     ["source", new ContextSourceMiddleware(), true],
     [
       "categories",
-      new RequestProductCategoryListMiddleware(ctx, {
+      new RequestProductCategoryTableMiddleware(ctx, {
+        args,
         orderBy,
         desc,
       }),
@@ -215,5 +225,42 @@ export const requestProductCategoryNewId = async (
       },
     ]
   );
+  return response;
+};
+
+export const requestProductCategoryList = async (
+  ctx: SQLTransactionAsync,
+  {
+    args,
+    orderBy,
+    desc,
+    idLookup,
+    categoryRootIdLookup,
+  }: {
+    idLookup: number;
+    categoryRootIdLookup: number;
+  } & ReduxActionRequestArgs<DbMakeOptionalProps<CategoryTransformedProps>> = {
+    orderBy: "id",
+    desc: true,
+    idLookup: 0,
+    categoryRootIdLookup: 0,
+  }
+) => {
+  let response: ContextResponseEither<CategorySqlRawProps[]>;
+  const pipeline = await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
+    [
+      "categories",
+      new RequestDbProductCategoryListMiddleware(ctx, {
+        args,
+        orderBy,
+        desc,
+        idLookup,
+        categoryRootIdLookup,
+      }),
+      true,
+    ]
+  );
+  response = pipeline.categories;
   return response;
 };
