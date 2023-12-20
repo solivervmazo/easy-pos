@@ -1,5 +1,5 @@
 import * as SQLlite from "expo-sqlite";
-import type { SQLiteDatabase, ResultSet } from "expo-sqlite";
+import { SQLiteDatabase, ResultSet } from "expo-sqlite";
 import {
   ContextMiddlewareArgs,
   ContextRequestMiddleware,
@@ -58,7 +58,7 @@ export class ContextMiddleware<T>
         sqlResult = await ctx.executeSqlAsync(query, args);
       } else {
         const isDb = ((db: SqlObjectRequestArgs["db"]): db is SQLiteDatabase =>
-          true)(db);
+          db instanceof SQLiteDatabase)(db);
         const sqlDb = isDb
           ? db
           : SQLlite.openDatabase(typeof db == "string" ? db : "");

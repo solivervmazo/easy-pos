@@ -1,12 +1,14 @@
 import { ActionReducerMapBuilder, AnyAction } from "@reduxjs/toolkit";
 import {
   AsyncThunkFulfilledActionCreator,
+  AsyncThunkPayloadCreator,
   AsyncThunkPendingActionCreator,
   AsyncThunkRejectedActionCreator,
 } from "@reduxjs/toolkit/dist/createAsyncThunk";
 import { FormState, HeaderMode, RequestState, SpinnerState } from "../../enums";
 import { WritableDraft } from "immer/dist/internal";
 import { ToastOptions } from "react-native-toast-notifications";
+import { DbRequestArgs, ReduxActionRequestArgs } from "../../types";
 export type CreatorState = HeaderCreatorState | any;
 
 export type HeaderCreatorState = {
@@ -35,16 +37,16 @@ export interface IStateCreators<T> {
 }
 
 export interface IStateCreatorsBuilder<T> {
-  createBuilder: (
+  createBuilder: <U = never, V = never>(
     builder: ActionReducerMapBuilder<T>,
     action: any,
-    fullfilled: <T>(
-      state: CreatorState,
-      action: { payload: T; [key: string]: any }
-    ) => CreatorState | undefined,
+    fullfilled: (
+      state: T,
+      action: { payload: U; [key: string]: any }
+    ) => T | void,
     actionState?: {
-      pending?: AsyncThunkPendingActionCreator<any, {}>;
-      rejected?: AsyncThunkRejectedActionCreator<any, {}>;
+      pending?: (state: T) => T | void;
+      rejected?: (state: T) => T | void;
     }
   ) => ActionReducerMapBuilder<T>;
 }
@@ -54,20 +56,17 @@ export type StateFormProps<T> = {
   body: T;
 };
 
-export abstract class StateCreatorsBuilder
-  implements IStateCreatorsBuilder<CreatorState>
+export abstract class StateCreatorsBuilder<T>
+  implements IStateCreatorsBuilder<T>
 {
   constructor() {}
-  createBuilder<T>(
-    builder: ActionReducerMapBuilder<CreatorState>,
+  createBuilder<U = never, V = never>(
+    builder: ActionReducerMapBuilder<T>,
     action: any,
-    fulfilled: (
-      state: CreatorState,
-      action: { payload: T }
-    ) => CreatorState | undefined,
+    fulfilled: (state: T, action: { payload: U }) => T | void,
     actionState?: {
-      pending?: any;
-      rejected?: any;
+      pending?: (state: T, action: { payload: U }) => T | void;
+      rejected?: (state: T, action: { payload: U }) => T | void;
     }
   ) {
     const { pending, rejected } = {
@@ -75,33 +74,24 @@ export abstract class StateCreatorsBuilder
       rejected: actionState?.pending,
     };
     return builder
-      .addCase(
-        action.pending,
-        (state: WritableDraft<CreatorState>, action: any) => {
-          if (pending && typeof pending == "function") {
-            const newState = pending(state, action);
-            if (typeof newState === "object") return newState;
-          }
+      .addCase(action.pending, (state: WritableDraft<any>, action: any) => {
+        if (pending && typeof pending == "function") {
+          const newState = pending(state, action);
+          if (typeof newState === "object") return newState;
         }
-      )
-      .addCase(
-        action.fulfilled,
-        (state: WritableDraft<CreatorState>, action: any) => {
-          if (fulfilled && typeof fulfilled == "function") {
-            const newState = fulfilled(state, action);
-            if (typeof newState === "object") return newState;
-          }
+      })
+      .addCase(action.fulfilled, (state: WritableDraft<any>, action: any) => {
+        if (fulfilled && typeof fulfilled == "function") {
+          const newState = fulfilled(state, action);
+          if (typeof newState === "object") return newState;
         }
-      )
-      .addCase(
-        action.rejected,
-        (state: WritableDraft<CreatorState>, action: any) => {
-          console.error(action.error.message);
-          if (rejected && typeof rejected == "function") {
-            const newState = rejected(state, action);
-            if (typeof newState === "object") return newState;
-          }
+      })
+      .addCase(action.rejected, (state: WritableDraft<any>, action: any) => {
+        console.error(action.error.message);
+        if (rejected && typeof rejected == "function") {
+          const newState = rejected(state, action);
+          if (typeof newState === "object") return newState;
         }
-      );
+      });
   }
 }

@@ -13,8 +13,8 @@ export default categoryFormSchema = yup.object().shape({
     .nullable()
     .test(async (value, ctx) => {
       if (!value?.id) return true;
-      const request = await requestProductCategoryDetail(false, {
-        id: value?.id,
+      let request = await requestProductCategoryDetail(false, {
+        args: { id: value?.id },
       });
       if (request?.state === RequestState.fulfilled) return true;
 

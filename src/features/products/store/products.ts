@@ -21,9 +21,11 @@ import {
   ProductTransformedProps,
 } from "../types";
 
+type ScreenState = ProductScreenState;
+
 class ProductCreators
-  extends StateCreatorsBuilder
-  implements IStateCreators<ProductScreenState>
+  extends StateCreatorsBuilder<ScreenState>
+  implements IStateCreators<ScreenState>
 {
   constructor() {
     super();
@@ -39,14 +41,14 @@ class ProductCreators
   };
 
   actions = {
-    restartForm: (state: ProductScreenState) => {
+    restartForm: (state) => {
       return {
         ...state,
         productForm: undefined,
       };
     },
     updateForm: (
-      state: ProductScreenState,
+      state,
       args: { payload: ProductScreenState["productForm"] }
     ) => {
       const { payload } = args;
@@ -69,7 +71,7 @@ class ProductCreators
     this.createBuilder<ProductSqlRawProps[]>(
       builder,
       fetchTable,
-      (state: ProductScreenState, { payload }) => {
+      (state, { payload }) => {
         return {
           ...state,
           productTable: {
@@ -85,17 +87,19 @@ class ProductCreators
         };
       },
       {
-        pending: (state: ProductScreenState) =>
-          (state.screenProductSpinner = SpinnerState.show),
-        rejected: (state: ProductScreenState) =>
-          (state.screenProductSpinner = SpinnerState.hidden),
+        pending: (state) => {
+          state.screenProductSpinner = SpinnerState.show;
+        },
+        rejected: (state) => {
+          state.screenProductSpinner = SpinnerState.hidden;
+        },
       }
     );
 
     this.createBuilder<StateFormProps<ProductSqlRawProps>>(
       builder,
       fetchForm,
-      (state: ProductScreenState, { payload }) => {
+      (state, { payload }) => {
         if (!payload.body?.id) {
           state.productForm = {
             ...payload,
@@ -120,7 +124,7 @@ class ProductCreators
     this.createBuilder<ProductSqlRawProps>(
       builder,
       insert,
-      (state: ProductScreenState, { payload }): ProductScreenState => {
+      (state, { payload }): ProductScreenState => {
         const productList = Object.assign([], state.productTable?.data || []);
         productList.unshift({
           ...dbProducts.transform(payload),
@@ -141,17 +145,19 @@ class ProductCreators
         };
       },
       {
-        pending: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.pending),
-        rejected: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.editing),
+        pending: (state) => {
+          state.productForm.state = FormState.pending;
+        },
+        rejected: (state) => {
+          state.productForm.state = FormState.editing;
+        },
       }
     );
 
     this.createBuilder<ProductSqlRawProps>(
       builder,
       update,
-      (state: ProductScreenState, { payload }): ProductScreenState => {
+      (state, { payload }): ProductScreenState => {
         return {
           ...state,
           productForm: {
@@ -165,7 +171,7 @@ class ProductCreators
                 return <ProductTransformedProps>{
                   ...dbProducts.transform(payload),
                   productCategory: dbProductCategories.transform(
-                    payload.product_category_id
+                    payload.product_category
                   ),
                 };
               } else {
@@ -176,17 +182,19 @@ class ProductCreators
         };
       },
       {
-        pending: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.pending),
-        rejected: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.editing),
+        pending: (state) => {
+          state.productForm.state = FormState.pending;
+        },
+        rejected: (state) => {
+          state.productForm.state = FormState.editing;
+        },
       }
     );
 
     this.createBuilder<string>(
       builder,
       generateId,
-      (state: ProductScreenState, { payload }): ProductScreenState => {
+      (state, { payload }): ProductScreenState => {
         return {
           ...state,
           productForm: {
@@ -199,10 +207,12 @@ class ProductCreators
         };
       },
       {
-        pending: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.pending),
-        rejected: (state: ProductScreenState) =>
-          (state.productForm.state = FormState.editing),
+        pending: (state) => {
+          state.productForm.state = FormState.pending;
+        },
+        rejected: (state) => {
+          state.productForm.state = FormState.editing;
+        },
       }
     );
   };

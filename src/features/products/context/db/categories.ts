@@ -1,4 +1,8 @@
-const transform = (body) => {
+import { SqlTransactionRequestArgs } from "../../../../context-manager";
+import { DbMakeOptionalProps, ReduxActionRequestArgs } from "../../../../types";
+import { CategorySqlRawProps, CategoryTransformedProps } from "../../types";
+
+const transform = (body: CategorySqlRawProps) => {
   if (!body) return null;
   return {
     id: body.id,
@@ -13,22 +17,47 @@ const transform = (body) => {
   };
 };
 
+const transformToRaw = (
+  body: DbMakeOptionalProps<CategoryTransformedProps>
+) => {
+  if (!body) return null;
+
+  const rawBody: any = {}; // Use 'any' for flexibility
+
+  if ("id" in body) rawBody.id = body.id;
+  if ("categoryId" in body) rawBody.category_id = body.categoryId;
+  if ("categoryName" in body) rawBody.category_name = body.categoryName;
+  if ("categoryDescription" in body)
+    rawBody.category_description = body.categoryDescription;
+  if ("categoryCode" in body) rawBody.category_code = body.categoryCode;
+  if ("categoryParentId" in body)
+    rawBody.category_parent_id = body.categoryParentId;
+  if ("categoryShortkeyColor" in body)
+    rawBody.category_shortkey_color = body.categoryShortkeyColor;
+  if ("categoryLevel" in body) rawBody.category_level = body.categoryLevel;
+  if ("categoryRootId" in body) rawBody.category_root_id = body.categoryRootId;
+
+  return rawBody;
+};
+
 const selectQuery = ({
-  args = {},
+  args,
   orderBy = null,
   desc = false,
   limit = 0,
-}) => {
+}: ReduxActionRequestArgs<
+  DbMakeOptionalProps<CategoryTransformedProps>
+>): SqlTransactionRequestArgs => {
+  const _args = transformToRaw(args ?? {});
   const {
-    id = null,
-    category_id = null,
-    category_name = null,
-    category_description = null,
-    category_code = null,
-    category_parent_id = null,
-    category_short_key_color = null,
-    category_level = null,
-  } = args;
+    id = undefined,
+    category_id = undefined,
+    category_name = undefined,
+    category_description = undefined,
+    category_code = undefined,
+    category_parent_id = undefined,
+    category_level = undefined,
+  } = _args;
   const _orderBy = orderBy
     ? ` ORDER BY ${orderBy} ${desc ? "DESC" : ""}`
     : false;
@@ -53,20 +82,10 @@ const selectQuery = ({
   const query = `SELECT * FROM categories ${_where != "" ? ` ${_where}` : ""} ${
     _orderBy || ""
   } ${_limit};`;
-  return { query, args: Object.values(args) };
+  return { query, args: Object.values(_args) };
 };
 
-const insertQuery = (
-  args = {
-    categoryId: "",
-    categoryName: "",
-    categoryDescription: "",
-    categoryCode: "",
-    categoryParent: "",
-    categoryShortkeyColor: "",
-    categoryLevel: 0,
-  }
-) => {
+const insertQuery = (args: CategoryTransformedProps) => {
   const _args = {
     category_id: args.categoryId || "",
     category_name: args.categoryName || "",
@@ -98,17 +117,7 @@ const insertQuery = (
   return { query, args: Object.values(_args) };
 };
 
-const updateQuery = (
-  args = {
-    id,
-    categoryName: "",
-    categoryDescription: "",
-    categoryCode: "",
-    categoryParent: null,
-    categoryShortkeyColor: "",
-    categoryLevel: 1,
-  }
-) => {
+const updateQuery = (args: CategoryTransformedProps) => {
   const _args = {
     category_name: args.categoryName || "",
     category_description: args.categoryDescription || "",

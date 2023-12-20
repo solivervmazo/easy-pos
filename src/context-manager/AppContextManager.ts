@@ -44,11 +44,11 @@ function nextOrCall<T>(
   return typeof next === "function";
 }
 
-export function responseIsSuccess<T = any>(
+export function responseIsSuccess<T = never>(
   response: ContextResponseEither<T>
 ): response is ContextResponseSucess<T> {
   return (
-    (<ContextResponseSucess>response).body &&
+    (<ContextResponseSucess<T>>response).body &&
     response.state === RequestState.fulfilled
   );
 }
@@ -56,7 +56,7 @@ export function responseIsSuccess<T = any>(
 export function responseIsError(
   response: ContextResponse
 ): response is ContextResponseError {
-  return response.state === RequestState.fulfilled;
+  return response.state === RequestState.error;
 }
 
 export function makePipelinTuple<T>(

@@ -1,8 +1,16 @@
-import { RequestState, makeContextRequests } from "../../../context-manager";
+import {
+  ContextResponseEither,
+  ContextResponseSucess,
+  RequestState,
+  makeContextRequests,
+  responseIsSuccess,
+} from "../../../context-manager";
 import {
   ContextErrorResponseMiddleware,
   ContextSourceMiddleware,
 } from "../../../my-app";
+import { DbRequestArgs, ReduxActionRequestArgs } from "../../../types";
+import { CategorySqlRawProps, CategoryTransformedProps } from "../types";
 import {
   InsertProductCategoryMiddleware,
   RequestProductCategoryDetailMiddleware,
@@ -10,169 +18,119 @@ import {
   RequestProductCategoryNewId,
   RequestUpdateProductCategoryMiddleware,
 } from "./middlewares/categoriesMiddleware";
-import * as SQLlite from "expo-sqlite";
-
-const db_name = process.env.EXPO_PUBLIC_SQLITE_DB;
+import { SQLTransactionAsync } from "expo-sqlite";
 
 export const requestProductCategoryList = async (
-  ctx: SqlLite,
-  { orderBy = "id", desc = true } = {}
+  ctx: SQLTransactionAsync,
+  {
+    orderBy,
+    desc,
+  }: ReduxActionRequestArgs<CategoryTransformedProps, DbRequestArgs> = {
+    orderBy: "id",
+    desc: true,
+  }
 ) => {
-  let categories = {};
-  const sqlDb = db || SQLlite.openDatabase(db_name);
-  await sqlDb.transactionAsync(async (ctx) => {
-    const pipeline = await makeContextRequests(
-      ["source", new ContextSourceMiddleware(), true],
-      [
-        "categories",
-        new RequestProductCategoryListMiddleware(false, ctx, {
-          orderBy,
-          desc,
-        }),
-        true,
-      ]
-    );
-    categories = pipeline.categories;
-  });
-  return categories;
-};
-
-export const requestProductCategoryDetail = async (db, { id }) => {
-  let category = {};
-  const sqlDb = db || SQLlite.openDatabase(db_name);
-  await sqlDb.transactionAsync(async (ctx) => {
-    const pipeline = await makeContextRequests(
-      ["source", new ContextSourceMiddleware(), true],
-      [
-        "category",
-        new RequestProductCategoryDetailMiddleware(false, ctx, { id }),
-        true,
-      ]
-    );
-    category = pipeline.category;
-  });
-  return category;
-};
-
-export const requestInsertProductCategory = async (ctx, { payload }) => {
-  let category = {};
-  await makeContextRequests(
+  let response: ContextResponseEither<CategorySqlRawProps[]>;
+  const pipeline = await makeContextRequests(
     ["source", new ContextSourceMiddleware(), true],
     [
-      "insertCategory",
-      new InsertProductCategoryMiddleware(false, ctx, { payload }),
-      (responses) => {
-        if (responses.insertCategory?.state === RequestState.fulfilled) {
-          insertedId = responses.insertCategory?.body[0]?.insertId;
-          return true;
-        }
-        return "error";
-      },
-    ],
+      "categories",
+      new RequestProductCategoryListMiddleware(ctx, {
+        orderBy,
+        desc,
+      }),
+      true,
+    ]
+  );
+  response = pipeline.categories;
+  return response;
+};
+
+export const requestProductCategoryDetail = async (
+  ctx: SQLTransactionAsync,
+  { args: { id } }: ReduxActionRequestArgs<{ id?: number }, DbRequestArgs> = {
+    args: { id: undefined },
+  }
+) => {
+  let response: ContextResponseEither<CategorySqlRawProps>;
+  await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
     [
       "category",
-      (responses) => {
-        const insertedId = responses.insertCategory?.body[0]?.insertId;
-        return new RequestProductCategoryDetailMiddleware(false, ctx, {
-          id: insertedId,
-        });
-      },
-      (responses) => {
-        category = responses.category;
-        return false;
-      },
-    ],
-    [
-      "error",
-      new ContextErrorResponseMiddleware("Unable to to insert category"),
-      (response) => {
-        category = response.error;
+      new RequestProductCategoryDetailMiddleware(ctx, { id, isForm: false }),
+      ({ category }) => {
+        response = category;
         return true;
       },
     ]
   );
-  return category;
+  return response;
 };
 
-export const requestUpdateProductCategory = async (ctx, { payload }) => {
-  let category = {};
-  await makeContextRequests(
-    ["source", new ContextSourceMiddleware(), true],
-    // get old category and check at the same time
-    [
-      "oldCategory",
-      new RequestProductCategoryDetailMiddleware(false, ctx, {
-        id: payload.id,
-      }),
-      ({ oldCategory }) => {
-        if (oldCategory?.state == RequestState.fulfilled) {
-          return true;
-        }
-        return "error";
-      },
-    ],
-    [
-      "updatedCategory",
-      ({ oldCategory }) => {
-        return new RequestUpdateProductCategoryMiddleware(false, ctx, {
-          payload,
-          oldCategory,
-        });
-      },
-      ({ updatedCategory }) => {
-        if (updatedCategory?.state === RequestState.fulfilled) {
-          insertedId = updatedCategory?.body[0]?.insertId;
-          return true;
-        }
-        return "error";
-      },
-    ],
-    [
-      "categoryParent",
-      ({ updatedCategory }) => {
-        const updatedCategoryId =
-          updatedCategory?.body?.[0]?.category_parent_id;
-        return new RequestProductCategoryDetailMiddleware(false, ctx, {
-          id: updatedCategoryId,
-        });
-      },
-      ({ updatedCategory, categoryParent }) => {
-        category = {
-          ...updatedCategory,
-          body: {
-            ...updatedCategory.body[0],
-            category_parent: categoryParent?.body ?? null,
-          },
-        };
-        return false;
-      },
-    ],
-    [
-      "error",
-      new ContextErrorResponseMiddleware("Unable to update category"),
-      (response) => {
-        category = response.error;
-        return true;
-      },
-    ]
-  );
-  return category;
-};
-
-export const requestProductCategoryNewId = async (
-  db,
-  ctx,
-  { random = false } = {}
+export const requestProductCategoryForm = async (
+  ctx: SQLTransactionAsync,
+  { args: { id } }: ReduxActionRequestArgs<{ id?: number }, DbRequestArgs> = {
+    args: { id: undefined },
+  }
 ) => {
-  let categoryResponse = "";
+  let response: ContextResponseEither<CategorySqlRawProps>;
   await makeContextRequests(
     ["source", new ContextSourceMiddleware(), true],
+    [
+      "category",
+      new RequestProductCategoryDetailMiddleware(ctx, { id, isForm: true }),
+      ({ category }) => {
+        if (responseIsSuccess<CategorySqlRawProps>(category)) {
+          response = category;
+          return response.body?.id ? false : "generateId";
+        }
+        return "error";
+      },
+    ],
     [
       "generateId",
-      new RequestProductCategoryNewId(db, ctx, { random }),
-      ({ generateId }) => {
-        if (generateId?.state === RequestState.fulfilled) {
-          categoryResponse = generateId;
+      new RequestProductCategoryNewId(ctx),
+      ({ generateId, category }) => {
+        if (
+          responseIsSuccess<CategorySqlRawProps>(category) &&
+          responseIsSuccess<string>(generateId)
+        ) {
+          response = {
+            ...category,
+            body: {
+              ...category?.body,
+              category_id: generateId?.body,
+            },
+          };
+          return false;
+        }
+      },
+    ],
+    [
+      "error",
+      new ContextErrorResponseMiddleware("Unable to to fetch category"),
+      ({ error }) => {
+        response = error;
+        return true;
+      },
+    ]
+  );
+  return response;
+};
+
+export const requestInsertProductCategory = async (
+  ctx: SQLTransactionAsync,
+  { args }: ReduxActionRequestArgs<CategoryTransformedProps>
+) => {
+  let response: ContextResponseEither<CategorySqlRawProps>;
+  await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
+    [
+      "insertedCategory",
+      new InsertProductCategoryMiddleware(ctx, { payload: args }),
+      ({ insertedCategory }) => {
+        if (responseIsSuccess(insertedCategory)) {
+          response = insertedCategory;
           return false;
         }
         return "error";
@@ -181,11 +139,81 @@ export const requestProductCategoryNewId = async (
     [
       "error",
       new ContextErrorResponseMiddleware("Unable to to insert category"),
-      (response) => {
-        categoryResponse = response.error;
+      ({ error }) => {
+        response = error;
         return true;
       },
     ]
   );
-  return categoryResponse;
+  return response;
+};
+
+export const requestUpdateProductCategory = async (
+  ctx: SQLTransactionAsync,
+  { args }: ReduxActionRequestArgs<CategoryTransformedProps>
+) => {
+  let response: ContextResponseEither<CategorySqlRawProps>;
+  await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
+    [
+      "oldCategory",
+      new RequestProductCategoryDetailMiddleware(ctx, {
+        id: args.id,
+      }),
+      ({ oldCategory }) => {
+        if (responseIsSuccess<CategorySqlRawProps>(oldCategory)) {
+          return true;
+        }
+        return "error";
+      },
+    ],
+    [
+      "updatedCategory",
+      ({ oldCategory }) => {
+        return new RequestUpdateProductCategoryMiddleware(ctx, {
+          payload: args,
+          oldCategory: (<ContextResponseSucess<CategorySqlRawProps>>oldCategory)
+            .body,
+        });
+      },
+      ({ updatedCategory }) => {
+        if (responseIsSuccess(updatedCategory)) {
+          response = updatedCategory;
+          return false;
+        }
+        response = updatedCategory;
+      },
+    ]
+  );
+  return response;
+};
+
+export const requestProductCategoryNewId = async (
+  ctx: SQLTransactionAsync,
+  { args: { random = true } }: ReduxActionRequestArgs<{ random: boolean }>
+) => {
+  let response: ContextResponseEither<string>;
+  await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
+    [
+      "generateId",
+      new RequestProductCategoryNewId(ctx, { random }),
+      ({ generateId }) => {
+        if (generateId?.state === RequestState.fulfilled) {
+          response = generateId;
+          return false;
+        }
+        return "error";
+      },
+    ],
+    [
+      "error",
+      new ContextErrorResponseMiddleware("Unable to generate category id"),
+      ({ error }) => {
+        response = error;
+        return true;
+      },
+    ]
+  );
+  return response;
 };

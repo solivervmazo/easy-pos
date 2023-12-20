@@ -8,10 +8,11 @@ import {
   ContextSourceMiddleware,
 } from "../../../my-app";
 import {
-  InsertProductMiddleware,
+  RequestInsertProductMiddleware,
   RequestProductDetailMiddleware,
   RequestProductListMiddleware,
   RequestProductNewIdMidleware,
+  RequestUpdateProductMiddleware,
 } from "./middlewares/productsMiddleware";
 import { SQLTransactionAsync } from "expo-sqlite";
 import { DbRequestArgs, ReduxActionRequestArgs } from "../../../types";
@@ -40,9 +41,11 @@ export const requestProductList = async (
   return response;
 };
 
-export const requestProductDetail = async (
+export const requestProductForm = async (
   ctx: SQLTransactionAsync,
-  id: number
+  { args: { id } }: ReduxActionRequestArgs<{ id?: number }, DbRequestArgs> = {
+    args: { id: undefined },
+  }
 ) => {
   let productDetail: ContextResponseEither<ProductSqlRawProps>;
   await makeContextRequests(
@@ -98,7 +101,7 @@ export const requestInsertProduct = async (
     ["source", new ContextSourceMiddleware(), true],
     [
       "insertedProduct",
-      new InsertProductMiddleware(ctx, { payload }),
+      new RequestInsertProductMiddleware(ctx, { payload }),
       (pipeline) => {
         if (responseIsSuccess<ProductSqlRawProps>(pipeline?.insertedProduct)) {
           productResponse = pipeline?.insertedProduct;
@@ -110,8 +113,38 @@ export const requestInsertProduct = async (
     [
       "error",
       new ContextErrorResponseMiddleware("Unable to to insert product"),
-      (response) => {
-        productResponse = response.error;
+      (pipeline) => {
+        productResponse = pipeline.error;
+        return true;
+      },
+    ]
+  );
+  return productResponse;
+};
+
+export const requestUpdateProduct = async (
+  ctx: SQLTransactionAsync,
+  { payload }: { payload: ProductTransformedProps }
+) => {
+  let productResponse: ContextResponseEither<ProductSqlRawProps>;
+  await makeContextRequests(
+    ["source", new ContextSourceMiddleware(), true],
+    [
+      "updatedProduct",
+      new RequestUpdateProductMiddleware(ctx, { payload }),
+      ({ updatedProduct }) => {
+        if (responseIsSuccess<ProductSqlRawProps>(updatedProduct)) {
+          productResponse = updatedProduct;
+          return false;
+        }
+        return "error";
+      },
+    ],
+    [
+      "error",
+      new ContextErrorResponseMiddleware("Unable to to update product"),
+      ({ error }) => {
+        productResponse = error;
         return true;
       },
     ]

@@ -34,7 +34,6 @@ const ProductFormScreen = () => {
   const { productShortkeyColor } = productForm?.body ?? {
     productShortkeyColor: undefined,
   };
-
   const generateNewId = () => {
     dispatch(productStore.products.actions.generateId({ random: true }));
   };

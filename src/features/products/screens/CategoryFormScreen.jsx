@@ -67,7 +67,7 @@ const CategoryFormScreen = () => {
         state={categoryForm}
         updateFormAction={productStore.categories.actions.updateForm}
         redirectPath={drawerRoutes["units-products"].path}
-        requestDetailAction={productStore.categories.actions.fetchDetail}
+        requestDetailAction={productStore.categories.actions.fetchForm}
         requestUpdateAction={productStore.categories.actions.update}
         requestInsertAction={productStore.categories.actions.insert}
         submitSuccessMessage={t("product category")}

@@ -13,7 +13,7 @@ import {
   ProductSqlRawProps,
   ProductTransformedProps,
 } from "../../types";
-import { DbRequestArgs } from "../../../../types";
+import { DbRequestArgs, ReduxActionRequestArgs } from "../../../../types";
 import { DbInsertResponse } from "../../../../types";
 
 const productDetailParamsInternal = ({ id }) => {
@@ -62,7 +62,10 @@ export class RequestProductListMiddleware extends ContextMiddleware<
   ctx: SQLTransactionAsync;
   orderBy: string;
   desc: boolean;
-  constructor(ctx: SQLTransactionAsync, { orderBy = "id", desc = true }) {
+  constructor(
+    ctx: SQLTransactionAsync,
+    { orderBy = "id", desc = true }: ReduxActionRequestArgs<{}>
+  ) {
     super();
     this.ctx = ctx;
     this.orderBy = orderBy;
@@ -110,7 +113,10 @@ export class RequestProductDetailMiddleware extends ContextMiddleware<ProductSql
         undefined,
         ctx
       );
-      if (responseIsSuccess(response) && response.body?.length > 0) {
+      if (
+        responseIsSuccess<ProductSqlRawProps[]>(response) &&
+        response.body.length === 1
+      ) {
         return this.makeResponse(
           response.state,
           await injectCategoryDetailInternal(
@@ -132,7 +138,7 @@ export class RequestProductDetailMiddleware extends ContextMiddleware<ProductSql
   };
 }
 
-export class InsertProductMiddleware extends ContextMiddleware<ProductSqlRawProps> {
+export class RequestInsertProductMiddleware extends ContextMiddleware<ProductSqlRawProps> {
   ctx: SQLTransactionAsync;
   payload: ProductTransformedProps;
   constructor(ctx: SQLTransactionAsync, { payload }) {
@@ -196,15 +202,9 @@ export class RequestUpdateProductMiddleware extends ContextMiddleware<ProductSql
       ctx
     );
     if (responseIsSuccess<ProductSqlRawProps>(updateRequest)) {
-      const { query: updatedQuery, args: updatedArgs } =
-        dbProductCategories.selectQuery({
-          args: { id: payload.id },
-          limit: 1,
-        });
-
       const requestUpdatedProduct = await this.requestSqlContext<
         ProductSqlRawProps[]
-      >({ query: updatedQuery, args: updatedArgs }, undefined, ctx);
+      >(productDetailParamsInternal({ id: payload.id }), undefined, ctx);
       if (
         responseIsSuccess<ProductSqlRawProps[]>(requestUpdatedProduct) &&
         requestUpdatedProduct.body.length === 1

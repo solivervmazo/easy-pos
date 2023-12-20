@@ -41,28 +41,28 @@ export type ProductScreenState = {
 };
 
 export type CategorySqlRawProps = {
-  id: string;
+  id: number;
   category_id: string;
   category_name: string;
   category_description?: string;
   category_code?: string;
-  category_parent_id?: string;
+  category_parent_id?: number;
   category_parent?: CategorySqlRawProps;
   category_shortkey_color?: string;
-  category_level?: string;
+  category_level?: number;
   category_root_id?: string;
 };
 
 export type CategoryTransformedProps = {
-  id: string;
+  id: number;
   categoryId: string;
   categoryName: string;
   categoryDescription?: string;
   categoryCode?: string;
-  categoryParentId?: string;
+  categoryParentId?: number;
   categoryParent?: CategoryTransformedProps;
   categoryShortkeyColor?: string;
-  categoryLevel?: string;
+  categoryLevel?: number;
   categoryRootId?: string;
 };
 
