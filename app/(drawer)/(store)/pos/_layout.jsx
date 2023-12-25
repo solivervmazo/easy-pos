@@ -1,8 +1,7 @@
 import React from "react";
-import PosDrawerLayout from "../../../../src/features/pos/layouts/PosDrawerLayout";
-
+import PosTabsLayout from "../../../../src/features/pos/layouts/PosTabsLayout";
 const _layout = () => {
-  return <PosDrawerLayout />;
+  return <PosTabsLayout />;
 };
 
 export default _layout;

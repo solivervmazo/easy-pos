@@ -11,7 +11,7 @@ export const storeDrawerRoutes = {
       title: "Store",
     },
   },
-  [`${STORE_PREFIX}store-pos`]: {
+  [`${STORE_PREFIX}-store-pos`]: {
     path: `(${STORE_PREFIX})/pos`,
     options: {
       routeOptions: {

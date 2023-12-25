@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { appSizes } from "../../themes";
 import { IconButton } from "../../ui";
@@ -35,6 +35,13 @@ const MyAppDrawerHeaderRight = ({
   const onPressHandle = () => {
     showInput ? onClearInputHandle() : onShowInputHandle();
   };
+
+  useEffect(() => {
+    if (!showInput) {
+      dispatch(appStore.header.actions.changeSearchValue({ searchValue: "" }));
+    }
+  }, [showInput]);
+
   return (
     <View style={styles.container}>
       {showInput ? (

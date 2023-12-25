@@ -172,6 +172,11 @@ export const Copy = (props) => {
   return icon.feather("copy", "copy");
 };
 
+export const Cog = (props) => {
+  const icon = new _Icon(props);
+  return icon.fontawesome5("cog", "cog");
+};
+
 export const Dial = (props) => {
   const icon = new _Icon(props);
   return icon.materialicons2("phone-dial", "phone-dial-outline");
@@ -430,6 +435,7 @@ const Icon = {
   Close,
   CursorText,
   Copy,
+  Cog,
   Forward,
   Heart, //
   Home,

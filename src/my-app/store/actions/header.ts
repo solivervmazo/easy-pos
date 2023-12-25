@@ -8,7 +8,7 @@ import { HeaderMode } from "../../../enums";
 import { HEADER_MODE_SUFFIX, SEARCH_VALUE_SUFFIX } from "../../constants";
 
 class HeaderCreators
-  extends StateCreatorsBuilder
+  extends StateCreatorsBuilder<HeaderCreatorState>
   implements IStateCreators<HeaderCreatorState>
 {
   constructor() {

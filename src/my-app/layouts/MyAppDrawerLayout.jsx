@@ -9,10 +9,7 @@ import MyAppDrawerHeaderTitle from "../ui/MyAppDrawerHeaderTitle";
 import MyAppDrawerHeaderRight from "../ui/MyAppDrawerHeaderRight";
 import MyAppDrawerTogglerButton from "../ui/MyAppDrawerTogglerButton";
 import { HeaderMode } from "../../enums";
-import { useDispatch } from "react-redux";
-import { appStore } from "../store/";
 const MyAppDrawerLayout = ({ onLayout }) => {
-  const dispatch = useDispatch();
   const [drawerActiveIndexState, setDrawerActiveIndex] = useState(0);
   const [headerIsSearchModeState, setHeaderIsSearchMode] = useState(false);
   const routes = useDrawerRoutes();

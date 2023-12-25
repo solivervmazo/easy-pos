@@ -20,6 +20,7 @@ import { appColors, appFonts, appSizes } from "../../../themes";
 import VariationScreen from "../screens/VariationScreen";
 import ProductsScreen from "../screens/ProductsScreen";
 import CategoriesScreen from "../screens/CategoriesScreen";
+import MyAppTabsBar from "../../../my-app/ui/MyAppTabsBar";
 
 const Tabs = createMaterialTopTabNavigator();
 
@@ -29,45 +30,12 @@ const AppTabsBar = (props) => {
       feature: PRODUCT_FEATURE_ALIAS,
     })
   );
-  const _tabsHeightShared = useSharedValue(TABS_HEIGHT);
-  const _remainingTabsWidth =
-    (props.layout.width - 60) / (props.state.routes.length - 1);
-
-  const _tabsHidden = () => tabsHeaderMode == HeaderMode.search;
-
-  const _animateHeight = () => {
-    _tabsHeightShared.value = withSequence(
-      withTiming(_tabsHidden() ? 0 : TABS_HEIGHT, {
-        duration: 200,
-      })
-    );
-  };
-
-  const _animatedTabsStyle = useAnimatedStyle(() => ({
-    height: _tabsHeightShared.value,
-  }));
-
-  useEffect(() => {
-    _animateHeight();
-  }, [tabsHeaderMode]);
-
   return (
-    <Animated.View style={[_animatedTabsStyle]}>
-      <MaterialTopTabBar
-        {...props}
-        renderTabBarItem={(props) => {
-          return (
-            <TabBarItem
-              {...props}
-              defaultTabWidth={
-                props.route.name === "products" ? 60 : _remainingTabsWidth
-              }
-              {...(_tabsHidden() ? { onPress: () => {} } : {})}
-            />
-          );
-        }}
-      />
-    </Animated.View>
+    <MyAppTabsBar
+      tabsHeaderMode={tabsHeaderMode}
+      index={"products"}
+      props={props}
+    />
   );
 };
 

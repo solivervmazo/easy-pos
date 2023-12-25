@@ -1,6 +1,7 @@
 export const generateStringId = (latestId, random = false) => {
   return `${
-    (random ? Math.floor(Math.random() * 999999) + 1000000 : 1000000) + latestId
+    (random ? Math.floor(Math.random() * 999999) + 1000000 : 1000000) +
+    (latestId + 1)
   }`;
 };
 
